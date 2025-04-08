@@ -42,7 +42,8 @@ const {
 	outline = false,
 	pill = false,
 	light = false,
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 let color = `bg-${theme}`;
@@ -58,7 +59,7 @@ const classList = ClassClear([
 ]);
 ---
 
-<span class={classList}>
+<span class={classList} {...props}>
 	<slot>{text}</slot>
 </span>
 

@@ -27,10 +27,10 @@ export interface Props {
 	class?: string;
 }
 
-const { title, pretitle, subtitle, class: className } = Astro.props as Props;
+const { title, pretitle, subtitle, class: className, ...props } = Astro.props as Props;
 ---
 
-<div class:list={['page-header', className]}>
+<div class:list={['page-header', className]} {...props}>
 	<div class="row align-items-center">
 		{
 			Astro.slots.has('icon') && (

@@ -60,7 +60,8 @@ const {
 	progress = [],
 	weight = 0,
 	layout = 'stacked',
-	class: className
+	class: className,
+	...props
 } = Astro.props;
 
 // 整条滚动条组最大值
@@ -134,7 +135,7 @@ if (sort === 'asc') {
 const hasText = data.some((item) => item.title);
 ---
 
-<div class={ClassClear(ClassList)}>
+<div class={ClassClear(ClassList)} {...props}>
 	<slot>
 		{
 			data.map((item) =>

@@ -50,7 +50,8 @@ const {
 	disabled = false,
 	rotate,
 	layout,
-	class: className
+	class: className,
+	...props
 } = Astro.props;
 
 ////////////////////////////////////////////////////////
@@ -230,11 +231,11 @@ if (isSvg) {
 	/** 纯图标 */
 	nodeType === 'icon' &&
 		(isSvg ? (
-			<Fragment set:html={iconName} class="AAAA" />
+			<Fragment set:html={iconName} {...props} />
 		) : isExternal ? (
-			<ICON name={iconName} class={iconClass} />
+			<ICON name={iconName} class={iconClass} {...props} />
 		) : (
-			<i class={iconClass} />
+			<i class={iconClass} {...props} />
 		))
 }
 {
@@ -245,7 +246,7 @@ if (isSvg) {
 {
 	/** 其他节点 */
 	nodeType === 'node' && (
-		<div class={nodeClass}>
+		<div class={nodeClass} {...props}>
 			{
 				/** 图标 */
 				iconName &&

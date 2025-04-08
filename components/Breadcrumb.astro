@@ -28,14 +28,14 @@ export interface Props {
 	class?: string;
 }
 
-const { items, separator = 'slash', class: className } = Astro.props as Props;
+const { items, separator = 'slash', class: className, ...props } = Astro.props as Props;
 
 const separatorClasses = separator != 'slash' ? `breadcrumb-${separator}s` : '';
 
 const classList = ClassClear(['breadcrumb', separatorClasses, className]);
 ---
 
-<ol class={classList}>
+<ol class={classList} {...props}>
 	{
 		items.map((item, index) => (
 			<li class={`breadcrumb-item${index === items.length - 1 ? ' active' : ''}`}>

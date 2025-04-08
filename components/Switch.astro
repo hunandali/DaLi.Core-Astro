@@ -29,12 +29,12 @@ export interface Props {
 	class?: string;
 }
 
-const { checked = false, label, name, class: className = '' } = Astro.props;
+const { checked = false, label, name, class: className = '', ...props } = Astro.props;
 
 const classList = ClassClear(['form-check form-switch a', className]);
 ---
 
-<label class={classList}>
+<label class={classList} {...props}>
 	<input type="checkbox" class="form-check-input a" checked={checked} name={name} />
 	{label && <span class="form-check-label">{label}</span>}
 </label>

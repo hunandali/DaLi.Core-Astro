@@ -51,7 +51,8 @@ const {
 	centered = false,
 	scrollable = false,
 	closeable = false,
-	class: className = ''
+	class: className = '',
+	...props
 } = Astro.props;
 
 const classList = ClassClear([
@@ -82,7 +83,12 @@ const getHeader = () => {
 const headerIcon = getHeader();
 ---
 
-<div class="modal" id={id} tabindex="-1" data-bs-backdrop={closeable ? 'static' : 'true'}>
+<div
+	class="modal"
+	id={id}
+	tabindex="-1"
+	data-bs-backdrop={closeable ? 'static' : 'true'}
+	{...props}>
 	<div class={classList} role="document">
 		<div class="modal-content">
 			{

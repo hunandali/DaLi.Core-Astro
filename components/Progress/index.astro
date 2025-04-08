@@ -63,7 +63,8 @@ const {
 	striped = false,
 	animated = false,
 	indeterminate = false,
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 // 确保值在0-100范围内
@@ -99,7 +100,7 @@ progressBarProps.class = ClassClear([
 ]);
 ---
 
-<div class={classList}>
+<div class={classList} {...props}>
 	<div {...progressBarProps}>
 		<slot>
 			{showText && <span>{showText}</span>}

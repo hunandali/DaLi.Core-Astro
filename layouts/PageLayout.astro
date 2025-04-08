@@ -23,12 +23,12 @@ export interface Props {
 	class?: string;
 }
 
-const { fluid = false, class: className = '' } = Astro.props as Props;
+const { fluid = false, class: className = '', ...props } = Astro.props as Props;
 
 const containerClass = fluid ? 'container-fluid' : 'container-xl';
 ---
 
-<div class="page">
+<div class="page" {...props}>
 	{
 		Astro.slots.has('header') && (
 			<header class="navbar navbar-expand-md navbar-light d-print-none">

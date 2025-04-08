@@ -70,12 +70,13 @@ const {
 	suffix = '',
 	theme,
 	element: Element = 'div',
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 const classList = ClassClear([theme && `text-${theme}`, className]);
 
-const props = JSON.stringify({
+const attrs = JSON.stringify({
 	start,
 	data,
 	duration,
@@ -89,7 +90,7 @@ const props = JSON.stringify({
 });
 ---
 
-<Element class:list={classList} data-countup={props}>{data}</Element>
+<Element class:list={classList} data-countup={attrs} {...props}>{data}</Element>
 
 <script>
 	import { CountUp, type CountUpOptions } from 'countup.js/src/countUp';

@@ -30,7 +30,8 @@ const {
 	icon: iconName,
 	closeable = false,
 	important = false,
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 const icon: IIcon = ThemeIcon(themeName);
@@ -59,7 +60,7 @@ if (theme === 'primary') {
 }
 ---
 
-<div class={classList} role="alert">
+<div class={classList} role="alert" {...props}>
 	{
 		closeable && (
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />

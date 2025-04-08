@@ -30,7 +30,7 @@ export interface Props {
 	class?: string;
 }
 
-const { text, position = 'center', theme, class: className } = Astro.props;
+const { text, position = 'center', theme, class: className, ...props } = Astro.props;
 const classList = ClassClear([
 	'hr-text',
 	theme && `text-${theme}`,
@@ -39,4 +39,4 @@ const classList = ClassClear([
 ]);
 ---
 
-<div class={classList}><slot>{text}</slot></div>
+<div class={classList} {...props}><slot>{text}</slot></div>

@@ -42,7 +42,8 @@ const {
 	padding,
 	statusTheme,
 	statusPosition = 'top',
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 const classList = ClassClear([
@@ -55,7 +56,7 @@ const classList = ClassClear([
 const hasTitle = title || Astro.slots.has('title');
 ---
 
-<div class={classList}>
+<div class={classList} {...props}>
 	{statusTheme && <div class:list={[`card-status-${statusPosition}`, `bg-${statusTheme}`]} />}
 
 	<slot name="header" />

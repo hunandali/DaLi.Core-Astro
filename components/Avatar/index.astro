@@ -75,7 +75,16 @@ const statusClasses: Record<IStatus, string> = {
 	busy: 'danger'
 };
 
-const { src, size, shape, status, theme, light = true, class: className } = Astro.props as Props;
+const {
+	src,
+	size,
+	shape,
+	status,
+	theme,
+	light = true,
+	class: className,
+	...props
+} = Astro.props as Props;
 
 const avatar = updateAvatar(src);
 const { image, icon, name } = avatar;
@@ -106,7 +115,7 @@ const iconSize =
 						: 7;
 ---
 
-<span class={classList} style={avatarUrl}>
+<span class={classList} style={avatarUrl} {...props}>
 	<slot>
 		{icon ? <ICON icon={icon} size={iconSize} /> : name}
 	</slot>

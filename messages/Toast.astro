@@ -34,11 +34,11 @@ const {
 	title,
 	message,
 	theme,
-	id,
 	closeable = true,
 	visible = true,
 	duration = 0,
-	class: className
+	class: className,
+	...props
 } = Astro.props;
 const icon = ThemeIcon(theme);
 icon.text = title;
@@ -46,7 +46,7 @@ icon.text = title;
 const classList = ClassClear(['toast', visible && 'show', className]);
 ---
 
-<div data-duration={duration} class={classList} id={id}>
+<div data-duration={duration} class={classList} {...props}>
 	<div class="toast-header" class:list={`bg-${icon.theme}-lt`}>
 		<slot name="header">
 			{Astro.slots.has('icon') ? <slot name="icon" /> : <ICON {...icon} bold />}

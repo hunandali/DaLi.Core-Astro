@@ -44,7 +44,7 @@ export interface Props {
 	class?: string;
 }
 
-const { items = [], width = 0, height = 0, class: className } = Astro.props as Props;
+const { items = [], width = 0, height = 0, class: className, ...props } = Astro.props as Props;
 
 const data = items?.map((item) => {
 	return {
@@ -63,7 +63,7 @@ const data = items?.map((item) => {
 const trackingClasses = ClassClear(['tracking', className]);
 ---
 
-<div class={trackingClasses}>
+<div class={trackingClasses} {...props}>
 	<slot>
 		{data?.map((item) => <TOOLTIP {...item} />)}
 	</slot>

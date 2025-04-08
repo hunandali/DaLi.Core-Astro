@@ -33,7 +33,14 @@ export interface Props {
 	class?: string;
 }
 
-const { type = 'dot', text, theme, lite = false, class: className } = Astro.props as Props;
+const {
+	type = 'dot',
+	text,
+	theme,
+	lite = false,
+	class: className,
+	...props
+} = Astro.props as Props;
 
 // 构建类名
 const classList = ClassClear([
@@ -54,17 +61,17 @@ const classStatusTheme = ClassClear([classStatus, theme && `status-${theme}`, cl
 
 {
 	text || Astro.slots.has('default') ? (
-		<span class={classList}>
+		<span class={classList} {...props}>
 			{type !== 'none' && <span class={classStatus} />}
 			<slot>{text}</slot>
 		</span>
 	) : type === 'indicator' ? (
-		<div class={classStatusTheme}>
+		<div class={classStatusTheme} {...props}>
 			<span class="status-indicator-circle" />
 			<span class="status-indicator-circle" />
 			<span class="status-indicator-circle" />
 		</div>
 	) : (
-		<span class={classStatusTheme} />
+		<span class={classStatusTheme} {...props} />
 	)
 }

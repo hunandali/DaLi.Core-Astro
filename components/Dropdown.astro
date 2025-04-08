@@ -50,10 +50,10 @@ export interface Props {
 	variant?: 'primary' | 'secondary' | 'success' | 'danger';
 }
 
-const { label, items, direction = 'down', variant = 'primary' } = Astro.props;
+const { label, items, direction = 'down', variant = 'primary', ...props } = Astro.props;
 ---
 
-<div class={`dropdown drop${direction}`}>
+<div class={`dropdown drop${direction}`} {...props}>
 	<button
 		class={`btn btn-${variant} dropdown-toggle`}
 		type="button"

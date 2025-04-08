@@ -14,6 +14,7 @@
  */
 
 import { ClassClear } from '../libs';
+
 /** 幻灯片项目结构 */
 interface CarouselItem {
 	/** 图片地址 */
@@ -52,7 +53,8 @@ const {
 	controls = true,
 	interval = 5000,
 	fade = false,
-	class: className
+	class: className,
+	...props
 } = Astro.props;
 
 const id = `carousel-${Math.random().toString(36).substring(2, 11)}`;
@@ -68,7 +70,7 @@ const indicatorsClass = ClassClear([
 const classList = ClassClear(['carousel', 'slide', fade && 'carousel-fade', className]);
 ---
 
-<div id={id} class={classList} data-bs-ride="carousel" data-bs-interval={interval}>
+<div id={id} class={classList} data-bs-ride="carousel" data-bs-interval={interval} {...props}>
 	{
 		indicators && (
 			<div class={indicatorsClass}>

@@ -14,14 +14,15 @@
  */
 
 import Head, { type Props as IHead } from './Head.astro';
+import type { IPropsBase } from '../types';
+import { PropsUpdate } from '../libs';
 
-export interface Props extends IHead {}
-
-const props = Astro.props;
+export interface Props extends IHead, IPropsBase {}
+const [propsBody, propsHead] = PropsUpdate(Astro.props);
 ---
 
 <!doctype html>
 <html lang="zh">
-	<Head {...props} />
-	<body><slot /></body>
+	<Head {...propsHead as IHead} />
+	<body {...propsBody}><slot /></body>
 </html>

@@ -1,5 +1,7 @@
 ///<reference types="@da.li/core-libs" />
 
+import type { Dict } from '@da.li/core-libs';
+
 /** 默认样式 */
 export type ITheme = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
 
@@ -140,6 +142,20 @@ export interface ToastOptions {
 
 	/** 显示时长(毫秒)，0表示不自动关闭 */
 	duration?: number;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/** 组件基础属性 */
+export interface IPropsBase extends Dict {
+	/** 自定义样式类 */
+	class?: string;
+
+	/** 自定义样式 */
+	style?: any;
+
+	/** 自定义标识 */
+	id?: string;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

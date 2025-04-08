@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
+	/** 此处需要设置为空值，否则打包的 css 文件中字体资源会使用绝对路径而无法正常显示 */
+	base: '',
+
 	plugins: [
 		dts({
 			outDir: 'dist',
@@ -36,16 +39,26 @@ export default defineConfig({
 				entryFileNames: '[name].js',
 				assetFileNames: (assetInfo) => {
 					// 样式入口文件移动到 theme 目录
-					// console.log(assetInfo);
 
-					if (assetInfo.names && assetInfo.names[0] === 'style.css') {
+					const fileName =
+						assetInfo.names && assetInfo.names.length > 0 ? assetInfo.names[0] : '';
+					if (fileName === 'style.css') {
 						return 'themes/index.css';
-					} else if (
-						assetInfo.originalFileNames &&
-						assetInfo.originalFileNames[0].startsWith('themes/')
-					) {
+					}
+
+					const filePath =
+						assetInfo.originalFileNames && assetInfo.originalFileNames.length > 0
+							? assetInfo.originalFileNames[0]
+							: '';
+
+					if (filePath.startsWith('themes/')) {
+						// if (fileName && /\.(woff|woff2|ttf|eot|otf)$/.test(fileName)) {
+						// 	return 'iconfonts/[name][extname]';
+						// }
+
 						return assetInfo.originalFileNames[0];
 					}
+
 					return 'resources/[name][extname]';
 				},
 				chunkFileNames: 'resources/[name]-[hash].js',

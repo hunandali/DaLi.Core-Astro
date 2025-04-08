@@ -52,7 +52,13 @@ export interface Props {
 	class?: string;
 }
 
-const { items = [], simple = false, timeFormat = false, class: className } = Astro.props as Props;
+const {
+	items = [],
+	simple = false,
+	timeFormat = false,
+	class: className,
+	...props
+} = Astro.props as Props;
 
 // 构建类名
 const classList = ClassClear(['timeline', simple && 'timeline-simple', className]);
@@ -76,7 +82,7 @@ const data = items?.map((item) => {
 });
 ---
 
-<ul class={classList}>
+<ul class={classList} {...props}>
 	<slot>
 		{
 			data?.map((item) => (

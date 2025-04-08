@@ -39,13 +39,14 @@ const {
 	icon,
 	image,
 	theme = 'secondary',
-	class: className
+	class: className,
+	...props
 } = Astro.props as Props;
 
 const classList = ClassClear(['empty', className]);
 ---
 
-<div class={classList}>
+<div class={classList} {...props}>
 	{
 		image ? (
 			<div class="empty-img mw-60">
