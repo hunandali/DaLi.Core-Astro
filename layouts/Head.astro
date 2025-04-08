@@ -22,13 +22,13 @@ export interface Props {
 	time?: string;
 }
 
-import { title as siteName, homepage } from '../../package.json';
-
 const { title, description, keywords, image, author, time = '' } = Astro.props;
 
-const site = siteName;
-const domain = Astro.site || homepage;
-const url = domain ? new URL(Astro.url.pathname, domain).href : Astro.url.href;
+const site = import.meta.env.SITE_NAME;
+const domain = import.meta.env.SITE_URL || Astro.site;
+let url = domain ? new URL(import.meta.env.BASE_URL, domain).href : import.meta.env.BASE_URL;
+url = url ? new URL(Astro.url.pathname, url).href : Astro.url.href;
+
 const words = Array.isArray(keywords) ? keywords.join(',') : keywords;
 ---
 

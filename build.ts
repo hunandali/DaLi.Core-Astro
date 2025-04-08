@@ -99,10 +99,11 @@ async function postBuild() {
 		await fileCopy('config.ts');
 		// await fileCopy('integration.ts');
 		await fileCopy('types.ts');
-		await fileCopy('README.md');
-		await fileCopy('package.json');
+		// await fileCopy('README.md');
+		// await fileCopy('package.json');
+		await fileCopy('.env');
 
-		await cleanupDist('dist/messages', ['.ts']);
+		await cleanupDist('dist/messages', ['Service.ts']);
 		await cleanupDist('dist/layouts', ['Demo.astro']);
 	} catch (error) {
 		// eslint-disable-next-line no-console

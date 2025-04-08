@@ -1,7 +1,7 @@
 {
 	"name": "@da.li/core-astro",
 	"title": "大沥网络 Astro 公共库",
-	"version": "1.25.408-1",
+	"version": "1.25.408-23",
 	"description": "大沥网络 Astro 公共库，包含基础 UI 组件、基础工具函数等",
 	"license": "GPL-3.0",
 	"publishConfig": {
@@ -15,9 +15,15 @@
 		"url": "https://github.com/woodcoal/DaLi.Core-Astro.git"
 	},
 	"type": "module",
-	"main": "./integration.js",
+	"files": [
+		"dist/**/*"
+	],
+	"types": "dist/index.d.ts",
+	"main": "dist/index.js",
 	"keywords": [
-		"astro-component"
+		"astro",
+		"tabler",
+		"bootstrap"
 	],
 	"scripts": {
 		"dev": "astro dev",
@@ -31,6 +37,7 @@
 		"@da.li/core-libs": "^1.25.403",
 		"@tabler/core": "^1.1.1",
 		"astro": "^5.6.1",
+		"astro-iconify": "^1.2.0",
 		"countup.js": "^2.8.0"
 	},
 	"devDependencies": {
@@ -42,6 +49,7 @@
 		"fs-extra": "^11.3.0",
 		"less": "^4.3.0",
 		"tsx": "^4.19.3",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"vite-plugin-dts": "^4.5.3"
 	}
 }

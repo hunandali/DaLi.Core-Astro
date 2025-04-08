@@ -13,8 +13,9 @@
  * ------------------------------------------------------------
  */
 
-import ICON, { type IIcon } from './Icon.astro';
+import ICON from './Icon.astro';
 import { ClassClear } from '../libs';
+import type { IIcon } from '../types';
 
 export interface Props extends IIcon {
 	/** 按钮类型 */

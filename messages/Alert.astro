@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from '../components/Icon.astro';
+import ICON, { type Props as IIcon } from '../components/Icon.astro';
 import { getIcon } from '../icons';
 import { ClassClear, ThemeIcon } from '../libs';
 import type { AlertOptions } from '../types';
@@ -33,7 +33,7 @@ const {
 	class: className
 } = Astro.props as Props;
 
-const icon = ThemeIcon(themeName);
+const icon: IIcon = ThemeIcon(themeName);
 const theme = icon.theme;
 iconName && (icon.icon = getIcon(iconName) || icon.icon);
 icon.text = title;

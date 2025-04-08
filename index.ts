@@ -10,7 +10,7 @@ export default function (): AstroIntegration {
 					'page-ssr',
 					`import "@da.li/core-libs";
 import "@tabler/core/dist/css/tabler.css";
-import "/themes/index.css";`
+import "@da.li/core-astro/dist/themes/index.css";`
 				);
 				options.injectScript('page', `import "@da.li/core-libs";`);
 			}

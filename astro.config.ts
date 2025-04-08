@@ -14,7 +14,7 @@ export default defineConfig({
 	publicDir: './public',
 
 	// 设置 astro build 将你的最终构建写入的目录。
-	outDir: './dist',
+	outDir: './demo',
 
 	// 为 Astro 网站启用安全措施。
 	security: {

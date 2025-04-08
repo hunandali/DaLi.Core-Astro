@@ -13,8 +13,9 @@
  * ------------------------------------------------------------
  */
 
-import ICON, { type IIcon } from './Icon.astro';
+import ICON from './Icon.astro';
 import { ClassClear } from '../libs';
+import type { IIcon } from '../types';
 
 /** 属性，提示图片优先级：image -> icon -> text */
 export interface Props extends Omit<IIcon, 'disabled'> {

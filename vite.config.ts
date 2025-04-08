@@ -1,23 +1,34 @@
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-	plugins: [],
+	plugins: [
+		dts({
+			outDir: 'dist',
+
+			// 可选：包含你想要生成类型的文件
+			include: ['index.ts', 'libs/*.ts', 'messages/*.ts'],
+
+			// 可选：排除不需要生成类型的文件
+			exclude: ['**/types.ts']
+		})
+	],
 
 	build: {
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: [
-				'astro',
-				'@tabler/core',
-				'@tabler/core/dist/css/tabler.css',
 				'@da.li/core-libs',
+				'@tabler/core',
+				'astro',
+				'astro-iconify',
 				'dayjs',
 				'countup.js',
 				'bootstrap'
 			],
 			input: {
 				'index.css': 'themes/index.less',
-				integration: 'integration.ts',
+				index: 'index.ts',
 				'libs/index': 'libs/index.ts',
 				'libs/client': 'libs/index.client.ts'
 			},

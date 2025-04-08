@@ -12,11 +12,10 @@
  * ------------------------------------------------------------
  */
 
-import type { ITheme } from '../types';
-import type { Props } from '../components/Icon.astro';
+import type { IIcon, ITheme } from '../types';
 
 /** 主题图标数据 */
-export const ThemeICONS: Record<ITheme, Props> = {
+export const ThemeICONS: Record<ITheme, IIcon> = {
 	primary: { icon: 'logo', logo: true, theme: 'primary' },
 	secondary: { icon: '', theme: 'secondary' },
 	success: { icon: 'success', theme: 'success' },

@@ -141,3 +141,26 @@ export interface ToastOptions {
 	/** 显示时长(毫秒)，0表示不自动关闭 */
 	duration?: number;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/** 图标属性 */
+export interface IIcon {
+	/** 图标 */
+	icon?: string | undefined;
+
+	/** 是否为 Logo */
+	logo?: string | boolean | undefined;
+
+	/** 文字 */
+	text?: string | number | undefined;
+
+	/** 类型 */
+	theme?: IColorFull | string | undefined;
+
+	/** 禁用图标 */
+	disabled?: boolean | undefined;
+
+	/** 旋转 */
+	rotate?: 0 | 1 | 2 | 3 | 'horizontal' | 'vertical' | 'both' | string | undefined;
+}
