@@ -94,6 +94,7 @@ async function postBuild() {
 		// await cleanupDist();
 		await floderCopy('components');
 		await floderCopy('messages');
+		await floderCopy('layouts');
 		// await floderCopy('libs');
 		await fileCopy('config.ts');
 		// await fileCopy('integration.ts');
@@ -102,6 +103,7 @@ async function postBuild() {
 		await fileCopy('package.json');
 
 		await cleanupDist('dist/messages', ['.ts']);
+		await cleanupDist('dist/layouts', ['Demo.astro']);
 	} catch (error) {
 		// eslint-disable-next-line no-console
 		console.error('❌ 后处理任务失败:', error);
