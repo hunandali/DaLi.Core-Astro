@@ -1,0 +1,67 @@
+---
+/**
+ *	Dropcard 下拉卡片
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import CARD, { type Props as ICard } from './Card.astro';
+
+export interface Props extends ICard {
+	/** 下拉按钮名称 */
+	label?: string;
+
+	/** 弹出方向 */
+	direction?: 'down' | 'up' | 'start' | 'end';
+
+	/** 下拉按钮颜色 */
+	variant?: 'primary' | 'secondary' | 'success' | 'danger';
+}
+
+const {
+	label,
+	title,
+	direction = 'down',
+	variant = 'primary',
+	class: className,
+	...props
+} = Astro.props;
+
+const hasTitle = title || Astro.slots.has('title');
+---
+
+<div class={`dropdown drop${direction}`}>
+	<button
+		class={`btn btn-${variant} dropdown-toggle`}
+		type="button"
+		data-bs-toggle="dropdown"
+		aria-expanded="false">
+		<slot name="label">
+			{label}
+		</slot>
+	</button>
+	<div class="dropdown-menu dropdown-menu-card" class:list={className}>
+		<CARD {...props}>
+			{
+				hasTitle && (
+					<div class="card-title">
+						<slot name="title">{title}</slot>
+					</div>
+				)
+			}
+			<slot />
+		</CARD>
+	</div>
+
+	<script>
+		import '@tabler/core/js/src/dropdown.js';
+	</script>
+</div>

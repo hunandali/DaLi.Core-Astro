@@ -1,0 +1,45 @@
+/*
+' ------------------------------------------------------------
+'
+' 	Copyright © 2022 湖南大沥网络科技有限公司.
+'
+' 	  author:	木炭(WOODCOAL)
+' 	   email:	i@woodcoal.cn
+' 	homepage:	http://www.hunandali.com/
+'
+' ------------------------------------------------------------
+'
+' 	图标字体样式
+'
+' 	name: theme.iconfont
+' 	create: 2024-03-21
+' 	memo: 图标字体样式
+' 	
+' ------------------------------------------------------------
+*/
+@import './icons.css';
+@import './logo.css';
+
+@font-face {
+	font-family: 'alibaba';
+	src: url('./alibaba.woff2') format('woff2');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* 附加图标样式 */
+.icon-ai,
+.icon-ai-large {
+	&::before {
+		font-family: 'alibaba';
+		content: 'AI';
+	}
+	--at-apply: rd text-3 italic bold bg-info text-white px-1;
+	letter-spacing: 3px;
+}
+
+.icon-ai-large {
+	--at-apply: text-5 px-2;
+	letter-spacing: 6px;
+}

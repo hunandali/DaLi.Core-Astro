@@ -1,0 +1,42 @@
+---
+import EMPTY, { type Props as ILayout } from './Empty.astro';
+import LAYOUT from './PageLayout.astro';
+import HEADER, { type Props as IHeader } from './PageHeader.astro';
+
+import THEME from '../layouts/PageTheme.astro';
+
+// import ABOUT from './components/About.astro';
+interface Props extends ILayout, IHeader {}
+
+const props = Astro.props;
+---
+
+<EMPTY {...props}>
+	<LAYOUT>
+		<slot slot="header" name="header">
+			<HEADER {...props} class="w-100">
+				<THEME />
+			</HEADER>
+		</slot>
+		<slot slot="footer" name="footer">copyright</slot>
+		<slot />
+	</LAYOUT>
+</EMPTY>
+
+<script>
+	const themeSwitch = document.getElementById('themeSwitch') as HTMLInputElement;
+	if (themeSwitch) {
+		themeSwitch.addEventListener('change', () => {
+			if (themeSwitch.checked) {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+
+			// 写入 Cookie
+			const expires = new Date();
+			expires.setFullYear(expires.getFullYear() + 1);
+			document.cookie = `theme=${themeSwitch.checked ? 'dark' : 'light'}; expires=${expires.toUTCString()}; path=/`;
+		});
+	}
+</script>

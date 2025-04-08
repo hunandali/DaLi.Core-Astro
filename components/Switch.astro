@@ -1,0 +1,40 @@
+---
+/**
+ * Switch - 切换开关组件
+ *
+ * ------------------------------------------------------------
+ *
+ * Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ *   author: 木炭(WOODCOAL)
+ *    email: i@woodcoal.cn
+ * homepage: http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 是否选中 */
+	checked?: boolean;
+
+	/** 标签文本 */
+	label?: string;
+
+	/** 输入框名称 */
+	name?: string;
+
+	/** 自定义样式 */
+	class?: string;
+}
+
+const { checked = false, label, name, class: className = '' } = Astro.props;
+
+const classList = ClassClear(['form-check form-switch a', className]);
+---
+
+<label class={classList}>
+	<input type="checkbox" class="form-check-input a" checked={checked} name={name} />
+	{label && <span class="form-check-label">{label}</span>}
+</label>

@@ -1,0 +1,107 @@
+---
+/**
+ * 	MessageModal 消息模态窗体
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from '../components/Icon.astro';
+import BUTTON from '../components/Button.astro';
+import type { ModalOptions } from '../types';
+import { ThemeIcon } from '../libs';
+
+export interface Props extends Omit<ModalOptions, 'onOk' | 'onCancel' | 'onClose'> {
+	/** 标识 */
+	id?: string;
+
+	/** 确认键点击后关闭窗口 */
+	okClose?: boolean;
+}
+
+const {
+	id,
+	icon: iconName,
+	title,
+	message,
+	theme,
+	showClose = true,
+	textCancel = '取消',
+	textOk = '确定',
+	okClose = false
+} = Astro.props;
+
+const icon = ThemeIcon(theme);
+if (iconName) {
+	icon.icon = iconName;
+	icon.logo = false;
+}
+---
+
+<div class="modal fade" id={id} tabindex="-1" data-bs-backdrop={showClose ? 'true' : 'static'}>
+	<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+		<div class="modal-content">
+			{
+				showClose && (
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="modal"
+						aria-label="Close"
+					/>
+				)
+			}
+			<div class={`modal-status bg-${icon.theme}`}></div>
+			<div class="modal-body text-center py-6">
+				<ICON {...icon} size={14} />
+				<h2 class="mt-2 mb-4">{title}</h2>
+				<div class="text-secondary"><slot>{message}</slot></div>
+			</div>
+			<div class="modal-footer text-center">
+				<div class="w-100">
+					<slot name="footer">
+						<div class="row">
+							{
+								showClose && (
+									<div class="col">
+										<BUTTON
+											data-bs-dismiss="modal"
+											theme="default"
+											class="w-100"
+											text={textCancel}
+										/>
+									</div>
+								)
+							}
+							<div class="col">
+								{
+									okClose ? (
+										<BUTTON
+											data-bs-dismiss="modal"
+											theme={icon.theme}
+											class={showClose ? 'w-100' : 'w-50'}
+											text={textOk}
+										/>
+									) : (
+										<BUTTON
+											theme={icon.theme}
+											class={showClose ? 'w-100' : 'w-50'}
+											text={textOk}
+										/>
+									)
+								}
+							</div>
+						</div>
+					</slot>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,114 @@
+---
+/**
+ * 	Avatar 头像
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { ClassClear } from '../../libs';
+import type { ITheme } from '../../types';
+import ICON from '../Icon.astro';
+
+/** 头像状态 */
+type IStatus = 'online' | 'offline' | 'away' | 'busy';
+
+export interface Props {
+	/**
+	 * 头像地址
+	 * 1. 包含 / 则使用图片网址
+	 * 2. 不包含 / 则尝试使用图标
+	 */
+	src: string;
+
+	/** 头像大小 */
+	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+	/** 头像形状 */
+	shape?: 'square' | 'rounded';
+
+	/** 头像状态 */
+	status?: IStatus;
+
+	/** 主题 */
+	theme?: ITheme;
+
+	/** 浅色主题背景 */
+	light?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+/**
+ * 根据名称，链接分析实际头像信息
+ * 1. 包含 / 则使用图片网址
+ * 2. 不包含 / 则尝试使用图标
+ * 3. 2 个字符或者非网址且最后以加号结尾则使用名称
+ */
+export function updateAvatar(src: string) {
+	const ret = { image: '', icon: '', name: '' };
+	if (!src) return ret;
+
+	if (src.indexOf('/') > -1) {
+		ret.image = src;
+	} else if (src.length > 2 && !src.endsWith('+')) {
+		ret.icon = src;
+	} else {
+		ret.name = src;
+	}
+
+	return ret;
+}
+
+const statusClasses: Record<IStatus, string> = {
+	online: 'success',
+	offline: 'secondary',
+	away: 'warning',
+	busy: 'danger'
+};
+
+const { src, size, shape, status, theme, light = true, class: className } = Astro.props as Props;
+
+const avatar = updateAvatar(src);
+const { image, icon, name } = avatar;
+
+const avatarUrl = image ? `background-image: url(${src});` : '';
+
+const themeColor = theme && (light ? `bg-${theme}-lt` : `bg-${theme}`);
+const classList = ClassClear([
+	'avatar',
+	size && `avatar-${size}`,
+	shape && `avatar-${shape}`,
+	themeColor,
+	className
+]);
+
+// ''xs' | 'sm' | 'md' | 'lg' | 'xl''
+const iconSize =
+	size === 'xs'
+		? 3
+		: size === 'sm'
+			? 5
+			: size === 'md'
+				? 7
+				: size === 'lg'
+					? 9
+					: size === 'xl'
+						? 11
+						: 7;
+---
+
+<span class={classList} style={avatarUrl}>
+	<slot>
+		{icon ? <ICON icon={icon} size={iconSize} /> : name}
+	</slot>
+	{status && <span class:list={['badge', `bg-${statusClasses[status]}`]} />}
+</span>

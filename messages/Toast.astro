@@ -1,0 +1,89 @@
+---
+/**
+ * Toast 全局消息通知
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from '../components/Icon.astro';
+import type { ToastOptions } from '../types';
+import { ClassClear, ThemeIcon } from '../libs';
+
+export interface Props extends ToastOptions {
+	id?: string;
+
+	/** 允许关闭 */
+	closeable?: boolean;
+
+	/** 可见 */
+	visible?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	title,
+	message,
+	theme,
+	id,
+	closeable = true,
+	visible = true,
+	duration = 0,
+	class: className
+} = Astro.props;
+const icon = ThemeIcon(theme);
+icon.text = title;
+icon.bold = true;
+
+const classList = ClassClear(['toast', visible && 'show', className]);
+---
+
+<div data-duration={duration} class={classList} id={id}>
+	<div class="toast-header" class:list={`bg-${icon.theme}-lt`}>
+		<slot name="header">
+			{Astro.slots.has('icon') ? <slot name="icon" /> : <ICON {...icon} />}
+			<strong class="me-auto ms-2">
+				<slot name="title" />
+			</strong>
+			{
+				Astro.slots.has('timer') && (
+					<small>
+						<slot name="timer">时长</slot>
+					</small>
+				)
+			}
+		</slot>
+		{
+			closeable && (
+				<button
+					type="button"
+					class="ms-2 btn-close"
+					data-bs-dismiss="toast"
+					aria-label="Close"
+				/>
+			)
+		}
+	</div>
+	<div class="toast-body">
+		<slot>{message}</slot>
+	</div>
+</div>
+
+<script>
+	import '@tabler/core/js/src/toast.js';
+</script>
+
+<style is:global>
+	.toast-container .toast {
+		--tblr-toast-spacing: 0.5rem;
+	}
+</style>

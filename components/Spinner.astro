@@ -1,0 +1,44 @@
+---
+/**
+ * 	Spinner 加载动画组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 加载动画类型 */
+	type?: 'border' | 'grow';
+
+	/** 主题颜色 */
+	theme?: IColorFull;
+
+	/** 尺寸 */
+	mini?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { type = 'border', theme = 'primary', mini = false, class: className } = Astro.props as Props;
+
+// 构建类名
+const spinnerClasses = ClassClear([
+	`spinner-${type}`,
+	`text-${theme}`,
+	mini && `spinner-${type}-sm`,
+	className
+]);
+---
+
+<div class={spinnerClasses} role="status"></div>

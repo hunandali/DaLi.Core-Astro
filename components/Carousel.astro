@@ -1,0 +1,146 @@
+---
+/**
+ * Carousel 幻灯片
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { ClassClear } from '../libs';
+/** 幻灯片项目结构 */
+interface CarouselItem {
+	/** 图片地址 */
+	src: string;
+
+	/** 图片标题 */
+	title?: string;
+
+	/** 图片描述 */
+	description?: string;
+}
+
+export interface Props {
+	/** 幻灯片项目 */
+	items: CarouselItem[];
+
+	/** 是否显示指示器 */
+	indicators?: 'dot' | 'thumb' | 'vertical-dot' | 'vertical-thumb';
+
+	/** 是否显示控制按钮 */
+	controls?: boolean;
+
+	/** 幻灯片切换间隔 */
+	interval?: number;
+
+	/** 是否启用淡入淡出效果 */
+	fade?: boolean;
+
+	/** 样式 */
+	class?: string;
+}
+
+const {
+	items,
+	indicators,
+	controls = true,
+	interval = 5000,
+	fade = false,
+	class: className
+} = Astro.props;
+
+const id = `carousel-${Math.random().toString(36).substring(2, 11)}`;
+
+const indicatorsClass = ClassClear([
+	'carousel-indicators',
+	(indicators === 'dot' || indicators === 'vertical-dot') && 'carousel-indicators-dot',
+	(indicators === 'thumb' || indicators === 'vertical-thumb') && 'carousel-indicators-thumb',
+	(indicators === 'vertical-dot' || indicators === 'vertical-thumb') &&
+		'carousel-indicators-vertical'
+]);
+
+const classList = ClassClear(['carousel', 'slide', fade && 'carousel-fade', className]);
+---
+
+<div id={id} class={classList} data-bs-ride="carousel" data-bs-interval={interval}>
+	{
+		indicators && (
+			<div class={indicatorsClass}>
+				{items.map((item, index) => (
+					<>
+						{(indicators === 'dot' || indicators === 'vertical-dot') && (
+							<button
+								type="button"
+								data-bs-target={`#${id}`}
+								data-bs-slide-to={index}
+								class:list={[{ active: index === 0 }]}
+								aria-current={index === 0 ? 'true' : 'false'}
+								aria-label={`Slide ${index + 1}`}
+							/>
+						)}
+						{(indicators === 'thumb' || indicators === 'vertical-thumb') && (
+							<button
+								type="button"
+								data-bs-target={`#${id}`}
+								data-bs-slide-to={index}
+								class:list={[{ active: index === 0 }, 'ratio', 'ratio-4x3']}
+								aria-current={index === 0 ? 'true' : 'false'}
+								aria-label={`Slide ${index + 1}`}
+								style={`background-image: url(${item.src})`}
+							/>
+						)}
+					</>
+				))}
+			</div>
+		)
+	}
+	<div class="carousel-inner">
+		{
+			items.map((item, index) => (
+				<div class:list={['carousel-item', { active: index === 0 }]}>
+					<img src={item.src} class="d-block w-100" alt={item.title} />
+					{item.title && (
+						<>
+							<div class="carousel-caption-background d-none d-md-block" />
+							<div class="carousel-caption d-none d-md-block">
+								<h3>{item.title}</h3>
+								<p>{item.description}</p>
+							</div>
+						</>
+					)}
+				</div>
+			))
+		}
+	</div>
+
+	{
+		controls && (
+			<>
+				<button
+					class="carousel-control-prev"
+					type="button"
+					data-bs-target={`#${id}`}
+					data-bs-slide="prev"
+					role="button">
+					<span class="carousel-control-prev-icon" aria-hidden="true" />
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button
+					class="carousel-control-next"
+					type="button"
+					data-bs-target={`#${id}`}
+					data-bs-slide="next"
+					role="button">
+					<span class="carousel-control-next-icon" aria-hidden="true" />
+					<span class="visually-hidden">Next</span>
+				</button>
+			</>
+		)
+	}
+</div>

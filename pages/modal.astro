@@ -1,0 +1,75 @@
+---
+import MODEL from '../messages/Modal.astro';
+import MESSAGE from '../messages/MessageModal.astro';
+import LAYOUT from '../layouts/Demo.astro';
+import Button from '../components/Button.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Modal 模态对话框">
+	<h2>模态框</h2>
+	<MODEL closeable={false} header="基础模态框" id="basic-modal">
+		<p>这是一个基础的模态框示例，展示了标题、内容和底部按钮区域。</p>
+		<div slot="footer">
+			<Button theme="secondary" data-bs-dismiss="modal">关闭</Button>
+		</div>
+	</MODEL>
+	<Button data-bs-toggle="modal" data-bs-target="#basic-modal">打开模态框</Button>
+	<MODEL
+		header={{ text: '窗体介绍', icon: 'dialog', theme: 'primary' }}
+		id="centered-modal"
+		centered>
+		<ol>
+			<li>垂直居中的模态框</li>
+			<li>头部含图标</li>
+			<li>使用了颜色样式</li>
+		</ol>
+		<div slot="footer">
+			<Button theme="secondary" data-bs-dismiss="modal">关闭</Button>
+		</div>
+	</MODEL>
+	<Button data-bs-toggle="modal" data-bs-target="#centered-modal">垂直居中</Button>
+
+	<h2 class="line-top">消息弹窗</h2>
+	<MESSAGE title="警告弹窗" theme="danger" showClose={false} okClose id="message-modal-1">
+		<p>这是不能主动关闭的警告弹窗！</p>
+	</MESSAGE>
+	<Button data-bs-toggle="modal" data-bs-target="#message-modal-1">消息弹窗</Button>
+	<MESSAGE title="确认吗？" theme="primary" icon="question" id="message-modal-2">
+		<p>真的确认这么操作吗？</p>
+	</MESSAGE>
+	<Button data-bs-toggle="modal" data-bs-target="#message-modal-2">确认弹窗</Button>
+
+	<h2 class="line-top">脚本操作</h2>
+	<Button class="btnA">确认弹窗</Button>
+	<Button class="btnB">消息弹窗</Button>
+</LAYOUT>
+
+<script>
+	import { openModal } from '../libs/index.client';
+
+	const btnA = document.querySelector('.btnA');
+	const btnB = document.querySelector('.btnB');
+	btnA?.addEventListener('click', () => {
+		openModal({
+			theme: 'primary',
+			icon: 'question',
+			title: '你知道这首诗吗？',
+			message: '“<b>东临碣石，以观沧海</b>”这是什么诗词？',
+			showClose: true,
+			textCancel: '不知道',
+			textOk: '当然知道',
+			onCancel: () => alert('你应该多学习学习'),
+			onOk: () => alert('你真牛！')
+		});
+	});
+	btnB?.addEventListener('click', () => {
+		openModal({
+			theme: 'danger',
+			title: '你答错了',
+			message: '看样子你还要多努力努力！',
+			showClose: false,
+			textOk: '好的',
+			onOk: () => alert('我会加油的')
+		});
+	});
+</script>

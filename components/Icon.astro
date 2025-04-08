@@ -1,0 +1,377 @@
+---
+/**
+ * 	Icon 图标
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from 'astro-iconify';
+import type { IColorFull } from '../types';
+import { getIcon, getLogo } from '../icons';
+
+/** 图标属性 */
+export interface IIcon {
+	/** 图标 */
+	icon?: string | undefined;
+
+	/** 是否为 Logo */
+	logo?: string | boolean | undefined;
+
+	/** 文字 */
+	text?: string | number | undefined;
+
+	/** 类型 */
+	theme?: IColorFull | string | undefined;
+
+	/** 禁用图标 */
+	disabled?: boolean | undefined;
+
+	/** 旋转 */
+	rotate?: 0 | 1 | 2 | 3 | 'horizontal' | 'vertical' | 'both' | string | undefined;
+}
+
+/** 图标组件属性 */
+export interface Props extends IIcon {
+	/** 图标大小 1-6 */
+	size?: number | undefined;
+
+	/** 文字大小  1-6 */
+	fontSize?: number | undefined;
+
+	/** 粗体 */
+	bold?: boolean | undefined;
+
+	/** 是否标签样式 */
+	tag?: boolean | undefined;
+
+	/** 布局方式,水平还是垂直,默认水平 */
+	layout?: 'horizontal' | 'vertical' | undefined;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	icon = '',
+	logo = false,
+	text = '',
+	theme,
+	size = 0,
+	fontSize = 0,
+	bold,
+	tag = false,
+	disabled = false,
+	rotate,
+	layout,
+	class: className
+} = Astro.props;
+
+////////////////////////////////////////////////////////
+// #region 类型检查与赋值
+
+// 是否禁用
+const isDisabled = disabled || icon?.endsWith('-disabled');
+
+// 是否存在文本
+const hasText = !!text || text === 0;
+
+// 是否 logo
+const isLogo = logo || icon?.startsWith('logo-');
+
+/** 图标名称 */
+let iconName = isLogo ? getLogo(logo === true ? icon : logo || '') : getIcon(icon);
+
+/** 是否 svg */
+const isSvg = iconName.startsWith('<svg');
+
+/** 是否外部图标 */
+const isExternal = !isSvg && iconName.indexOf(':') > 0;
+
+// 节点类型：
+// 1. 纯图标(不含文本以及禁用操作)
+// 2. 纯文字(不含图标以及禁用操作)
+// 3. 其他(必须被外部节点包含)
+const nodeType = isDisabled
+	? 'node'
+	: !hasText && !className
+		? 'icon'
+		: !iconName
+			? 'text'
+			: 'node';
+
+// #endregion
+////////////////////////////////////////////////////////
+// #region 常用操作
+
+/** 基础样式 */
+function getBaseClass() {
+	const ret = ['dl-icon', 'user-select-none'];
+
+	// 禁用图标
+	isDisabled && ret.push('disabled');
+
+	// 主题
+	theme && ret.push(`text-${theme}`);
+
+	// 标签样式
+	tag && ret.push('tag');
+
+	// 尺寸
+	size && ret.push(`text-${size}`);
+
+	// 粗体
+	bold && ret.push('fw-bold');
+
+	// 附加样式
+	className && ret.push(className);
+
+	return ret;
+}
+
+/** 更新图标样式 */
+function getIconClass() {
+	if (!iconName) return;
+
+	const ret = [isLogo ? 'logo' : 'icon'];
+
+	// 节点类型为纯图标
+	if (nodeType === 'icon') {
+		const baseClass = getBaseClass();
+		ret.push(...baseClass);
+	}
+
+	// 图标样式
+	if (isExternal || isSvg) {
+		ret.push('icon-tabler');
+	} else {
+		ret.push(iconName);
+	}
+
+	// 旋转
+	switch (`${rotate}`.toLowerCase()) {
+		case '0': {
+			ret.push('icon-spin');
+			break;
+		}
+		case '1': {
+			ret.push('icon-rotate-90');
+			break;
+		}
+		case '2': {
+			ret.push('icon-rotate-180');
+			break;
+		}
+		case '3': {
+			ret.push('icon-rotate-270');
+			break;
+		}
+		case 'horizontal':
+		case 'h': {
+			ret.push('icon-flip-horizontal');
+			break;
+		}
+		case 'vertical':
+		case 'v': {
+			ret.push('icon-flip-vertical');
+			break;
+		}
+		case 'both':
+		case 'b': {
+			ret.push('icon-flip-both');
+			break;
+		}
+	}
+
+	// 优化去重
+	return [...new Set(ret.filter((x) => !!x))].join(' ');
+}
+
+/** 更新文本样式 */
+function getTextClass() {
+	if (!hasText) return;
+
+	const ret = ['text'];
+
+	// 节点类型为纯文字
+	if (nodeType === 'text') {
+		const baseClass = getBaseClass();
+		ret.push(...baseClass);
+	}
+
+	// 存在图标时需要增加间距
+	if (iconName) layout === 'vertical' ? ret.push('mt-1') : ret.push('ms-1');
+
+	// 尺寸，文字大小不存在则使用图标大小
+	fontSize ? ret.push(`text-${fontSize}`) : size && ret.push(`text-${size}`);
+
+	// 优化去重
+	return [...new Set(ret.filter((x) => !!x))].join(' ');
+}
+
+/** 更新其他节点样式 */
+function getNodeClass() {
+	// 节点类型为其他类型
+	if (nodeType !== 'node') return;
+
+	const ret: string[] = [];
+
+	const baseClass = getBaseClass();
+	ret.push(...baseClass);
+
+	// 垂直排序
+	layout === 'vertical' && hasText && iconName && ret.push('is-vertical');
+
+	// 优化去重
+	return [...new Set(ret.filter((x) => !!x))].join(' ');
+}
+
+// #endregion
+////////////////////////////////////////////////////////
+
+const iconClass = getIconClass();
+const textClass = getTextClass();
+const nodeClass = getNodeClass();
+
+/** svg 图标处理 */
+if (isSvg) {
+	// 服务端渲染时直接保留原始SVG字符串
+	iconName = `<svg class="${iconClass}" ${iconName.substring(4)}`;
+}
+---
+
+{
+	/** 纯图标 */
+	nodeType === 'icon' &&
+		(isSvg ? (
+			<Fragment set:html={iconName} class="AAAA" />
+		) : isExternal ? (
+			<ICON name={iconName} class={iconClass} />
+		) : (
+			<i class={iconClass} />
+		))
+}
+{
+	/** 纯文字 */
+	nodeType === 'text' && <span class={textClass}>{text}</span>
+}
+
+{
+	/** 其他节点 */
+	nodeType === 'node' && (
+		<div class={nodeClass}>
+			{
+				/** 图标 */
+				iconName &&
+					(isSvg ? (
+						<Fragment set:html={iconName} />
+					) : isExternal ? (
+						<ICON name={iconName} class={iconClass} />
+					) : (
+						<i class={iconClass} />
+					))
+			}
+			{
+				/** 禁用 */
+				isDisabled && <i class="icon icon-disabled text-danger" />
+			}
+
+			{
+				/** 文字 */
+				hasText && <span class={textClass}>{text}</span>
+			}
+		</div>
+	)
+}
+
+<style lang="less" is:global>
+	.dl-icon {
+		display: inline-flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		line-height: 1;
+		max-width: 100%;
+
+		&.is-vertical {
+			flex-direction: column;
+
+			> span {
+				line-height: 150%;
+				display: block;
+			}
+
+			.icon {
+				padding-bottom: 0;
+
+				&.disabled {
+					display: flex;
+				}
+			}
+		}
+
+		.icon {
+			flex-grow: 0;
+			flex-shrink: 0;
+		}
+
+		&.disabled {
+			// padding: 0.5rem;
+			position: relative;
+			cursor: not-allowed;
+
+			.text {
+				// text-decoration: line-through;
+				opacity: 0.6;
+				filter: grayscale(90%);
+			}
+			.icon {
+				filter: grayscale(80%);
+				// font-size: 80%;
+
+				&.icon-disabled {
+					filter: none;
+					position: absolute;
+					// font-size: 100%;
+					opacity: 0.9;
+				}
+			}
+		}
+
+		/** 图标大小处理 */
+		@base-step: 0.25rem;
+		@max-index: 16;
+
+		.generate-font-size(@index) when (@index > 0) {
+			i&.text-@{index},
+			svg&.text-@{index} {
+				--icon-size: if(@index < 9, @base-step * @index, @base-step * @index * 2 - 2rem);
+
+				width: var(--icon-size) !important;
+				height: var(--icon-size) !important;
+				font-size: var(--icon-size) !important;
+			}
+
+			&.text-@{index},
+			.text-@{index} {
+				--icon-size: if(@index < 9, @base-step * @index, @base-step * @index * 2 - 2rem);
+
+				svg,
+				.icon,
+				i {
+					width: var(--icon-size) !important;
+					height: var(--icon-size) !important;
+					font-size: var(--icon-size) !important;
+				}
+			}
+			.generate-font-size(@index - 1);
+		}
+		.generate-font-size(@max-index);
+	}
+</style>

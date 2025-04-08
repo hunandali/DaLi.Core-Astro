@@ -1,0 +1,287 @@
+---
+/**
+ * 	Progress-List 进度条组
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { type Props as IProgress } from './index.astro';
+import TOOLTIP from '../Tooltip.astro';
+import { ClassClear } from '../../libs';
+import { hasString, isNil } from '@da.li/core-libs';
+
+export interface Props {
+	/** 最大值，不设置则为 100 */
+	max?: number;
+
+	/** 排序 */
+	sort?: 'asc' | 'desc' | undefined;
+
+	/** 显示原值还是百分比(默认百分比) */
+	showPercent?: boolean;
+
+	/** 是否默认全部显示值，除非项目强制指定不显示(默认显示) */
+	showValue?: boolean;
+
+	/** 小数位数 */
+	decimal?: number;
+
+	/** 进度条组 */
+	progress: Omit<IProgress, 'height' | 'thin' | 'indeterminate'>[];
+
+	/**
+	 * 进度条的厚度
+	 * 用于兼容 tabler 样式 h-x
+	 * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 25, 30, 33, 40, 50, 60, 66, 70, 75, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000
+	 */
+	weight?: number;
+
+	/** 进度条堆积方式 */
+	layout?: 'stacked' | 'list' | 'horizontal' | 'vertical';
+
+	/** 进度条组样式 */
+	class?: string;
+}
+
+const {
+	max = 100,
+	showPercent = true,
+	showValue = true,
+	sort,
+	decimal = 1,
+	progress = [],
+	weight = 0,
+	layout = 'stacked',
+	class: className
+} = Astro.props;
+
+// 整条滚动条组最大值
+const maxValue = max < 1 ? 1 : max;
+
+/** 计算百分比 */
+const getPercent = (value: number) => {
+	if (value <= 0) return '0%';
+
+	value = (value / maxValue) * 100;
+	const search = '0'.repeat(decimal);
+	return value.toFixed(decimal).replace(`.${search}`, '') + '%';
+};
+
+/** 高度样式 */
+const heightClass = weight === 0 ? '' : `h-${weight}`;
+
+/** 组样式 */
+let ClassList = [`progress-${layout}`, className];
+if (layout === 'stacked' && weight > 0) ClassList.push(heightClass);
+
+/** 进度条样式 */
+const itemClass = (item: IProgress) =>
+	ClassClear([
+		'progress-bar',
+		item.striped && 'progress-bar-striped',
+		item.animated && 'progress-bar-animated',
+		item.indeterminate && 'progress-bar-indeterminate',
+		item.theme && `bg-${item.theme}${item.themeLigth ? '-lt' : ''}`,
+		heightClass
+	]);
+
+/** 文本样式 */
+const textClass = (item: IProgress) =>
+	ClassClear([
+		'progressbg-text',
+		item.theme && item.theme !== 'light' && !item.themeLigth && `text-white`
+	]);
+
+/** 数据 */
+const data = progress.map((item) => {
+	item = { ...item };
+	item.theme = item.theme || 'primary';
+
+	item.value = Math.max(0, Math.min(maxValue, item.value || 0));
+	const percent = getPercent(item.value);
+
+	// 未设置使用默认值
+	isNil(item.text) && (item.text = showValue);
+	const text =
+		item.text === false
+			? ''
+			: item.text !== true
+				? item.text
+				: showPercent
+					? percent
+					: item.value.toString();
+
+	const title = hasString(item.text) ? item.text : '';
+
+	return { ...item, percent, title, text };
+});
+
+/** 排序 */
+if (sort === 'asc') {
+	data.sort((a, b) => a.value! - b.value!);
+} else if (sort === 'desc') {
+	data.sort((a, b) => b.value! - a.value!);
+}
+
+const hasText = data.some((item) => item.title);
+---
+
+<div class={ClassClear(ClassList)}>
+	<slot>
+		{
+			data.map((item) =>
+				layout === 'stacked' ? (
+					<div
+						class="progress"
+						role="progressbar"
+						aria-valuenow={item.value}
+						aria-valuemin="0"
+						aria-valuemax={maxValue}
+						title={`${item.title}${item.title ? '：' : ''}${item.value} (${item.percent})`}
+						style={`width:${item.percent}`}>
+						<div class={itemClass(item)}>{item.text}</div>
+					</div>
+				) : layout === 'list' ? (
+					<div
+						class="progressbg my-1"
+						title={`${item.title}${item.title ? '：' : ''}${item.value} (${item.percent})`}
+						class:list={[heightClass]}>
+						<div class="progress progressbg-progress">
+							<span class={itemClass(item)} style={`width:${item.percent}`} />
+						</div>
+						{showValue && (
+							<div class={textClass(item)}>
+								{showPercent ? item.percent : item.value}
+							</div>
+						)}
+						<div class="progressbg-value">{item.title}</div>
+					</div>
+				) : (
+					<TOOLTIP
+						class:list={['progress-item', showValue && hasText && 'has-text']}
+						title={`${item.title}${item.title ? '：' : ''}${item.value} (${item.percent})`}
+						placement="bottom"
+						element="div">
+						{showValue && hasText && <div class="progress-text">{item.title}</div>}
+						<div
+							class="progress"
+							class:list={[heightClass]}
+							role="progressbar"
+							aria-valuenow={item.value}
+							aria-valuemin="0"
+							aria-valuemax={maxValue}>
+							<span class={itemClass(item)} style={`width:${item.percent}`}>
+								{showValue && (showPercent ? item.percent : item.value)}
+							</span>
+						</div>
+					</TOOLTIP>
+				)
+			)
+		}
+	</slot>
+</div>
+
+<style is:global>
+	.root,
+	html {
+		--progress-bar-size: 30vh;
+	}
+	.progress-vertical {
+		rotate: 270deg;
+		width: calc(var(--progress-bar-size) / 2);
+		height: var(--progress-bar-size);
+		transform-origin: left center;
+		overflow: visible;
+		margin-left: calc(var(--progress-bar-size) / 2);
+
+		.progress-item {
+			margin-left: calc(var(--progress-bar-size) / 2 - var(--progress-bar-size));
+		}
+
+		.progress-text {
+			rotate: 30deg;
+			white-space: nowrap; /* 保持文字不换行 */
+		}
+	}
+
+	.progress-vertical,
+	.progress-horizontal {
+		.progress-item {
+			display: flex;
+			align-items: center;
+
+			&.has-text {
+				.progress {
+					margin-left: 0.5rem;
+					padding-left: 0.5rem;
+					border-left: 1px solid var(--tblr-border-color);
+					border-radius: 0;
+
+					&:hover {
+						padding-left: 0;
+					}
+				}
+			}
+
+			.progress-text {
+				width: 5rem;
+				max-width: 2rem;
+				word-break: keep-all;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: right;
+				padding-right: 0.5rem;
+				color: var(--tblr-secondary);
+				font-style: italic;
+				font-weight: bold;
+			}
+
+			.progress {
+				background-color: transparent;
+				margin: 0.125rem;
+
+				.progress-bar {
+					border-radius: var(--tblr-progress-border-radius);
+					font-weight: bold;
+
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+					transform-origin: left center;
+				}
+
+				&:hover {
+					cursor: pointer;
+					background-color: var(--tblr-progress-bg);
+					border-radius: var(--tblr-progress-border-radius);
+
+					.progress-bar {
+						transform: scale(1.05);
+						z-index: 10;
+						filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+						border: 2px solid var(--tblr-progress-bg);
+					}
+				}
+			}
+		}
+	}
+
+	.progress-list {
+		.progressbg {
+			padding: auto;
+			align-items: center;
+
+			.progress-bar {
+				border-radius: var(--tblr-progress-border-radius);
+				font-weight: bold;
+			}
+		}
+	}
+</style>

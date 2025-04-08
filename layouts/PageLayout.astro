@@ -1,0 +1,61 @@
+---
+/**
+ * 	PageLayout 基础页面布局
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+export interface Props {
+	// variant?: 'default' | 'horizontal' | 'vertical' | 'condensed';
+
+	// 是否整个页面宽度
+	fluid?: boolean;
+
+	// 自定义类名
+	class?: string;
+}
+
+const { fluid = false, class: className = '' } = Astro.props as Props;
+
+const containerClass = fluid ? 'container-fluid' : 'container-xl';
+---
+
+<div class="page">
+	{
+		Astro.slots.has('header') && (
+			<header class="navbar navbar-expand-md navbar-light d-print-none">
+				<div class={containerClass}>
+					<slot name="header" />
+				</div>
+			</header>
+		)
+	}
+
+	<div class="page-wrapper">
+		<slot name="top" />
+		<div class:list={['page-body', className]}>
+			<div class={containerClass}>
+				<slot />
+			</div>
+		</div>
+		<slot name="bottom" />
+	</div>
+
+	{
+		Astro.slots.has('footer') && (
+			<footer class="footer">
+				<div class={containerClass}>
+					<slot name="footer" />
+				</div>
+			</footer>
+		)
+	}
+</div>

@@ -1,0 +1,81 @@
+---
+/**
+ * 	Empty 空状态组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON, { type IIcon } from './Icon.astro';
+import { ClassClear } from '../libs';
+
+/** 属性，提示图片优先级：image -> icon -> text */
+export interface Props extends Omit<IIcon, 'disabled'> {
+	/** 标题 */
+	title: string;
+
+	/** 副标题 */
+	subtitle?: string;
+
+	/** 自定义图片URL */
+	image?: string;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	title = '暂无数据',
+	subtitle = '没有找到匹配的数据记录',
+	text,
+	icon,
+	image,
+	theme = 'secondary',
+	class: className
+} = Astro.props as Props;
+
+const classList = ClassClear(['empty', className]);
+---
+
+<div class={classList}>
+	{
+		image ? (
+			<div class="empty-img mw-60">
+				<img src={image} alt={title} />
+			</div>
+		) : icon ? (
+			<ICON class="empty-icon" icon={icon} theme={theme} size={10} />
+		) : text ? (
+			<div class={`empty-header text-${theme} fw-bold`}>{text}</div>
+		) : (
+			<ICON class="empty-icon" icon="logo" logo theme={theme} size={10} />
+		)
+	}
+
+	<p class="empty-title">{title}</p>
+	<p class="empty-subtitle text-muted">{subtitle}</p>
+
+	{
+		Astro.slots.has('default') && (
+			<div class="empty-action">
+				<slot />
+			</div>
+		)
+	}
+</div>
+
+<style is:global>
+	.empty {
+		.empty-icon {
+			width: auto;
+			height: auto;
+		}
+	}
+</style>

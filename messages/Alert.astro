@@ -1,0 +1,80 @@
+---
+/**
+ * 	Alert 警报
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from '../components/Icon.astro';
+import { getIcon } from '../icons';
+import { ClassClear, ThemeIcon } from '../libs';
+import type { AlertOptions } from '../types';
+
+interface Props extends AlertOptions {
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	theme: themeName,
+	title,
+	message,
+	icon: iconName,
+	closeable = false,
+	important = false,
+	class: className
+} = Astro.props as Props;
+
+const icon = ThemeIcon(themeName);
+const theme = icon.theme;
+iconName && (icon.icon = getIcon(iconName) || icon.icon);
+icon.text = title;
+icon.bold = true;
+
+// 构建 class 列表
+// `alert-${theme}` 貌似在 1.1.1 版 Tabler 中失效了，后续看调整修改，先手动设置
+const classList = ClassClear([
+	'alert',
+	// theme && `alert-${theme}`,
+	theme && `bg-${theme}-lt`,
+	important && 'alert-important',
+	closeable && 'alert-dismissible',
+	className
+]);
+
+let messageStyle = 'mt-1 text-secondary';
+theme !== 'secondary' && (messageStyle += ' ms-5');
+
+if (theme === 'primary') {
+	icon.size = 6;
+	icon.fontSize = 4;
+}
+---
+
+<div class={classList} role="alert">
+	{
+		closeable && (
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+		)
+	}
+	<div class="d-block">
+		<slot name="title"><ICON {...icon} /></slot>
+		{
+			Astro.slots.has('default') ? (
+				<div class={messageStyle}>
+					<slot />
+				</div>
+			) : (
+				message && <div class={messageStyle}>{message}</div>
+			)
+		}
+	</div>
+</div>

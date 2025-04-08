@@ -1,0 +1,208 @@
+---
+/**
+ * 	Ribbon 丝带组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import RIBBON from '../components/Ribbon.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Ribbon 丝带组件示例">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="基础用法">
+				<div class="row g-2">
+					<div class="col-12">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON icon="heart" theme="danger" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">带有丝带的容器</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="yes" theme="success" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">带有红色丝带的容器</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="不同位置">
+				<div class="row g-2">
+					<div class="col-6">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="左上" position="top-left" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">左上角</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-6">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="右上" position="top-right" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">右上角</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-6">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="左下" position="bottom-left" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">左下角</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-6">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="右下" position="bottom-right" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">右下角</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 my-1">
+			<Card title="不同颜色">
+				<div class="row">
+					<div class="col-md-4 mb-3">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Primary" theme="primary" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">主要色</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 mb-3">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Secondary" theme="secondary" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">次要色</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 mb-3">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Success" theme="success" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">成功色</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Warning" theme="warning" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">警告色</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Danger" theme="danger" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">危险色</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="position-relative"
+							style="height: 100px; background-color: #f5f7fb; border-radius: 4px;">
+							<RIBBON text="Info" theme="info" />
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<p class="text-muted">信息色</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="书签样式">
+				<div
+					class="position-relative mb-4"
+					style="height: 120px; background-color: #f5f7fb; border-radius: 4px;">
+					<RIBBON text="书签" position="right" type="bookmark" theme="primary" />
+					<div class="d-flex align-items-center justify-content-center h-100">
+						<p class="text-muted">右上角书签</p>
+					</div>
+				</div>
+
+				<div
+					class="position-relative"
+					style="height: 120px; background-color: #f5f7fb; border-radius: 4px;">
+					<RIBBON text="书签" position="top-left" type="bookmark" theme="red" />
+					<div class="d-flex align-items-center justify-content-center h-100">
+						<p class="text-muted">左上角书签</p>
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="应用于卡片">
+				<div class="card position-relative">
+					<RIBBON text="热门" theme="danger" />
+					<div class="card-body">
+						<h5 class="card-title">产品标题</h5>
+						<p class="card-text">这是一个带有丝带的卡片示例。</p>
+					</div>
+				</div>
+				<div class="card position-relative mt-4">
+					<RIBBON size={6} type="bookmark" icon="logo" logo theme="info-lt" />
+					<div class="card-body">
+						<h5 class="card-title">产品标题</h5>
+						<p class="card-text">这是一个带有书签丝带的卡片示例。</p>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>

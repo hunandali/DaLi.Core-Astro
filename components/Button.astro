@@ -1,0 +1,74 @@
+---
+/**
+ * 	Button 按钮
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON, { type IIcon } from './Icon.astro';
+import { ClassClear } from '../libs';
+
+export interface Props extends IIcon {
+	/** 按钮类型 */
+	type?: 'button' | 'submit' | 'reset';
+
+	/** 按钮变体 */
+	variant?: 'default' | 'outline' | 'ghost';
+
+	/** 形状 */
+	shape?: 'default' | 'square' | 'pill';
+
+	/** 大小 */
+	size?: 'sm' | 'md' | 'lg';
+
+	/** 是否加载中 */
+	loading?: boolean;
+
+	/** 自定义样式 */
+	class?: string;
+}
+
+const {
+	icon = '',
+	logo = false,
+	text = '',
+	theme,
+	size = 0,
+	disabled = false,
+	rotate,
+	type,
+	variant = 'default',
+	shape = 'default',
+	loading = false,
+	class: className,
+	...props
+} = Astro.props;
+
+const variantClass = variant !== 'default' ? `btn-${variant}` : 'btn';
+const themeClass = theme ? `${variantClass}-${theme}` : variantClass;
+
+const classList = ClassClear([
+	'btn',
+	themeClass,
+	size && `btn-${size}`,
+	loading && 'btn-loading',
+	disabled && 'btn-disabled',
+	shape === 'square' && 'btn-square',
+	shape === 'pill' && 'btn-pill',
+	className
+]);
+---
+
+<button class:list={classList} type={type} disabled={disabled || loading} role="button" {...props}>
+	<slot>
+		{icon ? <ICON icon={icon} text={text} logo={logo} rotate={rotate} /> : text}
+	</slot>
+</button>

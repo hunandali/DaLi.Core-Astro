@@ -1,0 +1,70 @@
+---
+/**
+ * 	Status 状态指示器组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 状态类型，点、点动画、状态指示 */
+	type?: 'dot' | 'animated' | 'indicator' | 'none';
+
+	/** 状态文本 */
+	text?: string;
+
+	/** 状态颜色 */
+	theme?: IColorFull;
+
+	/** 精简 */
+	lite?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { type = 'dot', text, theme, lite = false, class: className } = Astro.props as Props;
+
+// 构建类名
+const classList = ClassClear([
+	'status',
+	lite && `status-lite`,
+	theme && `status-${theme}`,
+	className
+]);
+
+const classStatus =
+	type === 'dot'
+		? 'status-dot'
+		: type === 'animated'
+			? 'status-dot status-dot-animated'
+			: 'status-indicator status-indicator-animated';
+const classStatusTheme = ClassClear([classStatus, theme && `status-${theme}`, className]);
+---
+
+{
+	text || Astro.slots.has('default') ? (
+		<span class={classList}>
+			{type !== 'none' && <span class={classStatus} />}
+			<slot>{text}</slot>
+		</span>
+	) : type === 'indicator' ? (
+		<div class={classStatusTheme}>
+			<span class="status-indicator-circle" />
+			<span class="status-indicator-circle" />
+			<span class="status-indicator-circle" />
+		</div>
+	) : (
+		<span class={classStatusTheme} />
+	)
+}

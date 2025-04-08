@@ -1,0 +1,166 @@
+---
+/**
+ * 	CountUp 计数器组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { ITheme } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 起始值 */
+	start?: number;
+
+	/** 是否监控滚动条，未显示区域不显示动画 */
+	scroll?: boolean;
+
+	/** 结束值 */
+	data: number;
+
+	/** 持续时间（秒） */
+	duration?: number;
+
+	/** 小数位数 */
+	decimalPlaces?: number;
+
+	/** 缓动 */
+	easing?: boolean;
+
+	/** 分隔符 */
+	separator?: string;
+
+	/** 小数点分隔符 */
+	decimal?: string;
+
+	/** 前缀 */
+	prefix?: string;
+
+	/** 后缀 */
+	suffix?: string;
+
+	/** 主题颜色 */
+	theme?: ITheme;
+
+	/** 自定义节点，如：h1, h2 ... */
+	element?: string;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	start = 0,
+	data,
+	duration = 2,
+	decimalPlaces = 0,
+	scroll = false,
+	easing = true,
+	separator = '',
+	decimal = '',
+	prefix = '',
+	suffix = '',
+	theme,
+	element: Element = 'div',
+	class: className
+} = Astro.props as Props;
+
+const classList = ClassClear([theme && `text-${theme}`, className]);
+
+const props = JSON.stringify({
+	start,
+	data,
+	duration,
+	decimalPlaces,
+	easing,
+	separator,
+	decimal,
+	prefix,
+	suffix,
+	scroll
+});
+---
+
+<Element class:list={classList} data-countup={props}>{data}</Element>
+
+<script>
+	import { CountUp, type CountUpOptions } from 'countup.js/src/countUp';
+	import type { Props } from './Countup.astro';
+	import { toJSON } from '@da.li/core-libs';
+	import { EVENTS } from '../config';
+
+	const elements = document.querySelectorAll('[data-countup]');
+
+	if (elements.length) {
+		elements.forEach((element) => {
+			const value = Number(element.textContent);
+			if (isNaN(value)) return;
+
+			const opts = (toJSON(element.getAttribute('data-countup')) || {}) as Props;
+			const options: CountUpOptions = {
+				// 起始值
+				startVal: opts.start || 0,
+
+				// 小数点位置
+				decimalPlaces: opts.decimalPlaces || undefined,
+
+				// 动画时长（秒）
+				duration: opts.duration || undefined,
+
+				// 是否显示千位分隔符
+				useGrouping: !!opts.separator,
+
+				// 使用印度数字格式 100,000 => 1,00,000
+				useIndianSeparators: false,
+
+				// 启用缓动动画
+				useEasing: opts.easing !== false,
+
+				// 大数缓动值优化
+				// smartEasingThreshold: 999,
+				// smartEasingAmount: 333
+
+				// 千位分隔符（默认,）
+				separator: opts.separator || ',',
+
+				// 小数点符号（默认.）
+				decimal: opts.decimal || '.',
+
+				// 前缀（如 ¥、$）
+				prefix: opts.prefix || '',
+
+				// 后缀（如 %、°C）
+				suffix: opts.suffix || '',
+
+				// 数字替换
+				// numerals: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+				// 启用滚动监听
+				enableScrollSpy: opts.scroll !== false,
+
+				// 滚动触发延迟（毫秒）
+				scrollSpyDelay: 0,
+
+				// 滚动触发仅一次
+				scrollSpyOnce: true,
+
+				// 动画完成回调函数
+				onCompleteCallback: () => $emit(EVENTS.COUNTUP.COMPLETE, element, value, options),
+
+				// 动画开始回调函数
+				onStartCallback: () => $emit(EVENTS.COUNTUP.START, element, value, options)
+			};
+
+			const countUp = new CountUp(element as HTMLElement, value, options);
+			if (!countUp.error) countUp.start();
+		});
+	}
+</script>

@@ -1,0 +1,55 @@
+/**
+ *  components - 组件样式
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+/** 警告区域框 */
+.alert-container {
+	position: absolute;
+	z-index: var(--tblr-toast-zindex);
+	width: 100%;
+	max-width: 100%;
+
+	// @media screen and (min-width: 768px) {
+	// 	max-width: 768px;
+	// }
+}
+
+/** 加载框 */
+.dl-loading {
+	position: absolute;
+	z-index: 999999999;
+	margin: 0;
+	padding: 0;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 25%);
+	user-select: none;
+	opacity: 0;
+	transition: opacity 0.2s ease-out;
+
+	&.is-loading {
+		opacity: 1;
+	}
+
+	svg {
+		width: auto;
+		height: auto;
+	}
+}

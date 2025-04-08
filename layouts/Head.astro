@@ -1,0 +1,62 @@
+---
+/**
+ *	Head 页面代码头部配置
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+export interface Props {
+	title: string;
+	description?: string;
+	keywords?: string | string[];
+	image?: string;
+	author?: string;
+	time?: string;
+}
+
+import { title as siteName, homepage } from '../../package.json';
+
+const { title, description, keywords, image, author, time = '' } = Astro.props;
+
+const site = siteName;
+const domain = Astro.site || homepage;
+const url = domain ? new URL(Astro.url.pathname, domain).href : Astro.url.href;
+const words = Array.isArray(keywords) ? keywords.join(',') : keywords;
+---
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="configer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+{words && <meta name="keywords" content={words} />}
+
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:site_name" content={site} />
+<meta property="og:url" content={url} />
+<meta property="og:type" content="website" />
+{
+	image && <meta property="og:image" content={image} /> && (
+		<meta property="og:image:alt" content={title} />
+	)
+}
+
+<!-- Article Meta Tags -->
+{time && <meta property="article:published_time" content={time} />}
+{author && <meta property="article:author" content={author} />}
+
+<meta http-equiv="mobile-agent" content={`format=html5; url=${url}`} />
+
+<slot />

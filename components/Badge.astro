@@ -1,0 +1,69 @@
+---
+/**
+ * 	Badge 徽章
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 文本 */
+	text?: string;
+
+	/** 主题 */
+	theme?: IColorFull;
+
+	/** 是否为空心 */
+	outline?: boolean;
+
+	/** 是否为胶囊 */
+	pill?: boolean;
+
+	/** 是否为浅色 */
+	light?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	text,
+	theme = 'primary',
+	outline = false,
+	pill = false,
+	light = false,
+	class: className
+} = Astro.props as Props;
+
+let color = `bg-${theme}`;
+light && (color += '-lt');
+outline && (color = `text-${theme}`);
+
+const classList = ClassClear([
+	'badge',
+	color,
+	outline && 'badge-outline',
+	pill && 'badge-pill',
+	className
+]);
+---
+
+<span class={classList}>
+	<slot>{text}</slot>
+</span>
+
+<style is:global>
+	.badge {
+		color: var(--tblr-light);
+	}
+</style>

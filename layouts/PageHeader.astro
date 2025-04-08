@@ -1,0 +1,63 @@
+---
+/**
+ * 	PageHeader 页眉
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+export interface Props {
+	/** 标题 */
+	title: string;
+
+	/** 标题描述 */
+	pretitle?: string;
+
+	/** 副标题 */
+	subtitle?: string;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { title, pretitle, subtitle, class: className } = Astro.props as Props;
+---
+
+<div class:list={['page-header', className]}>
+	<div class="row align-items-center">
+		{
+			Astro.slots.has('icon') && (
+				<div class="col-auto">
+					<slot name="icon" />
+				</div>
+			)
+		}
+
+		<div class="col">
+			{pretitle && <div class="page-pretitle">{pretitle}</div>}
+			<h2 class="page-title">{title}</h2>
+			{subtitle && <div class="page-subtitle">{subtitle}</div>}
+			{
+				Astro.slots.has('subtitle') && (
+					<div class="page-subtitle">
+						<slot name="subtitle" />
+					</div>
+				)
+			}
+		</div>
+		{
+			Astro.slots.has('default') && (
+				<div class="col-auto ms-auto">
+					<slot name="default" />
+				</div>
+			)
+		}
+	</div>
+</div>

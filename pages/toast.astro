@@ -1,0 +1,22 @@
+---
+import LAYOUT from '../layouts/Demo.astro';
+import TOAST from '../messages/Toast.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Toast 信息通知">
+	<TOAST title="默认 Toast" message="没设置任何属性的 Toast" />
+	<div class="mt-4"></div>
+	<TOAST title="警告" message="注意不要乱设置！" theme="danger" />
+</LAYOUT>
+<script>
+	import type { ITheme } from '../types';
+	import { showToast } from '../libs/index.client';
+
+	const themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
+	themes.forEach((theme, index) => {
+		const duration = 3000 * index + 30000;
+		const message = `第 ${index + 1} 个 Toast，使用了 ${theme} 样式，本次 Toast 会在启动 ${duration / 1000} 秒后消失`;
+		const title = `样式：${theme}`;
+		showToast(message, title, theme, duration);
+	});
+</script>

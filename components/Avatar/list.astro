@@ -1,0 +1,36 @@
+---
+/**
+ * 	AvatarList 头像列表
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Avatar, { type Props as IAvatar } from './index.astro';
+import { ClassClear } from '../../libs';
+
+export interface Props extends Omit<IAvatar, 'src'> {
+	/** 头像地址 */
+	srcs?: string[];
+
+	/** 是否堆叠 */
+	stacked?: boolean;
+}
+
+const { srcs, stacked = false, class: className, ...props } = Astro.props as Props;
+
+const classList = ClassClear(['avatar-list', stacked && 'avatar-list-stacked', className]);
+---
+
+<span class={classList}>
+	<slot>
+		{srcs?.map((src) => <Avatar src={src} {...props} />)}
+	</slot>
+</span>

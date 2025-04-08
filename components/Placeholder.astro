@@ -1,0 +1,57 @@
+---
+/**
+ * 	Placeholder 占位符组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 占位符宽度(1-12) */
+	col?: number;
+
+	/** 占位符大小 */
+	size?: 'xs' | 'sm' | 'md' | 'lg';
+
+	/** 是否显示动画效果 */
+	animation?: 'glow' | 'wave' | undefined;
+
+	/** 颜色主题 */
+	theme?: IColorFull;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { col = 12, size, animation, theme, class: className = '', ...props } = Astro.props;
+
+// 构建类名
+const classes = ClassClear([
+	'placeholder',
+	animation && `placeholder-${animation}`,
+	size && `placeholder-${size}`,
+	theme && `bg-${theme}`,
+	col && `col-${col}`,
+	className
+]);
+---
+
+{
+	animation ? (
+		<p class={`placeholder-${animation}`}>
+			<span class={classes} {...props} />
+		</p>
+	) : (
+		<span class={classes} {...props} />
+	)
+}

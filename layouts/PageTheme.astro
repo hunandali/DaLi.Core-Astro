@@ -1,0 +1,71 @@
+---
+/**
+ * 	PageTheme - 页面主题设置
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Switch from '../components/Switch.astro';
+
+// 从 cookie 中获取主题设置
+const isDark = Astro.cookies.get('theme')?.value === 'dark';
+---
+
+<Switch checked={isDark} label="深色模式" name="theme" />
+
+<script>
+	import { Cookies } from '@da.li/core-libs';
+
+	/** 切换主题 */
+	function toggleTheme() {
+		const themeSwitch = document.querySelector('input[name="theme"]') as HTMLInputElement;
+		if (!themeSwitch) return;
+
+		// 从 Cookie 中获取主题设置
+		const darkTheme = Cookies.get('theme') === 'dark';
+
+		// 切换主题
+		themeSwitch.checked = darkTheme;
+		setTheme(darkTheme, false);
+
+		themeSwitch.addEventListener('change', () => {
+			const isDark = themeSwitch.checked;
+			setTheme(isDark, true);
+
+			// 保存主题设置到 Cookie
+			const expires = new Date();
+			expires.setFullYear(expires.getFullYear() + 1);
+			document.cookie = `theme=${isDark ? 'dark' : 'light'}; expires=${expires.toUTCString()}; path=/`;
+		});
+	}
+
+	/**
+	 * 设置主题
+	 * @param isDark 是否为深色主题
+	 * @param saveCookie 是否保存到 Cookie
+	 */
+	function setTheme(isDark: boolean, saveCookie: boolean) {
+		if (isDark) {
+			document.documentElement.setAttribute('data-bs-theme', 'dark');
+		} else {
+			document.documentElement.removeAttribute('data-bs-theme');
+		}
+
+		// 保存主题设置到Cookie
+		saveCookie &&
+			Cookies.set('theme', isDark ? 'dark' : 'light', {
+				path: '/',
+				expire: 0
+			});
+	}
+
+	toggleTheme();
+</script>

@@ -1,0 +1,167 @@
+---
+/**
+ * 	Status 状态指示器组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import STATUS from '../components/Status.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Status 状态指示器组件示例">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="基础用法">
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">默认</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS text="在线" />
+						<STATUS text="离线" theme="danger" />
+						<STATUS text="空闲" theme="warning" />
+					</div>
+				</div>
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">无点状态</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS type="none" text="在线" />
+						<STATUS type="none" text="离线" theme="danger" />
+						<STATUS type="none" text="空闲" theme="warning" />
+					</div>
+				</div>
+				<div>
+					<h6 class="text-muted mb-3">点动画</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS type="dot" text="在线" />
+						<STATUS type="dot" text="离线" theme="danger" />
+						<STATUS type="dot" text="空闲" theme="warning" />
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="精简状态">
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">默认</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS lite text="在线" />
+						<STATUS lite text="离线" theme="danger" />
+						<STATUS lite text="空闲" theme="warning" />
+					</div>
+				</div>
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">无点状态</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS lite type="none" text="在线" />
+						<STATUS lite type="none" text="离线" theme="danger" />
+						<STATUS lite type="none" text="空闲" theme="warning" />
+					</div>
+				</div>
+				<div>
+					<h6 class="text-muted mb-3">点动画</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS lite type="dot" text="在线" />
+						<STATUS lite type="dot" text="离线" theme="danger" />
+						<STATUS lite type="dot" text="空闲" theme="warning" />
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="无文本状态">
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">默认</h6>
+					<div class="d-flex flex-wrap gap-2">
+						<STATUS type="dot" />
+						<STATUS type="dot" theme="danger" />
+						<STATUS type="dot" theme="warning" />
+					</div>
+				</div>
+				<div class="mb-4">
+					<h6 class="text-muted mb-3">点动画</h6>
+					<div class="d-flex flex-wrap gap-4">
+						<STATUS type="animated" />
+						<STATUS type="animated" theme="danger" />
+						<STATUS type="animated" theme="warning" />
+					</div>
+				</div>
+				<div>
+					<h6 class="text-muted mb-3">状态指示器</h6>
+					<div class="d-flex flex-wrap gap-4">
+						<STATUS type="indicator" theme="dark" />
+						<STATUS type="indicator" theme="danger" />
+						<STATUS type="indicator" theme="warning" />
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="应用场景示例">
+				<h6 class="text-muted mb-3">用户状态列表</h6>
+				<ul>
+					<li class="line-bottom d-flex justify-content-between align-items-center">
+						张三
+						<STATUS text="离线" />
+					</li>
+					<li class="line-bottom d-flex justify-content-between align-items-center">
+						李四
+						<STATUS text="工作" theme="danger" />
+					</li>
+					<li class="line-bottom d-flex justify-content-between align-items-center">
+						王五
+						<STATUS text="离开" theme="warning" />
+					</li>
+					<li class="d-flex justify-content-between align-items-center">
+						赵六
+						<STATUS type="animated" text="在线" theme="success" />
+					</li>
+				</ul>
+			</Card>
+		</div>
+
+		<div class="col-md-12 mt-4">
+			<Card title="不同颜色">
+				<div class="row">
+					<div class="col-md-6">
+						<h6 class="text-muted mb-3">主题颜色</h6>
+						<div class="d-flex flex-wrap gap-3 mb-3">
+							<STATUS type="dot" text="primary" theme="primary" />
+							<STATUS type="dot" text="secondary" theme="secondary" />
+							<STATUS type="dot" text="success" theme="success" />
+						</div>
+						<div class="d-flex flex-wrap gap-3">
+							<STATUS type="dot" text="warning" theme="warning" />
+							<STATUS type="dot" text="danger" theme="danger" />
+							<STATUS type="dot" text="info" theme="info" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<h6 class="text-muted mb-3">扩展颜色</h6>
+						<div class="d-flex flex-wrap gap-3 mb-3">
+							<STATUS type="dot" text="blue" theme="blue" />
+							<STATUS type="dot" text="azure" theme="azure" />
+							<STATUS type="dot" text="indigo" theme="indigo" />
+						</div>
+						<div class="d-flex flex-wrap gap-3">
+							<STATUS type="dot" text="purple" theme="purple" />
+							<STATUS type="dot" text="pink" theme="pink" />
+							<STATUS type="dot" text="red" theme="red" />
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>

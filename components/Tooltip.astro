@@ -1,0 +1,54 @@
+---
+/**
+ * 	Tooltip 提示框组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+export interface Props {
+	/** 提示内容 */
+	title: string;
+
+	/** 提示位置 */
+	placement?: 'top' | 'right' | 'bottom' | 'left';
+
+	/** 是否启用HTML内容 */
+	htmlTip?: boolean;
+
+	/** 自定义节点 */
+	element?: string;
+}
+
+const {
+	title,
+	placement = 'top',
+	element: Element = 'div',
+	htmlTip = false,
+	...props
+} = Astro.props as Props;
+
+// 构建属性
+const attributes = {
+	...props,
+	'data-bs-toggle': 'tooltip',
+	'data-bs-placement': placement,
+	'data-bs-html': htmlTip ? 'true' : 'false',
+	title
+};
+---
+
+<Element {...attributes}>
+	<slot />
+</Element>
+
+<script>
+	import '@tabler/core/js/src/tooltip.js';
+</script>

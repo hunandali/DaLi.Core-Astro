@@ -1,0 +1,73 @@
+---
+/**
+ * 	Card 卡片
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { ITheme } from '../types';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 标题 */
+	title?: string;
+
+	/** 卡片填充 */
+	padding?: 'sm' | 'md' | 'lg';
+
+	/** 卡片堆叠 */
+	stacked?: boolean;
+
+	/** 状态颜色 */
+	statusTheme?: ITheme;
+
+	/** 状态位置 */
+	statusPosition?: 'top' | 'start' | 'bottom';
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	title,
+	stacked,
+	padding,
+	statusTheme,
+	statusPosition = 'top',
+	class: className
+} = Astro.props as Props;
+
+const classList = ClassClear([
+	'card',
+	padding && `card-${padding}`,
+	stacked && 'card-stacked',
+	className
+]);
+
+const hasTitle = title || Astro.slots.has('title');
+---
+
+<div class={classList}>
+	{statusTheme && <div class:list={[`card-status-${statusPosition}`, `bg-${statusTheme}`]} />}
+
+	<slot name="header" />
+	<div class="card-body">
+		{
+			hasTitle && (
+				<div class="card-title">
+					<slot name="title">{title}</slot>
+				</div>
+			)
+		}
+		<slot />
+	</div>
+	<slot name="footer" />
+</div>

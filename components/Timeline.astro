@@ -1,0 +1,107 @@
+---
+/**
+ * 	Timeline 时间线组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from './Icon.astro';
+import type { ITheme } from '../types';
+import { dateFormat } from '@da.li/core-libs';
+import { ClassClear } from '../libs';
+
+export interface TimelineItem {
+	/** 标题 */
+	title: string;
+
+	/** 描述 */
+	description?: string;
+
+	/** 时间 */
+	time?: string;
+
+	/** 图标 */
+	icon?: string;
+
+	/** 颜色 */
+	theme?: ITheme;
+
+	/** 是否为当前项 */
+	active?: boolean;
+}
+
+export interface Props {
+	/** 时间线项目列表 */
+	items?: TimelineItem[];
+
+	/** 是否为简单模式 */
+	simple?: boolean;
+
+	/** 时间格式化 */
+	timeFormat?: string | boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { items = [], simple = false, timeFormat = false, class: className } = Astro.props as Props;
+
+// 构建类名
+const classList = ClassClear(['timeline', simple && 'timeline-simple', className]);
+
+// 格式化时间
+const format = (time: string) => {
+	if (timeFormat === false) {
+		return time;
+	}
+
+	const str = timeFormat === true ? dateFormat(time, 'desc') : dateFormat(time, timeFormat);
+
+	return str === '✖' ? time : str;
+};
+
+const data = items?.map((item) => {
+	return {
+		...item,
+		time: format(item.time || '')
+	};
+});
+---
+
+<ul class={classList}>
+	<slot>
+		{
+			data?.map((item) => (
+				<li class="timeline-event">
+					{item.icon ? (
+						<ICON
+							class="timeline-event-icon"
+							class:list={[item.theme && `text-bg-${item.theme}`]}
+							icon={item.icon}
+						/>
+					) : (
+						<div
+							class="timeline-event-icon"
+							class:list={[item.theme && `text-bg-${item.theme}`]}
+						/>
+					)}
+					<div class="card timeline-event-card">
+						<div class="card-body" class:list={[item.theme && `bg-${item.theme}-lt`]}>
+							<div class="text-secondary float-end">{item.time}</div>
+							<h4>{item.title}</h4>
+							<p class="text-secondary">{item.description}</p>
+						</div>
+					</div>
+				</li>
+			))
+		}
+	</slot>
+</ul>

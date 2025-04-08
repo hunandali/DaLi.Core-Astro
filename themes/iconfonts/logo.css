@@ -1,0 +1,127 @@
+/*
+' ------------------------------------------------------------
+'
+' 	Copyright © 2022 湖南大沥网络科技有限公司.
+'
+' 	  author:	木炭(WOODCOAL)
+' 	   email:	i@woodcoal.cn
+' 	homepage:	http://www.hunandali.com/
+'
+' ------------------------------------------------------------
+'
+' 	LOGO
+'
+' 	name: theme.iconfont.logo
+' 	create: 2024-03-21
+' 	memo: LOGO
+' 	
+' ------------------------------------------------------------
+*/
+
+@font-face {
+	font-family: 'dali_logo';
+	src: url('./logo.woff2') format('woff2');
+	font-display: swap;
+}
+
+.logo,
+[class^='logo-'],
+[class*=' logo-'] {
+	font-family: 'dali_logo' !important;
+	font-style: normal;
+	text-decoration: none;
+	text-align: center;
+
+	font-weight: normal !important;
+	-webkit-text-stroke: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.logo-si:before {
+	content: '\53f8';
+}
+
+.logo-gong:before {
+	content: '\516c';
+}
+
+.logo-xian:before {
+	content: '\9650';
+}
+
+.logo-you:before {
+	content: '\6709';
+}
+
+.logo-ji:before {
+	content: '\6280';
+}
+
+.logo-ke:before {
+	content: '\79d1';
+}
+
+.logo-luo:before {
+	content: '\7edc';
+}
+
+.logo-wang:before {
+	content: '\7f51';
+}
+
+.logo-li:before {
+	content: '\6ca5';
+}
+
+.logo-da:before {
+	content: '\5927';
+}
+
+.logo-nan:before {
+	content: '\5357';
+}
+
+.logo-hu:before {
+	content: '\6e56';
+}
+
+.logo-tan:before {
+	content: '\70ad';
+}
+
+.logo-w:before {
+	content: '\57';
+}
+
+.logo-c:before {
+	content: '\43';
+}
+
+.logo-v:before {
+	content: '\56';
+}
+
+.logo-l:before {
+	content: '\4c';
+}
+
+.logo-d:before {
+	content: '\44';
+}
+
+.logo-text:before {
+	content: '\2e';
+}
+
+.logo-all:before {
+	content: '\2d';
+}
+
+.logo-company:before {
+	content: '\ae';
+}
+
+.logo-logo:before {
+	content: '\a9';
+}

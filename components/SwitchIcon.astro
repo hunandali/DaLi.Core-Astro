@@ -1,0 +1,82 @@
+---
+/**
+ * 	SwitchIcon 图标开关组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../types';
+import ICON, { type Props as IIcon } from './Icon.astro';
+import { ClassClear } from '../libs';
+
+export interface Props extends Omit<IIcon, 'icon' | 'text' | 'theme'> {
+	/** 开启状态图标 */
+	iconOn: string;
+
+	/** 关闭状态图标 */
+	iconOff?: string;
+
+	/** 开启状态图标 */
+	textOn?: string;
+
+	/** 关闭状态图标 */
+	textOff?: string;
+
+	/** 类型 */
+	themeOn?: IColorFull | string | undefined;
+
+	/** 类型 */
+	themeOff?: IColorFull | string | undefined;
+
+	/** 是否处于开启状态 */
+	checked?: boolean;
+
+	/** 是否禁用 */
+	disabled?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	iconOn,
+	iconOff,
+	textOn,
+	textOff,
+	themeOn = 'primary',
+	themeOff = 'secondary',
+	checked = false,
+	disabled = false,
+	class: className,
+	...props
+} = Astro.props as Props;
+
+// 构建类名
+const classList = ClassClear(['switch-icon', 'switch-icon-fade', checked && 'active', className]);
+
+const iconA = {
+	...props,
+	icon: iconOff || iconOn,
+	disabled: !iconOff,
+	text: textOff,
+	theme: themeOff
+};
+const iconB = { ...props, icon: iconOn, text: textOn, theme: themeOn };
+---
+
+<button class={classList} data-bs-toggle="switch-icon">
+	<span class="switch-icon-a text-secondary">
+		<ICON {...iconA} />
+	</span>
+	<span class="switch-icon-b text-primary">
+		<ICON {...iconB} />
+	</span>
+</button>

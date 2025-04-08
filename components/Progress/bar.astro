@@ -1,0 +1,62 @@
+---
+/**
+ * 	Progress-Bar 简单条形图
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { IColorFull } from '../../types';
+import PROGRESSLIST, { type Props as IProgressList } from './list.astro';
+
+export interface Props extends Omit<IProgressList, 'progress' | 'layout'> {
+	/** 布局 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 进度条组 */
+	progress: number[];
+
+	/** 主题 */
+	theme?: IColorFull;
+
+	/** 浅色主题 */
+	themeLight?: boolean;
+}
+
+const { progress, theme, themeLight, ...props } = Astro.props;
+
+let index = 0;
+const getTheme = () => {
+	if (theme) return theme;
+	if (index >= 13) index = 0;
+	return [
+		'primary',
+		'success',
+		'warning',
+		'danger',
+		'info',
+		'indigo',
+		'purple',
+		'pink',
+		'yellow',
+		'lime',
+		'teal',
+		'secondary',
+		'cyan'
+	][index++] as IColorFull;
+};
+
+/** 数据 */
+const data = progress.map((item) => {
+	return { theme: getTheme(), themeLight, value: item };
+});
+---
+
+<PROGRESSLIST {...props} progress={data} />

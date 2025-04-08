@@ -1,0 +1,63 @@
+---
+/**
+ * 	Ribbon 丝带组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON, { type Props as IIcon } from './Icon.astro';
+import { ClassClear } from '../libs';
+
+export interface Props extends Omit<IIcon, 'type'> {
+	/** 丝带位置 */
+	position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right';
+
+	/** 丝带类型 */
+	type?: 'bookmark' | 'corner';
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { position, type = 'corner', theme, class: className, ...props } = Astro.props as Props;
+
+const pos = position?.toString() || '';
+
+// 构建类名
+const classList = ClassClear([
+	'ribbon',
+
+	pos.indexOf('top') !== -1 && 'ribbon-top',
+	pos.indexOf('bottom') !== -1 && 'ribbon-bottom',
+	pos.indexOf('left') !== -1 && 'ribbon-start',
+	pos.indexOf('right') !== -1 && 'ribbon-end',
+
+	type === 'bookmark' && 'ribbon-bookmark',
+	theme && `bg-${theme}`,
+	className
+]);
+---
+
+<div class={classList}>
+	<slot><ICON {...props} /></slot>
+</div>
+
+<style lang="less" is:global>
+	@themes: primary, secondary, success, warning, danger, info;
+	each(@themes, {
+    .ribbon.bg-@{value} {
+        border-color: ~"var(--tblr-@{value})" !important;
+    }
+    .ribbon.bg-@{value}-lt {
+        border-color: ~"var(--tblr-@{value}-lt)" !important;
+    }
+});
+</style>

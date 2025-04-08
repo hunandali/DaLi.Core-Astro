@@ -1,0 +1,60 @@
+---
+/**
+ * 	Breadcrumb 面包屑
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from './Icon.astro';
+import { ClassClear } from '../libs';
+
+interface BreadcrumbItem {
+	text: string;
+	href?: string;
+	icon?: string;
+}
+
+export interface Props {
+	items: BreadcrumbItem[];
+	separator?: 'slash' | 'dot' | 'arrow' | 'bullet';
+	class?: string;
+}
+
+const { items, separator = 'slash', class: className } = Astro.props as Props;
+
+const separatorClasses = separator != 'slash' ? `breadcrumb-${separator}s` : '';
+
+const classList = ClassClear(['breadcrumb', separatorClasses, className]);
+---
+
+<ol class={classList}>
+	{
+		items.map((item, index) => (
+			<li class={`breadcrumb-item${index === items.length - 1 ? ' active' : ''}`}>
+				<a href={item.href}>
+					<ICON icon={item.icon} text={item.text} />
+				</a>
+
+				{/* {index === items.length - 1 ? (
+					<>
+						{item.icon && <ICON icon={item.icon} />}
+						{item.text}
+					</>
+				) : (
+					<a href={item.href}>
+						{item.icon && <i class={`${item.icon} me-2`} />}
+						{item.text}
+					</a>
+				)} */}
+			</li>
+		))
+	}
+</ol>

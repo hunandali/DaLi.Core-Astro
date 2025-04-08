@@ -1,0 +1,251 @@
+---
+/**
+ * 	Progress 进度条组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import PROGRESS from '../components/Progress/index.astro';
+import PROGRESSLIST from '../components/Progress/list.astro';
+import PROGRESSBAR from '../components/Progress/bar.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Progress 进度条组件示例">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="基础用法">
+				<div class="mb-3">
+					<PROGRESS value={25} />
+				</div>
+				<div class="mb-3">
+					<PROGRESS value={50} />
+				</div>
+				<div class="mb-3">
+					<PROGRESS value={75} />
+				</div>
+				<div>
+					<PROGRESS value={100} />
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="显示进度文本">
+				<div class="mb-3">
+					<PROGRESS value={25} text />
+				</div>
+				<div class="mb-3">
+					<PROGRESS value={50} text />
+				</div>
+				<div class="mb-3">
+					<PROGRESS value={75} text />
+				</div>
+				<div>
+					<PROGRESS value={100} text />
+				</div>
+			</Card>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 my-1">
+			<Card title="不同颜色">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3">
+							<PROGRESS value={40} theme="primary" text />
+						</div>
+						<div class="mb-3">
+							<PROGRESS value={40} theme="secondary" text />
+						</div>
+						<div class="mb-3">
+							<PROGRESS value={40} theme="success" text />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+							<PROGRESS value={40} theme="warning" text />
+						</div>
+						<div class="mb-3">
+							<PROGRESS value={40} theme="danger" text />
+						</div>
+						<div class="mb-3">
+							<PROGRESS value={40} theme="info" text />
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="不同尺寸">
+				<div class="mb-3">
+					<h6 class="text-muted mb-2">薄</h6>
+					<PROGRESS value={60} thin />
+				</div>
+				<div class="mb-3">
+					<h6 class="text-muted mb-2">默认</h6>
+					<PROGRESS value={60} />
+				</div>
+				<div>
+					<h6 class="text-muted mb-2">自定义(weight=3)</h6>
+					<PROGRESS value={60} />
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="条纹和动画效果">
+				<div class="mb-3">
+					<h6 class="text-muted mb-2">条纹效果</h6>
+					<PROGRESS value={60} striped />
+				</div>
+				<div class="mb-3">
+					<h6 class="text-muted mb-2">动画效果</h6>
+					<PROGRESS value={60} striped animated />
+				</div>
+				<div>
+					<h6 class="text-muted mb-2">不确定状态（加载中）</h6>
+					<PROGRESS indeterminate />
+				</div>
+			</Card>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 my-1">
+			<Card title="不同堆积方式">
+				<h6 class="text-muted mb-2">横向堆积</h6>
+				<PROGRESSLIST
+					weight={4}
+					max={200}
+					showPercent={false}
+					showValue={false}
+					progress={[
+						{ value: 20, theme: 'primary', text: true },
+						{ value: 30, theme: 'success', striped: true },
+						{ value: 36, theme: 'warning', striped: true, animated: true, text: true },
+						{ value: 56, theme: 'success' },
+						{ value: 20, theme: 'danger' },
+						{ value: 20.63, theme: 'primary', text: true }
+					]}
+				/>
+				<h6 class="text-muted mt-4">垂直列表</h6>
+				<PROGRESSLIST
+					class="mt-4"
+					layout="list"
+					max={150}
+					showPercent={true}
+					showValue={true}
+					progress={[
+						{ value: 20, theme: 'primary', text: 'No.1' },
+						{ value: 30, theme: 'success', striped: true, themeLigth: true },
+						{
+							value: 100,
+							theme: 'dark',
+							striped: true,
+							animated: true,
+							text: true
+						},
+						{ value: 60, theme: 'light' },
+						{ value: 20, theme: 'danger' },
+						{ value: 30, theme: 'primary' }
+					]}
+				/>
+				<h6 class="text-muted mt-4">条形图（水平）</h6>
+				<PROGRESSLIST
+					class="mt-4"
+					layout="horizontal"
+					max={150}
+					showPercent={false}
+					showValue={true}
+					weight={3}
+					progress={[
+						{ value: 20, theme: 'primary', text: 'No.1' },
+						{ value: 30, theme: 'success', striped: true, themeLigth: true },
+						{
+							value: 100,
+							theme: 'dark',
+							striped: true,
+							animated: true,
+							text: 'No.2'
+						},
+						{ value: 60, theme: 'light' },
+						{ value: 20, theme: 'danger' },
+						{ value: 30, theme: 'primary' }
+					]}
+				/>
+				<h6 class="text-muted mt-4">条形图（垂直）</h6>
+				<PROGRESSLIST
+					class="mt-4"
+					layout="vertical"
+					max={150}
+					showPercent={false}
+					showValue={true}
+					weight={5}
+					progress={[
+						{ value: 4, theme: 'primary', text: 'No.1' },
+						{ value: 30, theme: 'success', striped: true, themeLigth: true },
+						{
+							value: 100,
+							theme: 'dark',
+							striped: true,
+							animated: true,
+							text: 'No.2'
+						},
+						{ value: 60, theme: 'light', text: 'No-2222' },
+						{ value: 20, theme: 'danger' },
+						{ value: 30, theme: 'primary' }
+					]}
+				/>
+			</Card>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 my-1">
+			<Card title="简要条形图">
+				<h6 class="text-muted mt-4">条形图（水平）</h6>
+				<PROGRESSBAR
+					class="mt-4"
+					layout="horizontal"
+					max={150}
+					showPercent={false}
+					showValue={true}
+					weight={4}
+					progress={[
+						20, 50, 30, 20, 80, 60, 99, 57, 65, 20, 50, 30, 20, 80, 60, 99, 57, 65, 20,
+						50, 30, 20, 80, 60, 99, 57, 65
+					]}
+				/>
+				<h6 class="text-muted mt-4">条形图（垂直）</h6>
+				<PROGRESSBAR
+					class="mt-4"
+					layout="vertical"
+					max={100}
+					showPercent={true}
+					showValue={false}
+					progress={[
+						20, 50, 30, 20, 80, 60, 99, 57, 65, 20, 50, 30, 20, 80, 60, 99, 57, 65, 20,
+						50, 30, 20, 80, 60, 99, 57, 20, 50, 30, 20, 80, 60, 99, 57, 65, 20, 50, 30,
+						20, 80, 60, 99, 57, 65, 20, 50, 30, 20, 80, 60, 99, 57, 20, 50, 30, 20, 80,
+						60, 99, 57, 65, 20, 50, 30, 20, 80, 60, 99, 57, 65, 20, 50, 30, 20, 80, 60,
+						99, 57, 20, 50, 30, 20, 80, 60, 99, 57, 65, 20, 50, 30, 20, 80, 60, 99, 57,
+						65, 20, 50, 30, 20, 80, 60, 99, 57, 65
+					]}
+				/>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>

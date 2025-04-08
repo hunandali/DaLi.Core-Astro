@@ -1,0 +1,116 @@
+---
+/**
+ * 	Modal 模态窗体
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { isObject, isString } from '@da.li/core-libs';
+import ICON, { type Props as IIcon } from '../components/Icon.astro';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 标识 */
+	id?: string;
+
+	/** 尺寸,单个值为 PC移动公用尺寸,双值则分别为PC与移动尺寸 */
+	size?: 'sm' | 'md' | 'lg' | 'xl';
+
+	/** 是否允许开启头部自定义 */
+	header?: boolean | string | IIcon;
+
+	/** 是否显示关闭按钮 */
+	showClose?: boolean;
+
+	/** 是否居中显示 */
+	centered?: boolean;
+
+	/** 是否允许滚动 */
+	scrollable?: boolean;
+
+	/** 是否可以点击窗体外部自动关闭窗口 */
+	closeable?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	id,
+	size,
+	header,
+	showClose = true,
+	centered = false,
+	scrollable = false,
+	closeable = false,
+	class: className = ''
+} = Astro.props;
+
+const classList = ClassClear([
+	'modal-dialog',
+	size && `modal-${size}`,
+	scrollable && 'modal-dialog-scrollable',
+	centered && 'modal-dialog-centered',
+	className
+]);
+
+/** 创建头部数据 */
+const getHeader = () => {
+	let ret: IIcon = { disabled: true };
+	if (!header) ret;
+
+	if (isString(header)) {
+		ret.text = header;
+	} else if (isObject(header)) {
+		ret = header as IIcon;
+	}
+
+	/** 存在内容则有效 */
+	ret.disabled = !ret.icon && !ret.text && header !== true;
+
+	return ret;
+};
+
+const headerIcon = getHeader();
+---
+
+<div class="modal" id={id} tabindex="-1" data-bs-backdrop={closeable ? 'static' : 'true'}>
+	<div class={classList} role="document">
+		<div class="modal-content">
+			{
+				(!headerIcon.disabled || showClose || Astro.slots.has('header')) && (
+					<div class={`modal-header bg-${headerIcon.theme}-lt`}>
+						<h5 class="modal-title">
+							<slot name="header">
+								{headerIcon.disabled ? headerIcon.text : <ICON {...headerIcon} />}
+							</slot>
+						</h5>
+
+						{showClose && (
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+							/>
+						)}
+					</div>
+				)
+			}
+			<div class="modal-body">
+				<slot />
+			</div>
+			<div class="modal-footer">
+				<slot name="footer" />
+			</div>
+		</div>
+	</div>
+</div>

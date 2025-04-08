@@ -1,0 +1,124 @@
+---
+/**
+ * 	SwitchIcon 图标开关组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import SWITCHICON from '../components/SwitchIcon.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="SwitchIcon 图标开关组件示例">
+	<div class="row">
+		<div class="col-md-6">
+			<Card title="基础用法">
+				<div class="mb-3">
+					<SWITCHICON iconOn="eye" iconOff="eye-slash" />
+					<span class="ms-3 text-muted">显示/隐藏密码</span>
+				</div>
+				<div class="mb-3">
+					<SWITCHICON iconOn="bell" checked />
+					<span class="ms-3 text-muted">开启/关闭通知</span>
+				</div>
+				<div>
+					<SWITCHICON iconOn="sms" />
+					<span class="ms-3 text-muted">开启/关闭通知</span>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6">
+			<Card title="不同颜色">
+				<div class="mb-3">
+					<SWITCHICON iconOn="heart" iconOff="heart" themeOn="primary" checked />
+					<span class="ms-3 text-muted">Primary</span>
+				</div>
+				<div class="mb-3">
+					<SWITCHICON iconOn="star" iconOff="star" themeOn="success" checked />
+					<span class="ms-3 text-muted">Success</span>
+				</div>
+				<div>
+					<SWITCHICON iconOn="bell" iconOff="bell-off" themeOn="warning" checked />
+					<span class="ms-3 text-muted">Warning</span>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-12 mt-4">
+			<Card title="应用场景示例">
+				<div class="row">
+					<div class="col-md-6 mb-4">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-0">系统设置</h5>
+							</div>
+							<div class="card-body">
+								<ul class="list-group list-group-flush">
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center">
+										<div>
+											<strong>夜间模式</strong>
+											<div class="text-muted">切换深色/浅色主题</div>
+										</div>
+										<SWITCHICON
+											iconOn="sun"
+											iconOff="moon"
+											themeOn="danger"
+											themeOff="dark"
+										/>
+									</li>
+
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center">
+										<div>
+											<strong>自动更新</strong>
+											<div class="text-muted">自动下载并安装更新</div>
+										</div>
+										<SWITCHICON iconOn="refresh" themeOn="info" checked />
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 mb-4">
+						<div class="card">
+							<div class="card-header">
+								<h5 class="card-title mb-0">服务设置</h5>
+							</div>
+							<div class="card-body">
+								<ul class="list-group list-group-flush">
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center">
+										<div>
+											<strong>通知提醒</strong>
+											<div class="text-muted">接收系统通知</div>
+										</div>
+										<SWITCHICON iconOn="bell" themeOn="success" checked />
+									</li>
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center">
+										<div>
+											<strong>位置服务</strong>
+											<div class="text-muted">允许应用使用您的位置</div>
+										</div>
+										<SWITCHICON iconOn="location" themeOn="warning" />
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>

@@ -1,0 +1,27 @@
+---
+/**
+ *	Empty 空白模板（基础页面框架） *
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Head, { type Props as IHead } from './Head.astro';
+
+export interface Props extends IHead {}
+
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh">
+	<Head {...props} />
+	<body><slot /></body>
+</html>

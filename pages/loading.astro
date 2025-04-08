@@ -1,0 +1,29 @@
+---
+import Icon from '../components/Icon.astro';
+import LAYOUT from '../layouts/Demo.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Loading 加载框">
+	<div class="text-center">
+		<Icon logo="logo-all" size={16} />
+		<div style="height: 300px;"></div>
+		<Icon logo="logo-all" size={16} />
+		<div style="height: 300px;"></div>
+		<Icon logo="logo-all" size={16} />
+	</div>
+</LAYOUT>
+<script>
+	import { showLoading, hideLoading } from '../libs/index.client';
+
+	showLoading({ theme: 'warning' });
+
+	setTimeout(() => {
+		hideLoading();
+	}, 5000);
+	setTimeout(() => {
+		showLoading({ showTime: false, size: 6 });
+	}, 8000);
+	setTimeout(() => {
+		hideLoading();
+	}, 12000);
+</script>

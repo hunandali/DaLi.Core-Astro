@@ -1,0 +1,125 @@
+---
+/**
+ * 	Spinner 加载动画组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import SPINNER from '../components/Spinner.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Spinner 加载动画组件示例">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="基础用法">
+				<h6 class="text-muted">边框式加载动画</h6>
+				<SPINNER type="border" />
+				<h6 class="text-muted mt-4">增长式加载动画</h6>
+				<SPINNER type="grow" />
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="不同尺寸">
+				<h6 class="text-muted">小尺寸 (mini)</h6>
+				<div class="d-flex gap-3">
+					<SPINNER mini />
+					<SPINNER type="grow" mini />
+				</div>
+				<h6 class="text-muted mt-4">默认尺寸</h6>
+				<div class="d-flex gap-3">
+					<SPINNER />
+					<SPINNER type="grow" />
+				</div>
+			</Card>
+		</div>
+	</div>
+
+	<div class="col-md-12 mt-4">
+		<Card title="不同颜色">
+			<div class="row">
+				<div class="col-md-6">
+					<h6 class="text-muted mb-3">边框式加载动画</h6>
+					<div class="d-flex gap-3 mb-3">
+						<SPINNER type="border" theme="primary" />
+						<SPINNER type="border" theme="secondary" />
+						<SPINNER type="border" theme="success" />
+					</div>
+					<div class="d-flex gap-3">
+						<SPINNER type="border" theme="warning" />
+						<SPINNER type="border" theme="danger" />
+						<SPINNER type="border" theme="info" />
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h6 class="text-muted mb-3">增长式加载动画</h6>
+					<div class="d-flex gap-3 mb-3">
+						<SPINNER type="grow" theme="primary" />
+						<SPINNER type="grow" theme="secondary" />
+						<SPINNER type="grow" theme="success" />
+					</div>
+					<div class="d-flex gap-3">
+						<SPINNER type="grow" theme="warning" />
+						<SPINNER type="grow" theme="danger" />
+						<SPINNER type="grow" theme="info" />
+					</div>
+				</div>
+			</div>
+		</Card>
+	</div>
+
+	<div class="col-md-12 mt-4">
+		<Card title="应用场景示例">
+			<div class="row">
+				<div class="col-md-6 mb-4">
+					<h6 class="text-muted mb-3">按钮中的加载动画</h6>
+					<div>
+						<button class="btn btn-primary me-2">
+							<SPINNER mini class="me-2" theme="light" />
+							加载中
+						</button>
+					</div>
+					<div class="mt-4">
+						<button class="btn btn-success">
+							<SPINNER type="grow" mini class="me-2" theme="light" />
+							提交中
+						</button>
+					</div>
+				</div>
+				<div class="col-md-6 mb-4">
+					<h6 class="text-muted mb-3">卡片加载状态</h6>
+					<div class="card" style="height: 120px; position: relative;">
+						<div
+							style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center;">
+							<SPINNER theme="primary" />
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">卡片标题</h5>
+							<p class="card-text">这里是卡片内容，当前正在加载中...</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<h6 class="text-muted mb-3">全页面加载</h6>
+					<div style="height: 200px; border: 1px dashed #ccc; position: relative;">
+						<div
+							style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; flex-direction: column;">
+							<SPINNER theme="primary" />
+							<p class="mt-3 text-muted">数据加载中，请耐心等待...</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</Card>
+	</div>
+</LAYOUT>

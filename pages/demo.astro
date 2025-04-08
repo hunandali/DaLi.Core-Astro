@@ -1,0 +1,327 @@
+---
+import LAYOUT from '../layouts/Demo.astro';
+
+import ALERT from '../messages/Alert.astro';
+import TOAST from '../messages/Toast.astro';
+
+import AVATAR from '../components/Avatar/index.astro';
+import AVATARLIST from '../components/Avatar/list.astro';
+import BADGE from '../components/Badge.astro';
+import BREADCRUMB from '../components/Breadcrumb.astro';
+import BUTTON from '../components/Button.astro';
+import CARD from '../components/Card.astro';
+import CAROUSEL from '../components/Carousel.astro';
+import COUNTUP from '../components/Countup.astro';
+import DIVIDER from '../components/Divider.astro';
+import DROPDOWN from '../components/Dropdown.astro';
+import DROPCARD from '../components/Dropcard.astro';
+import ICON from '../components/Icon.astro';
+import PLACEHOLDER from '../components/Placeholder.astro';
+import TRACKING from '../components/Tracking.astro';
+
+import type { ITheme } from '../types';
+const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
+---
+
+<LAYOUT pretitle="大沥网络" title="基础组件演示">
+	<!-- 状态跟踪 -->
+	<h2 class="line-top">状态跟踪</h2>
+	<div class="m-4">
+		<TRACKING
+			width={3}
+			height={6}
+			items={[
+				{ title: 'ok', theme: 'success' },
+				{ title: 'ok', theme: 'success' },
+				{ title: 'ok', theme: 'success' },
+				{ title: 'ok', theme: 'success' },
+				{ title: 'err', theme: 'danger' },
+				{ title: 'ok', theme: 'success' },
+				{ title: 'err', theme: 'danger' },
+				{ title: 'ok', theme: 'danger' },
+				{ title: 'no' },
+				{ title: 'no' },
+				{ title: 'ok', theme: 'success' },
+				{ title: 'ok', theme: 'success' }
+			]}
+		/>
+	</div>
+
+	<!-- 占位图 -->
+	<h2 class="line-top">占位图</h2>
+	<div class="m-4">
+		<div class="row">
+			<CARD title="不同宽度、高度、颜色">
+				<PLACEHOLDER theme="danger" size="xs" col={3} />
+				<PLACEHOLDER theme="success" col={9} />
+				<PLACEHOLDER theme="warning" size="sm" col={6} />
+				<PLACEHOLDER theme="primary" size="lg" />
+			</CARD>
+			<CARD title="动画">
+				<PLACEHOLDER animation="wave" />
+				<PLACEHOLDER animation="glow" />
+			</CARD>
+		</div>
+	</div>
+
+	<!-- 下拉卡片 -->
+	<h2 class="line-top">下拉卡片</h2>
+	<div class="m-4">
+		<DROPCARD class="mw-300 mh-300 overflow-y-auto">
+			<span slot="label">看看</span>
+			<span slot="title">标题</span>
+			<ol>
+				{
+					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => (
+						<li>
+							项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目
+						</li>
+					))
+				}
+			</ol>
+		</DROPCARD>
+	</div>
+
+	<!-- 下拉菜单 -->
+	<h2 class="line-top">下拉菜单</h2>
+	<div class="m-4">
+		<DROPDOWN
+			label="下拉"
+			direction="up"
+			items={[
+				{ label: '项目 11' },
+				{
+					label: '项目 22',
+					href: '#',
+					icon: 'user',
+					bagde: { text: '99+', theme: 'danger' },
+					divider: true
+				},
+				{
+					label: '项目 33',
+					href: '#',
+					icon: 'user',
+					bagde: { text: 'Good+', theme: 'primary' }
+				}
+			]}>
+			<div>aaa</div>
+		</DROPDOWN>
+	</div>
+
+	<!-- 分隔线 -->
+	<h2 class="line-top">分隔线</h2>
+	<div class="m-4">
+		<DIVIDER text="左" theme="success" position="left" />
+		<DIVIDER text="中" theme="warning" position="center" />
+		<DIVIDER text="右" theme="primary" position="right" />
+	</div>
+
+	<!-- 计数器 -->
+	<h2 class="line-top">计数器</h2>
+	<div class="m-4 d-flex">
+		<COUNTUP
+			start={0}
+			data={123456789}
+			duration={1}
+			separator=","
+			element="h1"
+			class="line-right"
+		/>
+		<COUNTUP
+			start={0}
+			data={123.456}
+			duration={1}
+			decimalPlaces={2}
+			element="h1"
+			class="line-right"
+		/>
+		<COUNTUP
+			start={20}
+			data={99.99}
+			duration={10}
+			decimalPlaces={2}
+			suffix="%"
+			element="h1"
+			theme="danger"
+		/>
+	</div>
+
+	<!-- 幻灯片 -->
+	<h2 class="line-top">幻灯片</h2>
+	<div class="d-flex m-4">
+		<CAROUSEL
+			indicators="thumb"
+			fade
+			interval={3000}
+			class="w-50"
+			items={[
+				{
+					title: '人山人海的火星基地(1)',
+					src: 'https://p9-flow-imagex-sign.byteimg.com/ocean-cloud-tos/image_skill/4e762d21-8ebc-47f3-a5be-e2095c34b592_1743581378964432658_origin~tplv-a9rns2rl98-image-dark-watermark.png?rk3s=b14c611d&x-expires=1775117379&x-signature=B1CQC03afGRAUSel5OfhK%2FFoomI%3D'
+				},
+				{
+					title: '人山人海的火星基地(2)',
+					src: 'https://p3-flow-imagex-sign.byteimg.com/ocean-cloud-tos/image_skill/878a99f3-511c-4323-8e98-4848cb3190fa_1743581379063320531_origin~tplv-a9rns2rl98-image-dark-watermark.png?rk3s=b14c611d&x-expires=1775117379&x-signature=ecg49EywA9bmiwvJiPLoTjC%2B9C0%3D'
+				},
+				{
+					title: '人山人海的火星基地(3)',
+					src: 'https://p9-flow-imagex-sign.byteimg.com/ocean-cloud-tos/image_skill/13d5224a-7ba2-4305-9152-4bb8ff30b6ab_1743581379158095337_origin~tplv-a9rns2rl98-image-dark-watermark.png?rk3s=b14c611d&x-expires=1775117379&x-signature=o6dd5kxmHFouYdeMLUB3byy5izo%3D'
+				},
+				{
+					title: '人山人海的火星基地(4)',
+					src: 'https://p3-flow-imagex-sign.byteimg.com/ocean-cloud-tos/image_skill/7dd386b1-0fb8-4947-8ce6-76e14fc5ee35_1743581379260731091_origin~tplv-a9rns2rl98-image-dark-watermark.png?rk3s=b14c611d&x-expires=1775117379&x-signature=L2CV%2FcQFrT5NmDCf87gMXZeVjvI%3D'
+				}
+			]}
+		/>
+	</div>
+
+	<!-- 卡片 -->
+	<h2 class="line-top">卡片</h2>
+	<div class="d-flex m-4">
+		<CARD title="默认卡片" class="me-3">
+			<li>项目 xxx</li>
+			<li>项目 xxx</li>
+			<li>项目 xxx</li>
+			<li>项目 xxx</li>
+			<li>项目 xxx</li>
+		</CARD>
+		<CARD title="顶部状态" statusTheme="danger" class="me-3" />
+		<CARD title="侧边状态" statusTheme="primary" statusPosition="start" class="me-3" />
+		<CARD title="底部状态" statusPosition="bottom" statusTheme="success" class="me-3" />
+	</div>
+
+	<!-- 按钮 -->
+	<h2 class="line-top">按钮</h2>
+	<div class="d-flex m-4">
+		<BUTTON class="me-2">默认按钮</BUTTON>
+		<BUTTON class="me-2" icon="load_4" text="时间" theme="success" />
+		<BUTTON class="me-2" icon="compass" text="指南针" theme="info" disabled />
+		<BUTTON
+			class="me-2"
+			logo
+			icon="tan"
+			text="木炭"
+			theme="danger"
+			shape="pill"
+			variant="outline"
+		/>
+	</div>
+	<div class="d-flex m-4">
+		<div><BUTTON class="me-2" icon="1" text="小：sm" theme="danger" size="sm" /></div>
+		<div><BUTTON class="me-2" icon="2" text="默认" theme="danger" /></div>
+		<div><BUTTON class="me-2" icon="3" text="中：md" theme="danger" size="md" /></div>
+		<div><BUTTON class="me-2" icon="4" text="大：lg" theme="danger" size="lg" /></div>
+	</div>
+
+	<!-- 面包屑 -->
+	<h2 class="line-top">面包屑</h2>
+	<div class="d-flex m-4">
+		<BREADCRUMB
+			items={[
+				{ text: '首页', href: '#', icon: 'home' },
+				{ text: '项目', href: '#', icon: 'number' },
+				{ text: '页面', icon: 'cut' }
+			]}
+		/>
+	</div>
+	<div class="d-flex m-4">
+		<BREADCRUMB
+			separator="arrow"
+			items={[
+				{ text: '首页', href: '#', icon: 'home' },
+				{ text: '项目', href: '#', icon: 'number' },
+				{ text: '页面', icon: 'cut' }
+			]}
+		/>
+	</div>
+
+	<!-- 徽章 -->
+	<h2 class="line-top">徽章</h2>
+	<div class="d-flex m-4">
+		{
+			Themes.map((theme) => (
+				<>
+					<BADGE text={theme} theme={theme} class="me-2" />
+					<BADGE text={theme} theme={theme} light class="me-2" />
+				</>
+			))
+		}
+
+		<BADGE text="1" theme="danger" outline class="me-2" />
+		<BADGE text="99+" theme="danger" pill class="me-2" />
+		<BADGE text="999+" theme="danger" outline pill class="me-2" />
+		<BADGE theme="danger" outline class="me-2" />
+		<BADGE theme="danger" outline pill class="me-2" />
+		<BADGE theme="danger" class="me-2" />
+		<BADGE theme="danger" pill class="me-2" />
+	</div>
+
+	<!-- 头像 -->
+	<h2 class="line-top">头像</h2>
+	<div class="d-flex m-4">
+		<AVATARLIST class="me-6">
+			<AVATAR src="https://www.lvdingjia.com/logo.png" />
+			<AVATAR src="https://www.lvdingjia.com/logo.png" shape="rounded" />
+			<AVATAR src="https://www.lvdingjia.com/logo.png" shape="rounded" status="online" />
+			<AVATAR
+				src="https://www.lvdingjia.com/logo.png"
+				shape="rounded"
+				status="busy"
+				theme="warning"
+			/>
+		</AVATARLIST>
+		<AVATAR src="user" shape="rounded" size="xs" />
+		<AVATAR src="left" shape="rounded" size="sm" />
+		<AVATAR src="money" shape="rounded" size="md" />
+		<AVATAR src="right" shape="rounded" size="lg" />
+		<AVATAR src="phone" shape="rounded" size="xl" />
+		<AVATAR src="mobile" shape="rounded" />
+		<AVATARLIST
+			srcs={['phone', 'user', '木炭', 'https://www.lvdingjia.com/logo.png', '99+']}
+			stacked
+			shape="rounded"
+			class="ms-6"
+		/>
+	</div>
+
+	<!-- 图标 -->
+	<h2 class="line-top">图标</h2>
+	<div class="d-flex m-4">
+		<ICON icon="home" text="首页" class="line-right" disabled />
+		<ICON icon="all" logo class="line-right" />
+		<ICON
+			logo="logo"
+			text="大沥网络"
+			class="line-right"
+			size={6}
+			fontSize={4}
+			bold
+			theme="primary"
+		/>
+	</div>
+	<div class="d-flex m-4">
+		<ICON icon="home" text="首页" class="line-right" size={8} />
+		<ICON icon="dot" size={8} theme="info" />
+		<ICON icon="fn" size={8} class="line-left" theme="danger" />
+	</div>
+
+	<!-- 警告信息 -->
+	<h2 class="line-top">警告信息</h2>
+	<ALERT title="这是默认警告信息，仅包含标题" />
+	<ALERT
+		title="这是正确信息"
+		message="这里是提示内容，可以关闭，且标记为重点信息（带边框）！ 警告信息只能手工关闭。"
+		theme="success"
+		important
+		closeable
+	/>
+
+	<!-- 通知信息 -->
+	<h2 class="line-top">通知信息</h2>
+	<div class="d-flex m-4">
+		<TOAST title="默认 Toast" message="没设置任何属性的 Toast" class="mx-1" />
+		<TOAST title="警告" message="注意不要乱设置！" theme="danger" class="mx-1" />
+		<TOAST title="提示" message="你可以这么干，不能那么干" theme="info" class="mx-1" />
+	</div>
+	<h2 class="line-top">对话框</h2>
+</LAYOUT>

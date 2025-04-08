@@ -1,0 +1,119 @@
+---
+/**
+ * 	CountUp 计数器组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import CountUp from '../components/Countup.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="CountUp 计数器组件示例">
+	<div class="row">
+		<div class="col-md-6">
+			<Card title="基础用法">
+				<div class="row text-center">
+					<div class="col-md-4">
+						<CountUp start={0} data={1234} duration={10} theme="primary" />
+						<div class="text-muted mt-2">基础计数</div>
+					</div>
+					<div class="col-md-4">
+						<CountUp
+							start={1234}
+							data={9876}
+							duration={60}
+							prefix="¥"
+							theme="success"
+						/>
+						<div class="text-muted mt-2">带前缀</div>
+					</div>
+					<div class="col-md-4">
+						<CountUp start={0} data={85} duration={5} suffix="%" theme="info" />
+						<div class="text-muted mt-2">带后缀</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+
+		<div class="col-md-6">
+			<Card title="高级用法">
+				<div class="row text-center">
+					<div class="col-md-4">
+						<CountUp data={12345.67} decimalPlaces={2} duration={0} theme="danger" />
+						<div class="text-muted mt-2">小数位数</div>
+					</div>
+					<div class="col-md-4">
+						<CountUp
+							start={1000}
+							data={5000}
+							duration={200}
+							prefix="$"
+							separator=","
+							theme="warning"
+						/>
+						<div class="text-muted mt-2">自定义分隔符</div>
+					</div>
+					<div class="col-md-4">
+						<CountUp
+							start={0}
+							data={9999}
+							duration={400}
+							element="strong"
+							theme="secondary"
+						/>
+						<div class="text-muted mt-2">自定义标签名称</div>
+					</div>
+				</div>
+			</Card>
+		</div>
+	</div>
+
+	<div class="col-md-12 mt-4">
+		<Card title="主题颜色">
+			<div class="row text-center">
+				<div class="col-md-2">
+					<CountUp data={1234} theme="primary" />
+					<div class="text-muted mt-2">Primary</div>
+				</div>
+				<div class="col-md-2">
+					<CountUp data={1234} theme="secondary" />
+					<div class="text-muted mt-2">Secondary</div>
+				</div>
+				<div class="col-md-2">
+					<CountUp data={1234} theme="success" />
+					<div class="text-muted mt-2">Success</div>
+				</div>
+				<div class="col-md-2">
+					<CountUp data={1234} theme="danger" />
+					<div class="text-muted mt-2">Danger</div>
+				</div>
+				<div class="col-md-2">
+					<CountUp data={1234} theme="warning" />
+					<div class="text-muted mt-2">Warning</div>
+				</div>
+				<div class="col-md-2">
+					<CountUp data={1234} theme="info" />
+					<div class="text-muted mt-2">Info</div>
+				</div>
+			</div>
+		</Card>
+	</div>
+</LAYOUT>
+
+<script>
+	import { EVENTS } from '../config';
+
+	$on(EVENTS.COUNTUP.COMPLETE, (el, val, opt) => {
+		console.log('CountUp 组件已加载', el, val, opt);
+	});
+</script>

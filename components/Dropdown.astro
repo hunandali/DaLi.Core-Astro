@@ -1,0 +1,100 @@
+---
+/**
+ *	Dropdown 下拉菜单
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ICON from './Icon.astro';
+import BADGE, { type Props as IBagde } from './Badge.astro';
+
+interface DropdownItem {
+	/** 菜单名称 */
+	label: string;
+
+	/** 菜单链接 */
+	href?: string;
+
+	/** 菜单图标 */
+	icon?: string;
+
+	/** 分割线 */
+	divider?: boolean;
+
+	/** 禁用状态 */
+	disabled?: boolean;
+
+	/** 右侧 badge 提示 */
+	bagde?: IBagde;
+}
+
+export interface Props {
+	/** 下拉按钮名称 */
+	label: string;
+
+	/** 下拉菜单列表 */
+	items: DropdownItem[];
+
+	/** 弹出方向 */
+	direction?: 'down' | 'up' | 'start' | 'end';
+
+	/** 下拉按钮颜色 */
+	variant?: 'primary' | 'secondary' | 'success' | 'danger';
+}
+
+const { label, items, direction = 'down', variant = 'primary' } = Astro.props;
+---
+
+<div class={`dropdown drop${direction}`}>
+	<button
+		class={`btn btn-${variant} dropdown-toggle`}
+		type="button"
+		data-bs-toggle="dropdown"
+		aria-expanded="false">
+		<slot name="label">
+			{label}
+		</slot>
+	</button>
+	<ul class="dropdown-menu">
+		{
+			items.map((item) => (
+				<>
+					{item.divider && (
+						<li>
+							<hr class="dropdown-divider" />
+						</li>
+					)}
+					<li>
+						{item.href ? (
+							<a
+								class={`dropdown-item ${item.disabled ? 'disabled' : ''}`}
+								href={item.href}>
+								{item.icon && <ICON icon={item.icon} />}
+								{item.label}
+								{item.bagde && <BADGE {...item.bagde} class="ms-auto" />}
+							</a>
+						) : (
+							<span class="dropdown-header">
+								{item.icon && <ICON icon={item.icon} />}
+								{item.label}
+								{item.bagde && <BADGE {...item.bagde} class="ms-auto" />}
+							</span>
+						)}
+					</li>
+				</>
+			))
+		}
+	</ul>
+</div>
+
+<script>
+	import '@tabler/core/js/src/dropdown.js';
+</script>

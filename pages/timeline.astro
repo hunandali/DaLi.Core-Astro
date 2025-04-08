@@ -1,0 +1,170 @@
+---
+/**
+ * 	Timelines 时间线组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import TIMELINE from '../components/Timeline.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Timelines 时间线组件示例">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="基础用法">
+				<TIMELINE
+					timeFormat={true}
+					items={[
+						{
+							title: '订单已提交',
+							description: '您的订单已成功提交，等待系统确认',
+							time: '2023-12-01 10:30'
+						},
+						{
+							title: '订单已确认',
+							description: '您的订单已确认，等待商家发货',
+							time: '2023-12-01 14:20'
+						},
+						{
+							title: '商家已发货',
+							description: '您的订单已由商家发出，等待物流配送',
+							time: '2023-12-02 09:15',
+							active: true
+						},
+						{
+							title: '配送中',
+							description: '您的订单正在配送中',
+							time: '待定'
+						},
+						{
+							title: '已签收',
+							description: '您的订单已签收',
+							time: '待定'
+						}
+					]}
+				/>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="带图标的时间线">
+				<TIMELINE
+					timeFormat="YYYY-MM-DD HH:mm:ss"
+					items={[
+						{
+							title: '项目创建',
+							description: '项目已成功创建并初始化',
+							time: '2023-11-15',
+							icon: 'plus',
+							theme: 'success'
+						},
+						{
+							title: '需求分析',
+							description: '完成需求收集和分析',
+							time: '2023-11-20',
+							icon: 'clipboard-list',
+							theme: 'info'
+						},
+						{
+							title: '设计阶段',
+							description: '完成UI设计和原型制作',
+							time: '2023-11-30',
+							icon: 'palette',
+							theme: 'primary',
+							active: true
+						},
+						{
+							title: '开发阶段',
+							description: '进行前后端开发',
+							time: '计划中',
+							icon: 'code',
+							theme: 'secondary'
+						},
+						{
+							title: '测试与上线',
+							description: '进行测试并部署上线',
+							time: '计划中',
+							icon: 'rocket',
+							theme: 'danger'
+						}
+					]}
+				/>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="简单模式">
+				<TIMELINE
+					simple
+					items={[
+						{
+							title: '任务分配',
+							time: '09:00',
+							theme: 'primary'
+						},
+						{
+							title: '开始开发',
+							time: '10:30',
+							theme: 'info'
+						},
+						{
+							title: '代码审查',
+							time: '14:00',
+							theme: 'warning',
+							active: true
+						},
+						{
+							title: '部署上线',
+							time: '16:30',
+							theme: 'success'
+						}
+					]}
+				/>
+			</Card>
+		</div>
+
+		<div class="col-md-6 my-1">
+			<Card title="项目演示">
+				<TIMELINE
+					timeFormat={true}
+					items={[
+						{
+							title: '任务分配',
+							description: '任务已分配给开发团队',
+							icon: 'users',
+							theme: 'primary'
+						},
+						{
+							title: '开始开发',
+							description: '开发团队已开始工作',
+							icon: 'code',
+							theme: 'info'
+						},
+						{
+							title: '代码审查',
+							description: '进行代码审查和测试',
+							icon: 'check',
+							theme: 'warning'
+						},
+						{
+							title: '部署上线',
+							description: '代码部署到生产环境',
+							icon: 'server',
+							theme: 'success'
+						}
+					]}
+				/>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>
