@@ -96,6 +96,7 @@ async function postBuild() {
 		await floderCopy('messages');
 		await floderCopy('layouts');
 		// await floderCopy('libs');
+		await fileCopy('index.ts');
 		await fileCopy('config.ts');
 		// await fileCopy('integration.ts');
 		await fileCopy('types.ts');

@@ -10,10 +10,10 @@ export default defineConfig({
 			outDir: 'dist',
 
 			// 可选：包含你想要生成类型的文件
-			include: ['index.ts', 'libs/*.ts', 'messages/*.ts'],
+			include: ['icons.ts', 'libs/*.ts', 'messages/*.ts'],
 
 			// 可选：排除不需要生成类型的文件
-			exclude: ['**/types.ts']
+			exclude: ['index.ts', '**/types.ts', 'messages/index.ts']
 		})
 	],
 
@@ -31,7 +31,7 @@ export default defineConfig({
 			],
 			input: {
 				'index.css': 'themes/index.less',
-				index: 'index.ts',
+				// index: 'index.ts',
 				'libs/index': 'libs/index.ts',
 				'libs/client': 'libs/client.ts'
 			},
