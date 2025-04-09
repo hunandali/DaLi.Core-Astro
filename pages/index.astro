@@ -18,12 +18,18 @@ import DROPCARD from '../components/Dropcard.astro';
 import ICON from '../components/Icon.astro';
 import PLACEHOLDER from '../components/Placeholder.astro';
 import TRACKING from '../components/Tracking.astro';
+import QR from '../customs/QR.astro';
 
 import type { ITheme } from '../types';
 const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 ---
 
 <LAYOUT pretitle="大沥网络" title="基础组件演示">
+	<!-- 二维码组件 -->
+	<h2 class="line-top">二维码组件</h2>
+	<div class="m-4">
+		<QR code="https://www.lvdingjia.com" />
+	</div>
 	<!-- 状态跟踪 -->
 	<h2 class="line-top">状态跟踪</h2>
 	<div class="m-4">

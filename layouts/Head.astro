@@ -13,23 +13,83 @@
  * ------------------------------------------------------------
  */
 
+/**
+ * The Open Graph protocol (https://ogp.me/)
+ * 每个页面都需要以下四个属性：
+ * og:title - 对象的标题应显示在图表中，例如“The Rock”。
+ * og:type - 对象的类型，例如“video.movi​​e”。根据您指定的类型，可能还需要其他属性。
+ * og:image - 应代表图表中对象的图像 URL。
+ * og:url - 您的对象的规范 URL 将在图表中用作其永久 ID，例如“https://www.imdb.com/title/tt0117500/”。
+ */
+
 export interface Props {
+	/** 简单模式，无 OG 标签 */
+	simple?: boolean;
+
+	/** 标题 */
 	title: string;
+
+	/** 描述 */
 	description?: string;
+
+	/** 关键词 */
 	keywords?: string | string[];
+
+	/** 类型 */
+	type?:
+		| string
+		| 'website'
+		| 'article'
+		| 'book'
+		| 'profile'
+		| 'image'
+		| 'music'
+		| 'video'
+		| 'product';
+
+	/** 图片URL */
 	image?: string;
+
+	/** 作者（type=article 时必填） */
 	author?: string;
-	time?: string;
+
+	/** 发布时间（type=article 时必填） */
+	time?: string | number | Date;
+
+	/** 自定义元标签 */
+	metas?: Record<string, string>;
+
+	/** 其他 Open Graph 标签 */
+	ogs?: Record<string, string>;
 }
 
-const { title, description, keywords, image, author, time = '' } = Astro.props;
+const {
+	simple = false,
+	title,
+	description,
+	keywords,
+	type = 'website',
+	image,
+	author,
+	time,
+	metas = {},
+	ogs = {}
+} = Astro.props;
 
+/** 网站名称 */
 const site = import.meta.env.SITE_NAME;
-const domain = import.meta.env.SITE_URL || Astro.site;
-let url = domain ? new URL(import.meta.env.BASE_URL, domain).href : import.meta.env.BASE_URL;
-url = url ? new URL(Astro.url.pathname, url).href : Astro.url.href;
 
-const words = Array.isArray(keywords) ? keywords.join(',') : keywords;
+/** 域名 */
+const domain = import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origin;
+
+/** 当前页面URL */
+const url = domain ? new URL(Astro.url.pathname, domain).href : Astro.url.href;
+
+/** 关键词 */
+const tags = Array.isArray(keywords) ? keywords.join(',') : keywords;
+
+/** 发布时间 */
+const date = time ? new Date(time).toISOString() : undefined;
 ---
 
 <meta charset="utf-8" />
@@ -40,23 +100,32 @@ const words = Array.isArray(keywords) ? keywords.join(',') : keywords;
 
 <title>{title || site}</title>
 {description && <meta name="description" content={description} />}
-{words && <meta name="keywords" content={words} />}
+{tags && <meta name="keywords" content={tags} />}
+{url && <meta http-equiv="mobile-agent" content={`format=html5; url=${url}`} />}
+{metas && Object.keys(metas).map((key) => <meta name={key} content={metas[key]} />)}
 
-<meta property="og:title" content={title || site} />
-{description && <meta property="og:description" content={description} />}
-{site && <meta property="og:site_name" content={site} />}
-{url && <meta property="og:url" content={url} />}
-<meta property="og:type" content="website" />
 {
-	image && <meta property="og:image" content={image} /> && (
-		<meta property="og:image:alt" content={title} />
+	!simple && (
+		<>
+			{type && <meta property="og:type" content={type} />}
+			<meta property="og:title" content={title || site} />
+			{description && <meta property="og:description" content={description} />}
+			{site && <meta property="og:site_name" content={site} />}
+			{url && <meta property="og:url" content={url} />}
+			{image && <meta property="og:image" content={image} />}
+			{image && title && <meta property="og:image:alt" content={title} />}
+
+			{type === 'article' && (
+				<>
+					{author && <meta property="article:author" content={author} />}
+					{date && <meta property="article:published_time" content={date} />}
+					{tags && <meta property="article:tag" content={tags} />}
+				</>
+			)}
+
+			{ogs && Object.keys(ogs).map((key) => <meta property={key} content={ogs[key]} />)}
+		</>
 	)
 }
-
-<!-- Article Meta Tags -->
-{time && <meta property="article:published_time" content={time} />}
-{author && <meta property="article:author" content={author} />}
-
-<meta http-equiv="mobile-agent" content={`format=html5; url=${url}`} />
 
 <slot />

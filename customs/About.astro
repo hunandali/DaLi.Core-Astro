@@ -1,0 +1,105 @@
+---
+/**
+ *  About 关于
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import ERROR from './Error.astro';
+
+export interface Props {
+	/** 网址 */
+	homepage?: string;
+
+	/** 项目标题 */
+	title?: string;
+
+	/** 版权 */
+	copyright?: string;
+
+	/** 描述 */
+	description?: string;
+
+	/** 版本，不设置将不显示版权及弹窗信息 */
+	version?: string;
+
+	/** 项目图标 */
+	icon?: string;
+}
+
+let {
+	homepage,
+	title,
+	description,
+	version,
+	copyright,
+	icon = 'logo-logo',
+	...props
+} = Astro.props as Props;
+
+/** 网站名称 */
+title = title || import.meta.env.SITE_NAME;
+
+/** 域名 */
+homepage = homepage || import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origin;
+
+/** 版权 */
+copyright = copyright || `Copyright © ${new Date().getFullYear()} ${import.meta.env.SITE_NAME}`;
+
+/** 描述 */
+description = description || import.meta.env.SITE_DESCRIPTION;
+---
+
+<dl-about {...props}>
+	<a href={homepage} target="_blank" class="text-secondary text-truncate">
+		<slot>{copyright}</slot>
+	</a>
+	{
+		version && (
+			<>
+				<i class="a badge text-secondary ms-2">ver:{version}</i>
+				<div class="d-none" data-icon={icon} data-title={title}>
+					<ERROR size="md" theme="primary" icon="logo-logo" title={title}>
+						<div class="badge text-bg-warning text-3">
+							VER
+							<span class="badge text-warning rounded-1">{version}</span>
+						</div>
+						<div class="my-2 text-secondary">{description}</div>
+						<a
+							href={homepage}
+							target="_blank"
+							class="text-secondary text-truncate text-3">
+							{copyright}
+						</a>
+					</ERROR>
+				</div>
+			</>
+		)
+	}
+</dl-about>
+
+<script>
+	import { openModal } from '../libs/client';
+
+	class DlAbout extends HTMLElement {
+		connectedCallback() {
+			const btn = this.querySelector('i');
+			if (!btn) return;
+
+			const message = this.querySelector('div')?.innerHTML;
+			btn.addEventListener('click', () => {
+				openModal({ icon: '-', title: '', message, theme: 'primary', showClose: false });
+			});
+		}
+	}
+
+	customElements.define('dl-about', DlAbout);
+</script>

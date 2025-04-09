@@ -16,6 +16,7 @@
 import ICON from 'astro-iconify';
 import { getIcon, getLogo } from '../icons';
 import type { IIcon } from '../types';
+import { hasString } from '@da.li/core-libs';
 
 /** 图标组件属性 */
 export interface Props extends IIcon {
@@ -67,7 +68,7 @@ const hasText = !!text || text === 0;
 const isLogo = logo || icon?.startsWith('logo-');
 
 /** 图标名称 */
-let iconName = isLogo ? getLogo(logo === true ? icon : logo || '') : getIcon(icon);
+let iconName = isLogo ? getLogo(hasString(logo) ? (logo as string) : icon) : getIcon(icon);
 
 /** 是否 svg */
 const isSvg = iconName.startsWith('<svg');

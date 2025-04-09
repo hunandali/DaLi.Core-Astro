@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import type { IColorFull } from '../types';
+import type { IColorFull, ISize } from '../types';
 import { ClassClear } from '../libs';
 
 export interface Props {
@@ -21,7 +21,7 @@ export interface Props {
 	col?: number;
 
 	/** 占位符大小 */
-	size?: 'xs' | 'sm' | 'md' | 'lg';
+	size?: 'xs' | Exclude<ISize, 'xl'>;
 
 	/** 是否显示动画效果 */
 	animation?: 'glow' | 'wave' | undefined;

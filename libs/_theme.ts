@@ -12,7 +12,7 @@
  * ------------------------------------------------------------
  */
 
-import type { IIcon, ITheme } from '../types';
+import type { IColorFull, IIcon, ITheme } from '../types';
 
 /** 主题图标数据 */
 export const ThemeICONS: Record<ITheme, IIcon> = {
@@ -29,5 +29,5 @@ export const ThemeICONS: Record<ITheme, IIcon> = {
  * @param theme 主题
  * @returns 图标
  */
-export const ThemeIcon = (theme?: ITheme) =>
-	theme ? ThemeICONS[theme] : { icon: 'logo', logo: true, theme: 'primary' };
+export const ThemeIcon = (theme = 'priamry' as IColorFull) =>
+	ThemeICONS[theme as ITheme] || { icon: 'logo', logo: true, theme };

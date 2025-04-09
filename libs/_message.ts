@@ -19,7 +19,7 @@ import ModalInstance from '../messages/ModalService';
 import type { LoadingOptions, ModalOptions } from '../types';
 
 import type { ITheme } from '../types';
-import { $Global, SERVERMODE } from '@da.li/core-libs';
+import { $Global, Cookies, SERVERMODE } from '@da.li/core-libs';
 
 let loading: LoadingInstance;
 let toast: ToastInstance;
@@ -77,3 +77,8 @@ $Global.alert = (message) =>
 			}),
 		200
 	);
+
+/** 是否深色模式 */
+export const IsDarkTheme = (): boolean => {
+	return SERVERMODE ? false : Cookies.get('theme') === 'dark';
+};

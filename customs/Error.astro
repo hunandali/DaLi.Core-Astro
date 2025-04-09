@@ -1,0 +1,213 @@
+---
+/**
+ *  Error 异常信息提示
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { ClassClear } from '../libs';
+import { ERROR_CODES } from '../config';
+import type { ISize, IMessage } from '../types';
+import ICON from '../components/Icon.astro';
+import { hasObject } from '@da.li/core-libs';
+
+export interface Props extends IMessage {
+	/** 代码 */
+	code?: string;
+
+	/** 组件尺寸 */
+	size?: ISize | 'auto';
+
+	/** 是否简单模式，上下排列，仅文字与图标 */
+	simple?: boolean;
+
+	/** 自定义类 */
+	class?: string;
+}
+
+let {
+	code,
+	size = 'auto',
+	simple = false,
+	theme,
+	icon,
+	title,
+	message,
+	class: className,
+	...props
+} = Astro.props;
+
+/** 获取错误图标数据 */
+if (code) {
+	let data = ERROR_CODES[code];
+	if (!hasObject(data)) data = { icon: '', title: data };
+
+	icon = icon || data.icon;
+	title = title || data.title;
+	message = message || data.message;
+	theme = theme || data.theme;
+}
+
+/** 样式 */
+const classList = ClassClear([
+	simple ? `dl-error-simple` : 'dl-error-normal',
+	size && `dl-error-${size}`,
+	theme && `dl-error-${theme}`,
+	className
+]);
+---
+
+<div class="dl-error" {...props}>
+	<div class={classList}>
+		<ICON class="dl-error-icon" icon={icon} />
+		<div class="dl-error-message">
+			{!simple && code && <h1 class="num">{code}</h1>}
+			<h2>{title}</h2>
+			{message && <div set:html={message} />}
+			<slot />
+		</div>
+	</div>
+</div>
+
+<style lang="less" is:global>
+	.dl-error {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		width: 100%;
+		height: 100%;
+
+		background-color: transparent !important;
+
+		--size: 1rem;
+		--color-title: var(--tblr-body-color);
+		--color-code: var(--tblr-secondary-color);
+		--color-icon: var(--tblr-tertiary-color);
+
+		@themes:primary, secondary, success, warning, danger, info, light, dark;
+		each(@themes, {
+		    &-@{value} {
+		        --color-title:~"var(--tblr-@{value})";
+		        --color-code:~"rgb(var(--tblr-@{value}-rgb), 0.5)";
+		        --color-icon:~"rgb(var(--tblr-@{value}-rgb), 0.8)";
+		    }
+		});
+
+		> div {
+			max-width: 800px;
+			padding: var(--space);
+		}
+
+		&-sm {
+			--size: 0.7rem;
+		}
+		&-md {
+			--size: 1rem;
+		}
+		&-lg {
+			--size: 1.25rem;
+		}
+		&-xl {
+			--size: 1.5rem;
+		}
+		/** 自动尺寸 */
+		&-auto {
+			@media screen and (max-width: 600px) {
+				--size: 0.75rem;
+			}
+			@media screen and (min-width: 600px) and (max-width: 768px) {
+				--size: 1rem;
+			}
+			@media screen and (min-width: 768px) {
+				--size: 1.25rem;
+			}
+
+			&.dl-error-normal {
+				@media screen and (max-width: 600px) {
+					display: block;
+					text-align: center;
+
+					.dl-error-icon {
+						padding: var(--size);
+						margin-right: 0;
+						border-right: none;
+					}
+
+					.dl-error-message {
+						text-align: center;
+					}
+				}
+			}
+		}
+
+		&-icon {
+			i,
+			svg {
+				font-size: calc(var(--size) * 6);
+				width: calc(var(--size) * 6);
+				height: calc(var(--size) * 6);
+				color: var(--color-icon);
+			}
+
+			.logo {
+				color: inherit;
+			}
+
+			.icon-disabled::before {
+				opacity: 0.5;
+			}
+		}
+
+		&-message {
+			h1 {
+				margin: 0 0 calc(var(--size) * 1.5) 0;
+				font-size: calc(var(--size) * 5);
+				line-height: 1;
+				color: var(--color-code);
+			}
+			h2 {
+				margin: 0 0 var(--size) 0;
+				font-size: calc(var(--size) * 1.5);
+				color: var(--color-title);
+				line-height: 1;
+			}
+			div {
+				margin: 0 0 var(--size) 0;
+				line-height: 150%;
+				font-size: var(--size);
+				color: var(--tblr-secondary-color);
+			}
+		}
+
+		&-simple {
+			text-align: center;
+
+			.dl-error-icon {
+				margin: 0 0 calc(var(--size) * 1.5) 0;
+			}
+		}
+		&-normal {
+			display: flex;
+			align-items: flex-start;
+
+			.dl-error-icon {
+				padding: calc(var(--size) / 2) var(--size);
+				margin-right: var(--size);
+				border-right: 1px solid var(--tblr-border-color);
+			}
+
+			.dl-error-message {
+				text-align: left;
+			}
+		}
+	}
+</style>

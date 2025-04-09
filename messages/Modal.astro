@@ -16,13 +16,14 @@
 import { isObject, isString } from '@da.li/core-libs';
 import ICON, { type Props as IIcon } from '../components/Icon.astro';
 import { ClassClear } from '../libs';
+import type { ISize } from '../types';
 
 export interface Props {
 	/** 标识 */
 	id?: string;
 
-	/** 尺寸,单个值为 PC移动公用尺寸,双值则分别为PC与移动尺寸 */
-	size?: 'sm' | 'md' | 'lg' | 'xl';
+	/** 尺寸 */
+	size?: ISize;
 
 	/** 是否允许开启头部自定义 */
 	header?: boolean | string | IIcon;

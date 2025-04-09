@@ -46,12 +46,15 @@ export type IPositionBase =
 /** 位置(全部) */
 export type IPositionFull = IPosition | IPositionBase;
 
+/** 尺寸 */
+export type ISize = 'sm' | 'md' | 'lg' | 'xl';
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/** 警告消息类型 */
-export interface AlertOptions {
+/** 消息类型 */
+export interface IMessage {
 	/** 主题 */
-	theme?: ITheme;
+	theme?: IColorFull;
 
 	/** 标题 */
 	title?: string;
@@ -61,7 +64,10 @@ export interface AlertOptions {
 
 	/** 图标 */
 	icon?: string;
+}
 
+/** 警告消息类型 */
+export interface AlertOptions extends IMessage {
 	/** 是否重要 */
 	important?: boolean;
 
@@ -94,21 +100,12 @@ export interface LoadingOptions {
 }
 
 /** 弹窗消息类型 */
-export interface ModalOptions {
-	/** 图标 */
-	icon?: string;
-
-	/** 主题 */
-	theme?: ITheme;
-
-	/** 标题 */
-	title?: string;
-
-	/** 消息内容 */
-	message?: string;
-
+export interface ModalOptions extends IMessage {
 	/** 允许关闭 */
 	showClose?: boolean;
+
+	/** 尺寸 */
+	size?: ISize;
 
 	/** 取消按钮文字 */
 	textCancel?: string;
@@ -130,16 +127,7 @@ export interface ModalOptions {
 }
 
 /** 提示消息类型 */
-export interface ToastOptions {
-	/** 主题 */
-	theme?: ITheme;
-
-	/** 标题 */
-	title?: string;
-
-	/** 消息内容 */
-	message?: string;
-
+export interface ToastOptions extends Omit<IMessage, 'icon'> {
 	/** 显示时长(毫秒)，0表示不自动关闭 */
 	duration?: number;
 }

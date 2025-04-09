@@ -1,0 +1,49 @@
+---
+/**
+ * 	Error 错误信息示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import Button from '../components/Button.astro';
+import ERROR from '../customs/Error.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="Error 错误信息">
+	<div class="row">
+		<div class="col-12 my-1">
+			<Card class="h-500">
+				<h4>默认</h4>
+				<ERROR
+					code="404"
+					icon="page-disabled"
+					title="页面不存在"
+					message="你要访问的页面已经删除或者地址无效"
+					theme="danger">
+					<Button theme="primary">返回首页</Button>
+				</ERROR>
+			</Card>
+		</div>
+		<div class="col-12 my-1">
+			<Card>
+				<h4>简要样式</h4>
+				<ERROR
+					simple
+					icon="logo-logo"
+					title="关于我们"
+					message="湖南大沥网络科技有限公司"
+				/>
+			</Card>
+		</div>
+	</div>
+</LAYOUT>

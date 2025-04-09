@@ -14,7 +14,7 @@
  */
 
 import { ClassClear } from '../../libs';
-import type { ITheme } from '../../types';
+import type { ISize, ITheme } from '../../types';
 import ICON from '../Icon.astro';
 
 /** 头像状态 */
@@ -29,7 +29,7 @@ export interface Props {
 	src: string;
 
 	/** 头像大小 */
-	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+	size?: 'xs' | ISize;
 
 	/** 头像形状 */
 	shape?: 'square' | 'rounded';

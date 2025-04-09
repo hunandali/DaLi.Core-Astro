@@ -15,7 +15,7 @@
 
 import ICON from './Icon.astro';
 import { ClassClear } from '../libs';
-import type { IIcon } from '../types';
+import type { IIcon, ISize } from '../types';
 
 export interface Props extends IIcon {
 	/** 按钮类型 */
@@ -28,7 +28,7 @@ export interface Props extends IIcon {
 	shape?: 'default' | 'square' | 'pill';
 
 	/** 大小 */
-	size?: 'sm' | 'md' | 'lg';
+	size?: Exclude<ISize, 'xl'>;
 
 	/** 是否加载中 */
 	loading?: boolean;
@@ -42,7 +42,7 @@ const {
 	logo = false,
 	text = '',
 	theme,
-	size = 0,
+	size,
 	disabled = false,
 	rotate,
 	type,

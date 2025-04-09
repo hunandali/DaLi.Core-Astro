@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import type { ITheme } from '../types';
+import type { ISize, ITheme } from '../types';
 import { ClassClear } from '../libs';
 
 export interface Props {
@@ -21,7 +21,7 @@ export interface Props {
 	title?: string;
 
 	/** 卡片填充 */
-	padding?: 'sm' | 'md' | 'lg';
+	padding?: Exclude<ISize, 'xl'>;
 
 	/** 卡片堆叠 */
 	stacked?: boolean;

@@ -12,7 +12,7 @@
  * ------------------------------------------------------------
  */
 
-import { hasObject, isFn } from '@da.li/core-libs';
+import { hasObject, htmlSafe, isFn } from '@da.li/core-libs';
 import { Modal } from 'bootstrap';
 import { getIcon, getLogo } from '../icons';
 import { ThemeIcon } from '../libs';
@@ -44,7 +44,7 @@ class ModalService {
 			ModalEL.setAttribute('tabindex', '-1');
 
 			const ModalDialog = document.createElement('div');
-			ModalDialog.className = 'modal-dialog modal-sm modal-dialog-centered';
+			ModalDialog.className = 'modal-dialog modal-dialog-centered';
 			ModalDialog.setAttribute('role', 'document');
 
 			const ModalContent = document.createElement('div');
@@ -117,6 +117,7 @@ class ModalService {
 			message,
 			theme,
 			showClose = true,
+			size,
 			textCancel = '取消',
 			textOk = '确定',
 			onCancel,
@@ -124,10 +125,17 @@ class ModalService {
 			onClose,
 			onOk
 		} = options;
+
+		// 设置尺寸，先移除原始尺寸后添加新尺寸
+		this._element.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
+		size && ['sm', 'lg', 'xl'].includes(size) && this._element.classList.add(`modal-${size}`);
+
+		// logo- 开头的图标为 logo
+		// - 表示隐藏图标
 		const icon = ThemeIcon(theme);
 		if (iconName) {
 			icon.icon = iconName;
-			icon.logo = false;
+			icon.logo = iconName && iconName.startsWith('logo-');
 		}
 		icon.icon = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
 
@@ -147,9 +155,25 @@ class ModalService {
 		}
 
 		elStatus.className = `modal-status bg-${icon.theme}`;
-		elIcon.className = `${icon.icon} user-select-none text-${icon.theme} text-14`;
-		elTitle.innerHTML = title ?? '';
-		elMessage.innerHTML = message ?? '';
+
+		elIcon.className =
+			icon.icon && icon.icon !== '-'
+				? `${icon.icon} user-select-none text-${icon.theme} text-14`
+				: 'd-none';
+
+		if (title) {
+			elTitle.innerHTML = htmlSafe(title);
+			elTitle.style.display = 'block';
+		} else {
+			elTitle.style.display = 'none';
+		}
+
+		if (message) {
+			elMessage.innerHTML = htmlSafe(message);
+			elMessage.style.display = 'block';
+		} else {
+			elMessage.style.display = 'none';
+		}
 
 		btnCancel.textContent = textCancel;
 		btnOk.textContent = textOk;

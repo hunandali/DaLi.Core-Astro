@@ -1,0 +1,112 @@
+---
+/**
+ *  QR 二维码组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { type IQR } from '@da.li/core-libs';
+
+export interface Props extends IQR {
+	/** 服务端加载时显示的文本 */
+	tip?: string;
+}
+
+let { code, size = 200, level, color, backColor, logo = true, tip, ...props } = Astro.props;
+
+// /** 客户端重新渲染,加载 Logo */
+// onMounted(async () => {
+// 	const svg = await QRCreate(props);
+// 	qr.value = 'data:image/svg+xml;base64,' + base64Encode(svg);
+// });
+---
+
+<dl-qr
+	{...props}
+	data-code={code}
+	data-size={size}
+	data-level={level}
+	data-color={color}
+	data-back-color={backColor}
+	data-logo={logo}>
+	<code class="full center">{tip || code}</code>
+</dl-qr>
+
+<script>
+	import { base64Encode, QRCreate, type IQR } from '@da.li/core-libs';
+	import { IsDarkTheme } from '../libs/client';
+
+	class DlQR extends HTMLElement {
+		private _themeObserver: MutationObserver;
+
+		constructor() {
+			super();
+
+			// 监听主题变化
+			this._themeObserver = new MutationObserver(() => this.generateQR());
+			this._themeObserver.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ['data-bs-theme'] // 改为监听 data-bs-theme 属性
+			});
+		}
+
+		async connectedCallback() {
+			await this.generateQR();
+		}
+
+		disconnectedCallback() {
+			this._themeObserver.disconnect();
+		}
+
+		private async generateQR() {
+			const props = { ...this.dataset } as IQR;
+			this.style.height = this.style.width = `${props.size || 200}px`;
+
+			// 如果 code 为空，则不生成二维码
+			if (!props.code) return;
+
+			props.logo =
+				!props.logo || props.logo === 'false'
+					? false
+					: props.logo === 'true'
+						? true
+						: props.logo;
+
+			// 检查是否深色模式，深色则反色
+			props.reserve = IsDarkTheme();
+
+			// 客户端重新渲染,加载 Logo
+			const svg = await QRCreate(props);
+			const src = 'data:image/svg+xml;base64,' + base64Encode(svg);
+
+			this.innerHTML = `<img src="${src}" />`;
+			this.style.display = 'inline';
+		}
+	}
+
+	customElements.define('dl-qr', DlQR);
+</script>
+
+<style is:global>
+	dl-qr {
+		display: inline-block;
+		text-align: center;
+		padding: 1px;
+		border: 1px dotted var(--tblr-border-color);
+		border-radius: var(--tblr-border-radius-sm);
+		word-break: break-all;
+		overflow: hidden;
+
+		> code {
+			padding: 10% !important;
+		}
+	}
+</style>

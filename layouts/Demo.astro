@@ -1,9 +1,24 @@
 ---
+/**
+ *	Demo 演示页面
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
 import EMPTY, { type Props as ILayout } from './Empty.astro';
 import LAYOUT from './PageLayout.astro';
 import HEADER, { type Props as IHeader } from './PageHeader.astro';
 
 import THEME from '../layouts/PageTheme.astro';
+import ABOUT from '../customs/About.astro';
 
 // import ABOUT from './components/About.astro';
 interface Props extends ILayout, IHeader {}
@@ -18,7 +33,11 @@ const props = Astro.props;
 				<THEME />
 			</HEADER>
 		</slot>
-		<slot slot="footer" name="footer">copyright</slot>
+		<slot slot="footer" name="footer">
+			<div class="text-center">
+				<ABOUT version="1.25.409" />
+			</div>
+		</slot>
 		<slot />
 	</LAYOUT>
 </EMPTY>
