@@ -10,7 +10,7 @@ import TOAST from '../messages/Toast.astro';
 </LAYOUT>
 <script>
 	import type { ITheme } from '../types';
-	import { showToast } from '../libs/index.client';
+	import { showToast } from '../libs/client';
 
 	const themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 	themes.forEach((theme, index) => {

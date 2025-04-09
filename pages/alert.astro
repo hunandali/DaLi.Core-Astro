@@ -16,7 +16,7 @@ import LAYOUT from '../layouts/Demo.astro';
 
 <script>
 	import type { ITheme } from '../types';
-	import { showAlert } from '../libs/index.client';
+	import { showAlert } from '../libs/client';
 
 	const themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 	themes.forEach((theme, index) => {

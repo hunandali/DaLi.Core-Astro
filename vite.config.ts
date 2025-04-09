@@ -33,7 +33,7 @@ export default defineConfig({
 				'index.css': 'themes/index.less',
 				index: 'index.ts',
 				'libs/index': 'libs/index.ts',
-				'libs/client': 'libs/index.client.ts'
+				'libs/client': 'libs/client.ts'
 			},
 			output: {
 				entryFileNames: '[name].js',
