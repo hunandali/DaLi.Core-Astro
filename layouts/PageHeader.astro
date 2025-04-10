@@ -13,12 +13,18 @@
  * ------------------------------------------------------------
  */
 
+import { ClassClear } from '../libs';
+import type { ISize } from '../types';
+
 export interface Props {
+	/** 是否整个页面宽度 */
+	size?: ISize | 'xxl' | 'fluid' | 'auto';
+
 	/** 标题 */
 	title: string;
 
 	/** 标题描述 */
-	pretitle?: string;
+	description?: string;
 
 	/** 副标题 */
 	subtitle?: string;
@@ -27,37 +33,44 @@ export interface Props {
 	class?: string;
 }
 
-const { title, pretitle, subtitle, class: className, ...props } = Astro.props as Props;
+const { title, size, description, subtitle, class: className, ...props } = Astro.props as Props;
+
+/** 页面宽度布局 */
+const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
+
+const classList = ClassClear(['page-header', className]);
 ---
 
-<div class:list={['page-header', className]} {...props}>
-	<div class="row align-items-center">
-		{
-			Astro.slots.has('icon') && (
-				<div class="col-auto">
-					<slot name="icon" />
-				</div>
-			)
-		}
-
-		<div class="col">
-			{pretitle && <div class="page-pretitle">{pretitle}</div>}
-			<h2 class="page-title">{title}</h2>
-			{subtitle && <div class="page-subtitle">{subtitle}</div>}
+<header class={classList} {...props}>
+	<div class={containerClass}>
+		<div class="row align-items-center">
 			{
-				Astro.slots.has('subtitle') && (
-					<div class="page-subtitle">
-						<slot name="subtitle" />
+				Astro.slots.has('icon') && (
+					<div class="col-auto">
+						<slot name="icon" />
+					</div>
+				)
+			}
+
+			<div class="col">
+				{description && <div class="page-pretitle">{description}</div>}
+				<h2 class="page-title">{title}</h2>
+				{subtitle && <div class="page-subtitle">{subtitle}</div>}
+				{
+					Astro.slots.has('subtitle') && (
+						<div class="page-subtitle">
+							<slot name="subtitle" />
+						</div>
+					)
+				}
+			</div>
+			{
+				Astro.slots.has('default') && (
+					<div class="col-auto ms-auto">
+						<slot name="default" />
 					</div>
 				)
 			}
 		</div>
-		{
-			Astro.slots.has('default') && (
-				<div class="col-auto ms-auto">
-					<slot name="default" />
-				</div>
-			)
-		}
 	</div>
-</div>
+</header>

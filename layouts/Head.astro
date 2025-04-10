@@ -86,10 +86,15 @@ const domain = import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origi
 const url = domain ? new URL(Astro.url.pathname, domain).href : Astro.url.href;
 
 /** 关键词 */
-const tags = Array.isArray(keywords) ? keywords.join(',') : keywords;
+const tags = Array.isArray(keywords)
+	? keywords.join(',')
+	: keywords || import.meta.env.SITE_KEYWORDS;
 
 /** 发布时间 */
 const date = time ? new Date(time).toISOString() : undefined;
+
+/** 简介 */
+const summary = description || import.meta.env.SITE_DESCRIPTION;
 ---
 
 <meta charset="utf-8" />
@@ -99,7 +104,7 @@ const date = time ? new Date(time).toISOString() : undefined;
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <title>{title || site}</title>
-{description && <meta name="description" content={description} />}
+{summary && <meta name="description" content={summary} />}
 {tags && <meta name="keywords" content={tags} />}
 {url && <meta http-equiv="mobile-agent" content={`format=html5; url=${url}`} />}
 {metas && Object.keys(metas).map((key) => <meta name={key} content={metas[key]} />)}
@@ -109,7 +114,7 @@ const date = time ? new Date(time).toISOString() : undefined;
 		<>
 			{type && <meta property="og:type" content={type} />}
 			<meta property="og:title" content={title || site} />
-			{description && <meta property="og:description" content={description} />}
+			{summary && <meta property="og:description" content={summary} />}
 			{site && <meta property="og:site_name" content={site} />}
 			{url && <meta property="og:url" content={url} />}
 			{image && <meta property="og:image" content={image} />}

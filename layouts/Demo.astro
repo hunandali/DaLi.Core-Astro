@@ -16,9 +16,11 @@
 import EMPTY, { type Props as ILayout } from './Empty.astro';
 import LAYOUT from './PageLayout.astro';
 import HEADER, { type Props as IHeader } from './PageHeader.astro';
+import FOOTER from './PageFooter.astro';
 
 import THEME from '../layouts/PageTheme.astro';
 import ABOUT from '../customs/About.astro';
+import Icon from '../components/Icon.astro';
 
 // import ABOUT from './components/About.astro';
 interface Props extends ILayout, IHeader {}
@@ -29,14 +31,16 @@ const props = Astro.props;
 <EMPTY {...props}>
 	<LAYOUT>
 		<slot slot="header" name="header">
-			<HEADER {...props} class="w-100">
+			<HEADER {...props}>
 				<THEME />
 			</HEADER>
 		</slot>
 		<slot slot="footer" name="footer">
-			<div class="text-center">
-				<ABOUT version="1.25.409" />
-			</div>
+			<FOOTER>
+				<span slot="links">
+					Made with <Icon icon="ri:hearts-fill" theme="danger" /> in China.
+				</span>
+			</FOOTER>
 		</slot>
 		<slot />
 	</LAYOUT>

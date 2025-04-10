@@ -176,6 +176,7 @@ export const Imports: AutoImportOptions['imports'] = [
 		'@da.li/core-astro/dist/layouts': [
 			'DlEmptyLayout',
 			'DlHead',
+			'DlPageFooter',
 			'DlPageHeader',
 			'DlPageLayout',
 			'DlPageTheme'
@@ -194,6 +195,4 @@ export const Imports: AutoImportOptions['imports'] = [
 			'ToastService'
 		]
 	}
-
-	// 对于服务端无法直接导入组件的情况，需要单独导入
 ];

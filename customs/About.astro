@@ -52,7 +52,7 @@ title = title || import.meta.env.SITE_NAME;
 homepage = homepage || import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origin;
 
 /** 版权 */
-copyright = copyright || `Copyright © ${new Date().getFullYear()} ${import.meta.env.SITE_NAME}`;
+copyright = copyright || `© ${new Date().getFullYear()} ${import.meta.env.SITE_NAME}`;
 
 /** 描述 */
 description = description || import.meta.env.SITE_DESCRIPTION;
@@ -63,25 +63,32 @@ description = description || import.meta.env.SITE_DESCRIPTION;
 		<slot>{copyright}</slot>
 	</a>
 	{
-		version && (
-			<>
-				<i class="a badge text-secondary ms-2">ver:{version}</i>
-				<div class="d-none" data-icon={icon} data-title={title}>
-					<ERROR size="md" theme="primary" icon="logo-logo" title={title}>
+		Astro.slots.has('version') ? (
+			<span class="a ms-2">
+				<slot name="version" />
+			</span>
+		) : (
+			version && <i class="a ms-2 badge text-secondary">ver:{version}</i>
+		)
+	}
+	{
+		(version || Astro.slots.has('version')) && (
+			<div class="d-none" data-icon={icon} data-title={title}>
+				<ERROR size="md" theme="primary" icon="logo-logo" title={title}>
+					{version && (
 						<div class="badge text-bg-warning text-3">
 							VER
 							<span class="badge text-warning rounded-1">{version}</span>
 						</div>
-						<div class="my-2 text-secondary">{description}</div>
-						<a
-							href={homepage}
-							target="_blank"
-							class="text-secondary text-truncate text-3">
-							{copyright}
-						</a>
-					</ERROR>
-				</div>
-			</>
+					)}
+					<div class="my-2 text-secondary">
+						<slot name="description">{description}</slot>
+					</div>
+					<a href={homepage} class="text-secondary text-truncate text-3" target="_blank">
+						{copyright}
+					</a>
+				</ERROR>
+			</div>
 		)
 	}
 </dl-about>
@@ -91,7 +98,7 @@ description = description || import.meta.env.SITE_DESCRIPTION;
 
 	class DlAbout extends HTMLElement {
 		connectedCallback() {
-			const btn = this.querySelector('i');
+			const btn = this.querySelector('.a');
 			if (!btn) return;
 
 			const message = this.querySelector('div')?.innerHTML;

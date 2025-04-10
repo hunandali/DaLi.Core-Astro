@@ -1,4 +1,8 @@
 ---
+import { undefined } from 'astro:schema';
+import { ClassClear } from '../libs';
+import type { ISize } from '../types';
+
 /**
  * 	PageLayout 基础页面布局
  *
@@ -14,48 +18,68 @@
  */
 
 export interface Props {
-	// variant?: 'default' | 'horizontal' | 'vertical' | 'condensed';
+	/** 是否整个页面宽度 */
+	size?: ISize | 'xxl' | 'fluid' | 'auto';
 
-	// 是否整个页面宽度
-	fluid?: boolean;
+	/** 布局类型 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 导航栏主题(默认: dark) */
+	navTheme?: 'light' | 'dark';
+
+	/** 自定义导航栏类名 */
+	navClass?: string;
 
 	// 自定义类名
 	class?: string;
 }
 
-const { fluid = false, class: className = '', ...props } = Astro.props as Props;
+const {
+	layout = 'horizontal',
+	size = 'auto',
+	navTheme = 'dark',
+	navClass,
+	class: className,
+	...props
+} = Astro.props as Props;
 
-const containerClass = fluid ? 'container-fluid' : 'container-xl';
+/** 页面宽度布局 */
+const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
+
+/** 导航栏 */
+const navbarClass = ClassClear([
+	'navbar',
+	layout === 'vertical' ? 'navbar-vertical navbar-expand-sm' : 'navbar-expand-md',
+	navClass
+]);
+const navbarContainerClass = layout === 'vertical' ? 'container-fluid' : navbarClass;
+const Navbar = layout === 'vertical' ? 'aside' : 'nav';
 ---
 
 <div class="page" {...props}>
 	{
-		Astro.slots.has('header') && (
-			<header class="navbar navbar-expand-md navbar-light d-print-none">
-				<div class={containerClass}>
-					<slot name="header" />
+		Astro.slots.has('navbar') && (
+			<Navbar class={navbarClass} data-bs-theme={navTheme === 'dark' ? 'dark' : undefined}>
+				<div class={navbarContainerClass}>
+					<slot name="navbar" />
 				</div>
-			</header>
+			</Navbar>
 		)
 	}
 
+	<slot name="top" />
+
 	<div class="page-wrapper">
-		<slot name="top" />
+		<slot name="header" />
+
 		<div class:list={['page-body', className]}>
 			<div class={containerClass}>
 				<slot />
 			</div>
 		</div>
-		<slot name="bottom" />
+
+		<slot name="footer" />
 	</div>
 
-	{
-		Astro.slots.has('footer') && (
-			<footer class="footer">
-				<div class={containerClass}>
-					<slot name="footer" />
-				</div>
-			</footer>
-		)
-	}
+	<slot name="bottom" />
 </div>

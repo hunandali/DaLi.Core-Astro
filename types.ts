@@ -151,20 +151,38 @@ export interface IPropsBase extends Dict {
 /** 图标属性 */
 export interface IIcon {
 	/** 图标 */
-	icon?: string | undefined;
+	icon?: string;
 
 	/** 是否为 Logo */
-	logo?: string | boolean | undefined;
+	logo?: string | boolean;
 
 	/** 文字 */
-	text?: string | number | undefined;
+	text?: string | number;
 
 	/** 类型 */
-	theme?: IColorFull | string | undefined;
+	theme?: IColorFull | string;
 
 	/** 禁用图标 */
-	disabled?: boolean | undefined;
+	disabled?: boolean;
 
 	/** 旋转 */
-	rotate?: 0 | 1 | 2 | 3 | 'horizontal' | 'vertical' | 'both' | string | undefined;
+	rotate?: 0 | 1 | 2 | 3 | 'horizontal' | 'vertical' | 'both' | string;
+}
+
+/** 链接属性 */
+export interface ILink {
+	/** 图标 */
+	icon?: string;
+
+	/** 文字 */
+	text: string | number;
+
+	/** 类型 */
+	theme?: IColorFull | string;
+
+	/** 链接 */
+	href?: string;
+
+	/** 链接目标 */
+	target?: string;
 }

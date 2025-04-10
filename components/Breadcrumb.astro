@@ -15,20 +15,29 @@
 
 import ICON from './Icon.astro';
 import { ClassClear } from '../libs';
-
-interface BreadcrumbItem {
-	text: string;
-	href?: string;
-	icon?: string;
-}
+import type { ILink } from '../types';
 
 export interface Props {
-	items: BreadcrumbItem[];
+	/** 链接 */
+	items: ILink[];
+
+	/** 分隔符 */
 	separator?: 'slash' | 'dot' | 'arrow' | 'bullet';
+
+	/** 最后一个是否链接是否显示选中模式(选中则高亮) */
+	showActive?: boolean;
+
+	/** 自定义类名 */
 	class?: string;
 }
 
-const { items, separator = 'slash', class: className, ...props } = Astro.props as Props;
+const {
+	items,
+	separator = 'slash',
+	showActive = true,
+	class: className,
+	...props
+} = Astro.props as Props;
 
 const separatorClasses = separator != 'slash' ? `breadcrumb-${separator}s` : '';
 
@@ -38,22 +47,11 @@ const classList = ClassClear(['breadcrumb', separatorClasses, className]);
 <ol class={classList} {...props}>
 	{
 		items.map((item, index) => (
-			<li class={`breadcrumb-item${index === items.length - 1 ? ' active' : ''}`}>
-				<a href={item.href}>
-					<ICON icon={item.icon} text={item.text} />
+			<li
+				class={`breadcrumb-item${index === items.length - 1 && showActive ? ' active' : ''}`}>
+				<a href={item.href} target={item.target}>
+					<ICON icon={item.icon} text={item.text} theme={item.theme} />
 				</a>
-
-				{/* {index === items.length - 1 ? (
-					<>
-						{item.icon && <ICON icon={item.icon} />}
-						{item.text}
-					</>
-				) : (
-					<a href={item.href}>
-						{item.icon && <i class={`${item.icon} me-2`} />}
-						{item.text}
-					</a>
-				)} */}
 			</li>
 		))
 	}

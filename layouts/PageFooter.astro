@@ -1,0 +1,74 @@
+---
+/**
+ * 	PageFooter 页脚
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { ClassClear } from '../libs';
+import type { ILink, ISize } from '../types';
+import About from '../customs/About.astro';
+import Tooltip from '../components/Tooltip.astro';
+import Icon from '../components/Icon.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+export interface Props {
+	/** 是否整个页面宽度 */
+	size?: ISize | 'xxl' | 'fluid' | 'auto';
+
+	/** ICP 证编号 */
+	ICP?: string;
+
+	/** 链接 */
+	links?: ILink[];
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { size, ICP, links = [], class: className, ...props } = Astro.props as Props;
+
+/** 页面宽度布局 */
+const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
+
+const classList = ClassClear(['page-footer', 'footer', className]);
+---
+
+<footer class={classList} {...props}>
+	<div class={containerClass}>
+		<div class="row align-items-center text-center text-md-start">
+			<slot>
+				<div class="col-12 col-md mb-1 mb-md-0">
+					<slot name="links">
+						<Breadcrumb items={links} separator="bullet" showActive={false} />
+					</slot>
+				</div>
+				<div class="col-12 col-md-auto mt-1 mt-md-0">
+					<About>
+						<slot name="Version" slot="version">
+							<Tooltip title="关于" element="i"><Icon icon="logo-logo" /></Tooltip>
+						</slot>
+						<slot name="About" slot="description">
+							{import.meta.env.SITE_DESCRIPTION}
+						</slot>
+					</About>
+					{
+						ICP && (
+							<a href="https://beian.miit.gov.cn/" target="_blank" class="line-left">
+								{ICP}
+							</a>
+						)
+					}
+				</div>
+			</slot>
+		</div>
+	</div>
+</footer>
