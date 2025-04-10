@@ -13,39 +13,108 @@
  * ------------------------------------------------------------
  */
 
+import Icon from '../components/Icon.astro';
 import Switch from '../components/Switch.astro';
+
+export interface Props {
+	/** 模式 (切换按钮或者图标) */
+	mode?: 'switch' | 'icon';
+}
+
+const { mode = 'switch', ...props } = Astro.props;
 
 // 从 cookie 中获取主题设置
 const isDark = Astro.cookies.get('theme')?.value === 'dark';
 ---
 
-<Switch checked={isDark} label="深色模式" name="theme" />
+<Switch
+	checked={isDark}
+	label="深色模式"
+	name="page-theme-switch"
+	{...props}
+	showSwitch={mode === 'switch'}>
+	<Icon icon="sun" theme="light" />
+	<Icon icon="moon" theme="dark" />
+</Switch>
+
+{
+	/**  
+	mode === 'switch' ? (
+		<Switch checked={isDark} label="深色模式" name="page-theme-switch" {...props}>
+			<Icon icon="sun" theme="light" />
+			<Icon icon="moon" theme="dark" />
+		</Switch>
+	) : (
+		<SwitchIcon
+			checked={isDark}
+			iconOn="sun"
+			iconOff="moon"
+			themeOff="dark"
+			themeOn="light"
+			name="page-theme-switch"
+			{...props}
+		/>
+	)
+	*/
+}
 
 <script>
 	import { Cookies } from '@da.li/core-libs';
 
-	/** 切换主题 */
-	function toggleTheme() {
-		const themeSwitch = document.querySelector('input[name="theme"]') as HTMLInputElement;
+	/** 切换主题(开关) */
+	function toggleSwitchTheme() {
+		const themeSwitch = document.querySelector(
+			'input[name="page-theme-switch"]'
+		) as HTMLInputElement;
 		if (!themeSwitch) return;
+
+		const Icons: NodeListOf<HTMLElement> = themeSwitch.parentElement!.querySelectorAll('.icon');
+		const swithIcons = (isDark: boolean) => {
+			if (!Icons || Icons.length < 2) return;
+
+			Icons[1].style.display = isDark ? 'none' : 'inline';
+			Icons[0].style.display = isDark ? 'inline' : 'none';
+
+			echo('切换主题', isDark, Icons[0].style.display, Icons[1].style.display);
+		};
 
 		// 从 Cookie 中获取主题设置
 		const darkTheme = Cookies.get('theme') === 'dark';
 
 		// 切换主题
 		themeSwitch.checked = darkTheme;
+		swithIcons(darkTheme);
 		setTheme(darkTheme, false);
 
 		themeSwitch.addEventListener('change', () => {
 			const isDark = themeSwitch.checked;
+			swithIcons(isDark);
 			setTheme(isDark, true);
-
-			// 保存主题设置到 Cookie
-			const expires = new Date();
-			expires.setFullYear(expires.getFullYear() + 1);
-			document.cookie = `theme=${isDark ? 'dark' : 'light'}; expires=${expires.toUTCString()}; path=/`;
 		});
 	}
+
+	// /** 切换主题(图标) */
+	// function toggleIconTheme() {
+	// 	const themeSwitch = document.querySelector(
+	// 		'button[name="page-theme-switch"]'
+	// 	) as HTMLButtonElement;
+
+	// 	if (!themeSwitch) return;
+
+	// 	// 从 Cookie 中获取主题设置
+	// 	const darkTheme = Cookies.get('theme') === 'dark';
+
+	// 	// 切换主题
+	// 	darkTheme ? themeSwitch.classList.add('active') : themeSwitch.classList.remove('active');
+
+	// 	setTheme(darkTheme, false);
+
+	// 	themeSwitch.addEventListener('click', () => {
+	// 		const isDark = themeSwitch.classList.contains('active');
+
+	// 		setTheme(isDark, true);
+	// 	});
+	// }
 
 	/**
 	 * 设置主题
@@ -67,5 +136,6 @@ const isDark = Astro.cookies.get('theme')?.value === 'dark';
 			});
 	}
 
-	toggleTheme();
+	toggleSwitchTheme();
+	// toggleIconTheme();
 </script>

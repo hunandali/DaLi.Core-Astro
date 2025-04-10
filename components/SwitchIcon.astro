@@ -18,16 +18,19 @@ import ICON, { type Props as IIcon } from './Icon.astro';
 import { ClassClear } from '../libs';
 
 export interface Props extends Omit<IIcon, 'icon' | 'text' | 'theme'> {
+	/** 名称 */
+	name?: string;
+
 	/** 开启状态图标 */
 	iconOn: string;
 
 	/** 关闭状态图标 */
 	iconOff?: string;
 
-	/** 开启状态图标 */
+	/** 开启状态文本 */
 	textOn?: string;
 
-	/** 关闭状态图标 */
+	/** 关闭状态文本 */
 	textOff?: string;
 
 	/** 类型 */
@@ -47,6 +50,7 @@ export interface Props extends Omit<IIcon, 'icon' | 'text' | 'theme'> {
 }
 
 const {
+	name,
 	iconOn,
 	iconOff,
 	textOn,
@@ -72,7 +76,7 @@ const iconA = {
 const iconB = { ...props, icon: iconOn, text: textOn, theme: themeOn };
 ---
 
-<button class={classList} data-bs-toggle="switch-icon">
+<button class={classList} data-bs-toggle="switch-icon" name={name} disabled={disabled}>
 	<span class="switch-icon-a text-secondary">
 		<ICON {...iconA} />
 	</span>
@@ -80,3 +84,7 @@ const iconB = { ...props, icon: iconOn, text: textOn, theme: themeOn };
 		<ICON {...iconB} />
 	</span>
 </button>
+
+<script>
+	import '@tabler/core/js/src/switch-icon';
+</script>

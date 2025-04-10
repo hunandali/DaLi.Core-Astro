@@ -25,16 +25,35 @@ export interface Props {
 	/** 输入框名称 */
 	name?: string;
 
+	/** 是否显示开关 */
+	showSwitch?: boolean;
+
 	/** 自定义样式 */
 	class?: string;
 }
 
-const { checked = false, label, name, class: className = '', ...props } = Astro.props;
+const {
+	checked = false,
+	showSwitch = true,
+	label,
+	name,
+	class: className = '',
+	...props
+} = Astro.props;
 
-const classList = ClassClear(['form-check form-switch a', className]);
+const classList = ClassClear(['form-check form-switch a', !showSwitch && 'ps-0', className]);
+const classInput = ClassClear(['form-check-input a', !showSwitch && 'd-none']);
 ---
 
 <label class={classList} {...props}>
-	<input type="checkbox" class="form-check-input a" checked={checked} name={name} />
-	{label && <span class="form-check-label">{label}</span>}
+	<input type="checkbox" class={classInput} checked={checked} name={name} />
+	{
+		Astro.slots.has('default') ? (
+			<span class="form-check-label">
+				<slot />
+			</span>
+		) : (
+			label && <span class="form-check-label">{label}</span>
+		)
+	}
 </label>
