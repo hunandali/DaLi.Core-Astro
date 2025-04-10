@@ -1,7 +1,7 @@
 {
 	"name": "@da.li/core-astro",
 	"title": "大沥网络 Astro 公共库",
-	"version": "1.25.410-15",
+	"version": "1.25.410-18",
 	"description": "大沥网络 Astro 公共库，包含基础 UI 组件、基础工具函数等",
 	"license": "GPL-3.0",
 	"publishConfig": {

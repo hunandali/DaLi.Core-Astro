@@ -46,16 +46,21 @@ let {
 } = Astro.props as Props;
 
 /** 网站名称 */
-title = title || import.meta.env.SITE_NAME;
+title = title || import.meta.env.APP_NAME;
 
 /** 域名 */
-homepage = homepage || import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origin;
+homepage = homepage || import.meta.env.APP_URL || Astro.site?.origin || Astro.url.origin;
 
 /** 版权 */
-copyright = copyright || `© ${new Date().getFullYear()} ${import.meta.env.SITE_NAME}`;
+copyright =
+	copyright ||
+	`© ${new Date().getFullYear()} ${import.meta.env.APP_COMPANY || import.meta.env.APP_NAME}`;
 
 /** 描述 */
-description = description || import.meta.env.SITE_DESCRIPTION;
+description = description || import.meta.env.APP_DESCRIPTION;
+
+/** 版本 */
+version = version || import.meta.env.APP_VERSION;
 ---
 
 <dl-about {...props}>

@@ -13,7 +13,6 @@
  */
 
 import { hasObject, isString, toDate } from '@da.li/core-libs';
-import dayjs from 'dayjs';
 import { getIcon } from '../icons';
 import type { LoadingOptions } from '../types';
 
@@ -126,7 +125,7 @@ class LoadingService {
 
 		this._ticker++;
 
-		const message = `${dayjs().format('HH:mm:ss')} <i class="opacity-50">/</i> ${toDate(
+		const message = `${new Date().toLocaleTimeString()} <i class="opacity-50">/</i> ${toDate(
 			this._ticker
 		)}`;
 		el.innerHTML = message;

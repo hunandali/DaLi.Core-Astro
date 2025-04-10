@@ -77,24 +77,23 @@ const {
 } = Astro.props;
 
 /** 网站名称 */
-const site = import.meta.env.SITE_NAME;
+const site = import.meta.env.APP_NAME;
 
 /** 域名 */
-const domain = import.meta.env.SITE_URL || Astro.site?.origin || Astro.url.origin;
+const domain = import.meta.env.APP_URL || Astro.site?.origin || Astro.url.origin;
 
 /** 当前页面URL */
 const url = domain ? new URL(Astro.url.pathname, domain).href : Astro.url.href;
 
 /** 关键词 */
-const tags = Array.isArray(keywords)
-	? keywords.join(',')
-	: keywords || import.meta.env.SITE_KEYWORDS;
+let tags = keywords || import.meta.env.APP_KEYWORDS;
+tags = Array.isArray(tags) ? tags.join(',') : tags;
 
 /** 发布时间 */
 const date = time ? new Date(time).toISOString() : undefined;
 
 /** 简介 */
-const summary = description || import.meta.env.SITE_DESCRIPTION;
+const summary = description || import.meta.env.APP_DESCRIPTION;
 ---
 
 <meta charset="utf-8" />
