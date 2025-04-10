@@ -1,8 +1,4 @@
 ---
-import { undefined } from 'astro:schema';
-import { ClassClear } from '../libs';
-import type { ISize } from '../types';
-
 /**
  * 	PageLayout 基础页面布局
  *
@@ -17,6 +13,9 @@ import type { ISize } from '../types';
  * ------------------------------------------------------------
  */
 
+import { ClassClear } from '../libs';
+import type { ISize } from '../types';
+
 export interface Props {
 	/** 是否整个页面宽度 */
 	size?: ISize | 'xxl' | 'fluid' | 'auto';
@@ -29,9 +28,6 @@ export interface Props {
 
 	/** 自定义导航栏类名 */
 	navClass?: string;
-
-	// 自定义类名
-	class?: string;
 }
 
 const {
@@ -39,7 +35,6 @@ const {
 	size = 'auto',
 	navTheme = 'dark',
 	navClass,
-	class: className,
 	...props
 } = Astro.props as Props;
 
@@ -72,7 +67,7 @@ const Navbar = layout === 'vertical' ? 'aside' : 'nav';
 	<div class="page-wrapper">
 		<slot name="header" />
 
-		<div class:list={['page-body', className]}>
+		<div class="page-body">
 			<div class={containerClass}>
 				<slot />
 			</div>

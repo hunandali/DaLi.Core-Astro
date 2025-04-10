@@ -14,13 +14,12 @@
  */
 
 import EMPTY, { type Props as ILayout } from './Empty.astro';
-import LAYOUT from './PageLayout.astro';
-import HEADER, { type Props as IHeader } from './PageHeader.astro';
 import FOOTER from './PageFooter.astro';
+import HEADER, { type Props as IHeader } from './PageHeader.astro';
+import LAYOUT from './PageLayout.astro';
 
-import THEME from '../layouts/PageTheme.astro';
-import ABOUT from '../customs/About.astro';
 import Icon from '../components/Icon.astro';
+import THEME from '../layouts/PageTheme.astro';
 
 // import ABOUT from './components/About.astro';
 interface Props extends ILayout, IHeader {}

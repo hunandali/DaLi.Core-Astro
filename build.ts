@@ -93,6 +93,7 @@ async function postBuild() {
 	try {
 		// await cleanupDist();
 		await floderCopy('components');
+		await floderCopy('customs');
 		await floderCopy('messages');
 		await floderCopy('layouts');
 		// await floderCopy('libs');
