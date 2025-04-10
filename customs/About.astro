@@ -14,6 +14,7 @@
  */
 
 import ERROR from './Error.astro';
+import { APP } from '../config';
 
 export interface Props {
 	/** 网址 */
@@ -46,21 +47,19 @@ let {
 } = Astro.props as Props;
 
 /** 网站名称 */
-title = title || import.meta.env.APP_NAME;
+title = title || APP.NAME;
 
 /** 域名 */
-homepage = homepage || import.meta.env.APP_URL || Astro.site?.origin || Astro.url.origin;
+homepage = homepage || APP.URL || Astro.site?.origin || Astro.url.origin;
 
 /** 版权 */
-copyright =
-	copyright ||
-	`© ${new Date().getFullYear()} ${import.meta.env.APP_COMPANY || import.meta.env.APP_NAME}`;
+copyright = copyright || `© ${new Date().getFullYear()} ${APP.COMPANY || APP.NAME}`;
 
 /** 描述 */
-description = description || import.meta.env.APP_DESCRIPTION;
+description = description || APP.DESCRIPTION;
 
 /** 版本 */
-version = version || import.meta.env.APP_VERSION;
+version = version || APP.VERSION;
 ---
 
 <dl-about {...props}>

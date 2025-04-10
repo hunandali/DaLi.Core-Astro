@@ -19,6 +19,7 @@ import About from '../customs/About.astro';
 import Tooltip from '../components/Tooltip.astro';
 import Icon from '../components/Icon.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import { APP } from '../config';
 
 export interface Props {
 	/** 是否整个页面宽度 */
@@ -57,7 +58,7 @@ const classList = ClassClear(['page-footer', 'footer', className]);
 							<Tooltip title="关于" element="i"><Icon icon="logo-logo" /></Tooltip>
 						</slot>
 						<slot name="About" slot="description">
-							{import.meta.env.APP_DESCRIPTION}
+							{APP.DESCRIPTION}
 						</slot>
 					</About>
 					{

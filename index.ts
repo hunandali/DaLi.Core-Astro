@@ -1,11 +1,12 @@
 import type { AstroIntegration } from 'astro';
 import type { Options as AutoImportOptions } from 'unplugin-auto-import/types';
-
-export * from './config';
-export * from './libs';
+import type { ConfigOptions } from './config';
 
 /** 默认集成设置 */
-export default function (): AstroIntegration {
+export default function (config: ConfigOptions): AstroIntegration {
+	!config && (config = {});
+	const appConfig = JSON.stringify(config);
+
 	return {
 		name: 'dali-astro',
 		hooks: {
@@ -13,11 +14,18 @@ export default function (): AstroIntegration {
 				/** 全局脚本注入 */
 				options.injectScript(
 					'page-ssr',
-					`import "@da.li/core-libs";
-import "@tabler/core/dist/css/tabler.css";
-import "@da.li/core-astro/dist/themes/index.css";`
+					`import '@da.li/core-libs';
+import '@tabler/core/dist/css/tabler.css';
+import '@da.li/core-astro/dist/themes/index.css';
+import { init } from '@da.li/core-astro/dist/config';
+init(${appConfig});`
 				);
-				options.injectScript('page', `import "@da.li/core-libs";`);
+				options.injectScript(
+					'page',
+					`import "@da.li/core-libs";
+import { init } from '@da.li/core-astro/dist/config';
+init(${appConfig});`
+				);
 			}
 		}
 	};
@@ -110,18 +118,12 @@ export const Imports: AutoImportOptions['imports'] = [
 	///////////////////////////////////////////
 
 	{
+		/** 常量 */
+		'@da.li/core-astro/dist/config': ['APP', 'EVENTS', 'ERROR_CODES']
+	},
+	{
 		/** 基础参数 */
-		'@da.li/core-astro': [
-			// config
-			'EVENTS',
-			'ERROR_CODES',
-
-			// libs
-			'ThemeIcon',
-			'ClassUpdate',
-			'ClassClear',
-			'PropsUpdate'
-		]
+		'@da.li/core-astro/dist/libs': ['ThemeIcon', 'ClassUpdate', 'ClassClear', 'PropsUpdate']
 	},
 	{
 		/** 客户端组件 */

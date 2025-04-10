@@ -12,13 +12,56 @@
  * ------------------------------------------------------------
  */
 
+import { cleanDuplicate, isObject, type Dict } from '@da.li/core-libs';
 import type { IMessage } from './types';
+
+/** 配置属性 */
+export interface ConfigOptions extends Dict {
+	/** 应用名称 */
+	name?: string;
+
+	/** 应用版本 */
+	version?: string;
+
+	/** 应用描述 */
+	description?: string;
+
+	/** 企业 */
+	company?: string;
+
+	/** 应用网址 */
+	url?: string;
+
+	/** 应用关键词 */
+	keywords?: string;
+}
 
 /** 全局事件名称前缀 */
 export const EVENT_PREFIX = 'dali:event:';
 
 /** 全局事件名称生成器 */
 const event = (name: string) => `${EVENT_PREFIX}${name}`;
+
+/** 全局应用信息 */
+export const APP = {
+	/** 应用名称 */
+	NAME: '大沥网络组件库',
+
+	/** 应用版本 */
+	VERSION: '49.10.1',
+
+	/** 应用描述 */
+	DESCRIPTION: '一个基于 Tabler 样式的 Astro 组件库',
+
+	/** 企业 */
+	COMPANY: '湖南大沥网络科技有限公司',
+
+	/** 应用网址 */
+	URL: 'https://www.hunandali.com',
+
+	/** 应用关键词 */
+	KEYWORDS: '大沥网络,组件库,astro,tabler'
+};
 
 /** 全局事件变量 */
 export const EVENTS = {
@@ -81,4 +124,19 @@ export const ERROR_CODES: Record<string, string | IMessage> = {
 	datas: '暂无更多数据',
 	// history: '无历史记录',
 	load: '数据加载中'
+};
+
+/** 初始化常量 */
+export const init = (options: ConfigOptions) => {
+	!isObject(options) && (options = {});
+
+	APP.NAME = options.name || import.meta.env.PUBLIC_APP_NAME;
+	APP.VERSION = options.version || import.meta.env.PUBLIC_APP_VERSION;
+	APP.DESCRIPTION = options.description || import.meta.env.PUBLIC_APP_DESCRIPTION;
+	APP.COMPANY = options.company || import.meta.env.PUBLIC_APP_COMPANY;
+	APP.URL = options.url || import.meta.env.PUBLIC_APP_URL;
+
+	// 关键词
+	const keywords = options.keywords || import.meta.env.PUBLIC_APP_KEYWORDS;
+	APP.KEYWORDS = keywords ? cleanDuplicate(keywords.split(',')).join(',') : '';
 };
