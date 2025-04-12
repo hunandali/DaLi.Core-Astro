@@ -1,7 +1,7 @@
 {
 	"name": "@da.li/core-astro",
 	"title": "大沥网络 Astro 公共库",
-	"version": "1.25.411-1",
+	"version": "1.25.413-5",
 	"description": "大沥网络 Astro 公共库，包含基础 UI 组件、基础工具函数等",
 	"license": "GPL-3.0",
 	"publishConfig": {
@@ -34,7 +34,7 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@da.li/core-libs": "^1.25.410",
+		"@da.li/core-libs": "^1.25.412",
 		"@tabler/core": "^1.1.1",
 		"astro": "^5.6.1",
 		"astro-iconify": "^1.2.0",
@@ -45,7 +45,7 @@
 		"@types/alpinejs": "^3.13.11",
 		"@types/bootstrap": "^5.2.10",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "^22.14.0",
+		"@types/node": "^22.14.1",
 		"fs-extra": "^11.3.0",
 		"less": "^4.3.0",
 		"tsx": "^4.19.3",

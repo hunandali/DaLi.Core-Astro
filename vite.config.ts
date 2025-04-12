@@ -22,12 +22,18 @@ export default defineConfig({
 		rollupOptions: {
 			external: [
 				'@da.li/core-libs',
+				'@fingerprintjs/fingerprintjs',
 				'@tabler/core',
 				'astro',
 				'astro-iconify',
-				'dayjs',
+				'bootstrap',
+				'chalk',
 				'countup.js',
-				'bootstrap'
+				'dayjs',
+				'isomorphic-dompurify',
+				'localforage',
+				'ofetch',
+				'ufo'
 			],
 			input: {
 				'index.css': 'themes/index.less',

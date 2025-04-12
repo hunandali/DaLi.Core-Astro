@@ -13,9 +13,9 @@
  * ------------------------------------------------------------
  */
 
-import ICON from './Icon.astro';
 import { ClassClear } from '../libs';
 import type { ILink } from '../types';
+import Link from './Link.astro';
 
 export interface Props {
 	/** 链接 */
@@ -49,9 +49,7 @@ const classList = ClassClear(['breadcrumb', separatorClasses, className]);
 		items.map((item, index) => (
 			<li
 				class={`breadcrumb-item${index === items.length - 1 && showActive ? ' active' : ''}`}>
-				<a href={item.href} target={item.target}>
-					<ICON icon={item.icon} text={item.text} theme={item.theme} />
-				</a>
+				<Link {...item} />
 			</li>
 		))
 	}

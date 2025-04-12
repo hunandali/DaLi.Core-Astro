@@ -1,0 +1,106 @@
+---
+/**
+ * 	Navbar/menus 导航栏菜单项目
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { hasArray } from '@da.li/core-libs';
+import { ClassClear } from '../../libs';
+import type { DropdownItem } from '../Dropdown.astro';
+import Badge from '../Badge.astro';
+import Dropdown from '../Dropdown.astro';
+import Link from '../Link.astro';
+
+/** 导航项目 */
+export interface NavbarItem extends DropdownItem {
+	/** 子菜单项 */
+	children?: NavbarItem[];
+}
+
+export interface Props {
+	/** 布局方式 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 导航项 */
+	items?: NavbarItem[];
+
+	/** 是否为标签页 */
+	tab?: boolean;
+
+	/** 使用背景按钮 */
+	pill?: boolean;
+
+	/** 是否为下划线 */
+	underline?: boolean;
+
+	/** 布局方式: fill 填充 | justified 等分 */
+	flex?: 'fill' | 'justified';
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	layout = 'horizontal',
+	tab = false,
+	pill = false,
+	underline = false,
+	flex,
+	items = [],
+	class: className,
+	...props
+} = Astro.props;
+
+const itemClass = (item: NavbarItem) => {
+	const classes = ['nav-link', item.class];
+	if (item.disabled) classes.push('disabled');
+	if (item.active) classes.push('active');
+	if (hasArray(item.children)) classes.push('dropdown-toggle');
+	return ClassClear(classes);
+};
+
+const classList = ClassClear([
+	'nav',
+	layout === 'vertical' && 'flex-column',
+	tab && 'nav-tabs',
+	pill && 'nav-pills',
+	underline && 'nav-underline',
+	flex && `nav-${flex}`,
+	className
+]);
+---
+
+<ul class={classList} {...props}>
+	{
+		items?.map((item) =>
+			hasArray(item.children) ? (
+				<Dropdown {...(item as any)} items={item.children} class="nav-item">
+					<Link
+						class={itemClass(item)}
+						{...item}
+						slot="button"
+						href="#"
+						data-bs-toggle="dropdown"
+						aria-expanded="false">
+						{item.bagde && <Badge {...item.bagde} />}
+					</Link>
+				</Dropdown>
+			) : (
+				<li class="nav-item">
+					<Link class={itemClass(item)} {...item}>
+						{item.bagde && <Badge {...item.bagde} />}
+					</Link>
+				</li>
+			)
+		)
+	}
+</ul>

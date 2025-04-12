@@ -110,3 +110,89 @@ a {
 	height: 100%;
 	flex: 1;
 }
+
+/** 禁止操作 */
+.mask,
+.disabled {
+	cursor: not-allowed;
+
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+
+	touch-action: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+
+	// 添加 outline 属性，防止获得焦点时显示轮廓
+	outline: none !important;
+
+	// 设置负的 z-index 使元素无法获得焦点
+	position: relative;
+	// z-index: -1;
+
+	// 使用伪元素覆盖来阻止交互，但保留鼠标样式
+	&::after {
+		content: '';
+		position: absolute;
+
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 9999999;
+		pointer-events: all;
+	}
+}
+
+.disabled {
+	opacity: 0.8;
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+}
+.disabled div,
+.disabled p,
+.disabled span,
+.disabled a,
+.disabled button {
+	pointer-events: none;
+}
+.disabled:hover,
+.disabled:active {
+	opacity: 1;
+}
+
+.mask {
+	opacity: 0.5;
+	filter: blur(3px);
+	overflow: hidden;
+
+	&::after {
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAAABdJREFUeNpiYAADRjBgoJhDLXPAACDAABaMAEmBKz1OAAAAAElFTkSuQmCC);
+		background-repeat: repeat;
+	}
+}
+
+.scroll {
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	&bar-hide {
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	&bar-default {
+		scrollbar-width: auto;
+
+		&::-webkit-scrollbar {
+			display: block;
+		}
+	}
+}

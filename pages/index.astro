@@ -19,17 +19,36 @@ import ICON from '../components/Icon.astro';
 import PLACEHOLDER from '../components/Placeholder.astro';
 import TRACKING from '../components/Tracking.astro';
 import QR from '../customs/QR.astro';
+import LINK from '../components/Link.astro';
 
 import type { ITheme } from '../types';
 const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 ---
 
 <LAYOUT pretitle="大沥网络" title="基础组件演示">
+	<!-- 链接 -->
+	<h2 class="line-top">链接</h2>
+	<div class="m-4 d-flex gap-4">
+		<LINK href="progress" target="_blank" text="本地链接不会被处理" />
+		<LINK href="http://www.lvdingjia.com" target="_blank" text="外链可以使用" />
+		<LINK
+			href="http://www.lvdingjia.com"
+			target="_blank"
+			external="alert"
+			text="外链不可以用"
+		/>
+		<LINK href="http://www.lvdingjia.com" target="_blank" external={false} text="弹窗链接" />
+		<LINK href="http://www.lvdingjia.com" target="_blank" external="#url={url}"
+			>使用 &#123;url&#125; 代替原始地址，原始地址将使用 base64 代替</LINK
+		>
+	</div>
+
 	<!-- 二维码组件 -->
 	<h2 class="line-top">二维码组件</h2>
 	<div class="m-4">
 		<QR code="https://www.lvdingjia.com" />
 	</div>
+
 	<!-- 状态跟踪 -->
 	<h2 class="line-top">状态跟踪</h2>
 	<div class="m-4">
@@ -72,9 +91,26 @@ const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', '
 
 	<!-- 下拉卡片 -->
 	<h2 class="line-top">下拉卡片</h2>
-	<div class="m-4">
+	<div class="m-4 d-flex gap-2">
 		<DROPCARD class="mw-300 mh-300 overflow-y-auto">
-			<span slot="label">看看</span>
+			<span slot="text">看看</span>
+			<span slot="title">标题</span>
+			<ol>
+				{
+					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => (
+						<li>
+							项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目
+						</li>
+					))
+				}
+			</ol>
+		</DROPCARD>
+		<DROPCARD
+			theme="success"
+			text="分离按钮"
+			icon="load_6"
+			split
+			class="mw-300 mh-300 overflow-y-auto">
 			<span slot="title">标题</span>
 			<ol>
 				{
@@ -90,28 +126,43 @@ const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', '
 
 	<!-- 下拉菜单 -->
 	<h2 class="line-top">下拉菜单</h2>
-	<div class="m-4">
+	<div class="m-4 d-flex gap-2">
+		<DROPDOWN direction="up" icon="number">
+			<COUNTUP
+				slot="text"
+				start={20}
+				data={99.99}
+				duration={10}
+				decimalPlaces={2}
+				suffix="%"
+				theme="danger"
+			/>
+			<CARD title="自定义内容">自定义内容会覆盖原来菜单项目,菜单项目全部失效</CARD>
+		</DROPDOWN>
+
 		<DROPDOWN
-			label="下拉"
-			direction="up"
+			text="右拉分离"
+			split
+			theme="warning"
+			direction="end"
+			href="https://www.lvdingjia.com"
+			target="_blank"
 			items={[
-				{ label: '项目 11' },
+				{ text: '项目 11' },
 				{
-					label: '项目 22',
+					text: '项目 22',
 					href: '#',
 					icon: 'user',
 					bagde: { text: '99+', theme: 'danger' },
 					divider: true
 				},
 				{
-					label: '项目 33',
+					text: '项目 33',
 					href: '#',
-					icon: 'user',
-					bagde: { text: 'Good+', theme: 'primary' }
+					icon: 'user'
 				}
-			]}>
-			<div>aaa</div>
-		</DROPDOWN>
+			]}
+		/>
 	</div>
 
 	<!-- 分隔线 -->

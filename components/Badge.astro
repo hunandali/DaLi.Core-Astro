@@ -26,8 +26,17 @@ export interface Props {
 	/** 是否为空心 */
 	outline?: boolean;
 
+	/** 是否闪烁 */
+	blink?: boolean;
+
+	/** 是否圆点 */
+	dot?: boolean;
+
 	/** 是否为胶囊 */
 	pill?: boolean;
+
+	/** 右上角显示 */
+	notification?: boolean;
 
 	/** 是否为浅色 */
 	light?: boolean;
@@ -41,6 +50,9 @@ const {
 	theme = 'primary',
 	outline = false,
 	pill = false,
+	blink = false,
+	notification = false,
+	dot = false,
 	light = false,
 	class: className,
 	...props
@@ -55,6 +67,9 @@ const classList = ClassClear([
 	color,
 	outline && 'badge-outline',
 	pill && 'badge-pill',
+	notification && 'badge-notification',
+	blink && 'badge-blink',
+	dot && 'badge-dot',
 	className
 ]);
 ---

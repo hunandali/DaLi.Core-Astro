@@ -123,7 +123,14 @@ export const Imports: AutoImportOptions['imports'] = [
 	},
 	{
 		/** 基础参数 */
-		'@da.li/core-astro/dist/libs': ['ThemeIcon', 'ClassUpdate', 'ClassClear', 'PropsUpdate']
+		'@da.li/core-astro/dist/libs/index': [
+			'ThemeIcon',
+			'ClassUpdate',
+			'ClassClear',
+			'PropsUpdate',
+			'isExternalDomain',
+			'updateLink'
+		]
 	},
 	{
 		/** 客户端组件 */
@@ -155,6 +162,9 @@ export const Imports: AutoImportOptions['imports'] = [
 			'DlDropdown',
 			'DlEmpty',
 			'DlIcon',
+			'DlLink',
+			'DlNavbar',
+			'DlNavs',
 			'DlPlaceholder',
 			'DlProgress',
 			'DlProgressBar',

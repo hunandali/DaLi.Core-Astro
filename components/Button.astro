@@ -14,10 +14,12 @@
  */
 
 import ICON from './Icon.astro';
-import { ClassClear } from '../libs';
-import type { IIcon, ISize } from '../types';
+import { ClassClear, updateLink } from '../libs';
+import type { IExternalLinkAction, IIcon, ILink, ISize } from '../types';
+import { APP } from '../config';
+import type { Dict } from '@da.li/core-libs';
 
-export interface Props extends IIcon {
+export interface Props extends IIcon, Omit<ILink, 'size'> {
 	/** 按钮类型 */
 	type?: 'button' | 'submit' | 'reset';
 
@@ -33,8 +35,15 @@ export interface Props extends IIcon {
 	/** 是否加载中 */
 	loading?: boolean;
 
-	/** 自定义样式 */
-	class?: string;
+	/**
+	 * 是否允许外部链接
+	 * 1. false: 不允许，发现外部链接禁用
+	 * 2. true: 允许，发现外部直接使用，不做任何限制
+	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
+	 * @default true
+	 */
+	external?: IExternalLinkAction;
 }
 
 const {
@@ -43,9 +52,11 @@ const {
 	text = '',
 	theme,
 	size,
+	href,
+	target,
 	disabled = false,
+	external = APP.EXTERNAL_LINK,
 	rotate,
-	type,
 	variant = 'default',
 	shape = 'default',
 	loading = false,
@@ -66,10 +77,27 @@ const classList = ClassClear([
 	shape === 'pill' && 'btn-pill',
 	className
 ]);
+
+let Element = 'button';
+const ElementProps: Dict = {
+	...props,
+	disabled: disabled || loading,
+	class: classList
+};
+
+const url = updateLink(href || '', external, APP.WHITELIST_DOMAINS, true);
+if (url.enabled) {
+	href && ((ElementProps.href = url.url), (Element = 'a'));
+	target && (ElementProps.target = target);
+} else {
+	ElementProps['data-alert-link'] = url.url;
+}
+
+// 渲染插槽内容
+const slotHtml = (await Astro.slots.render('default'))?.trim();
 ---
 
-<button class:list={classList} type={type} disabled={disabled || loading} role="button" {...props}>
-	<slot>
-		{icon ? <ICON icon={icon} text={text} logo={logo} rotate={rotate} /> : text}
-	</slot>
-</button>
+<Element {...ElementProps}>
+	<ICON icon={icon} text={slotHtml ? '' : text} logo={logo} rotate={rotate} />
+	{slotHtml && <Fragment set:html={slotHtml} />}
+</Element>

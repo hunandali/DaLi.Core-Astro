@@ -1,0 +1,91 @@
+---
+/**
+ * 	Link 链接
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { APP } from '../config';
+import { ClassClear, updateLink } from '../libs';
+import type { ILink, IExternalLinkAction } from '../types';
+import Icon from './Icon.astro';
+
+/** 图标组件属性 */
+export interface Props extends ILink {
+	/**
+	 * 是否允许外部链接
+	 * 1. false: 不允许，发现外部链接禁用
+	 * 2. true: 允许，发现外部直接使用，不做任何限制
+	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
+	 * @default true
+	 */
+	external?: IExternalLinkAction;
+}
+
+const {
+	href,
+	text,
+	icon,
+	size,
+	disabled,
+	target,
+	theme,
+	external = APP.EXTERNAL_LINK,
+	class: className,
+	...props
+} = Astro.props;
+
+// 链接地址
+const url = updateLink(href || '#', external, APP.WHITELIST_DOMAINS, true);
+
+const classList = ClassClear([
+	theme && `text-${theme}`,
+	size && `text-${size}`,
+	(disabled || !url.enabled) && 'disabled',
+	className
+]);
+---
+
+{
+	url.enabled ? (
+		<a class={classList} href={url.url} target={target} {...props}>
+			{icon && <Icon icon={icon} disabled={disabled} />}
+			{text}
+			<slot />
+		</a>
+	) : (
+		<span class={classList} {...props} data-alert-link={url.url}>
+			{icon && <Icon icon={icon} disabled={disabled} />}
+			{text}
+			<slot />
+		</span>
+	)
+}
+
+<script>
+	import { openLink } from '../libs/_message';
+	import { APP } from '../config';
+
+	const elements = document.querySelectorAll('[data-alert-link]');
+	if (elements.length) {
+		elements.forEach((el) => {
+			const element = el as HTMLElement;
+			const link = element.getAttribute('data-alert-link');
+			if (!link) return;
+
+			element.style.cursor = 'pointer';
+			element.addEventListener('click', () => {
+				openLink(link, APP.EXTERNAL_LINK_MESSAGE);
+			});
+		});
+	}
+</script>

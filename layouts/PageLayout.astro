@@ -11,57 +11,28 @@
  * 	homepage:	http://www.hunandali.com/
  *
  * ------------------------------------------------------------
+ *  Slots:
+ * 		top		顶部, 导航菜单,根据菜单布局不同页面布局也不同
+ * 		header	头部, 页面标题, 面包屑导航
+ * 		default	默认, 内容
+ * 		footer	底部, 页脚
+ * 		bottom	底部, 其他页面数据
  */
 
-import { ClassClear } from '../libs';
 import type { ISize } from '../types';
 
 export interface Props {
 	/** 是否整个页面宽度 */
 	size?: ISize | 'xxl' | 'fluid' | 'auto';
-
-	/** 布局类型 */
-	layout?: 'horizontal' | 'vertical';
-
-	/** 导航栏主题(默认: dark) */
-	navTheme?: 'light' | 'dark';
-
-	/** 自定义导航栏类名 */
-	navClass?: string;
 }
 
-const {
-	layout = 'horizontal',
-	size = 'auto',
-	navTheme = 'dark',
-	navClass,
-	...props
-} = Astro.props as Props;
+const { size = 'auto', ...props } = Astro.props as Props;
 
 /** 页面宽度布局 */
 const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
-
-/** 导航栏 */
-const navbarClass = ClassClear([
-	'navbar',
-	layout === 'vertical' ? 'navbar-vertical navbar-expand-sm' : 'navbar-expand-md',
-	navClass
-]);
-const navbarContainerClass = layout === 'vertical' ? 'container-fluid' : navbarClass;
-const Navbar = layout === 'vertical' ? 'aside' : 'nav';
 ---
 
 <div class="page" {...props}>
-	{
-		Astro.slots.has('navbar') && (
-			<Navbar class={navbarClass} data-bs-theme={navTheme === 'dark' ? 'dark' : undefined}>
-				<div class={navbarContainerClass}>
-					<slot name="navbar" />
-				</div>
-			</Navbar>
-		)
-	}
-
 	<slot name="top" />
 
 	<div class="page-wrapper">

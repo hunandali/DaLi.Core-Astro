@@ -12,8 +12,8 @@
  * ------------------------------------------------------------
  */
 
-import { cleanDuplicate, isObject, type Dict } from '@da.li/core-libs';
-import type { IMessage } from './types';
+import { cleanDuplicate, hasArray, isNil, isObject, type Dict } from '@da.li/core-libs';
+import type { IExternalLinkAction, IMessage } from './types';
 
 /** 配置属性 */
 export interface ConfigOptions extends Dict {
@@ -34,6 +34,21 @@ export interface ConfigOptions extends Dict {
 
 	/** 应用关键词 */
 	keywords?: string;
+
+	/** 应用白名单网址 */
+	whitelistDomains?: string[];
+
+	/**
+	 * 默认外部链接处理方式（Link.astro 组件默认外部链接处理方式）
+	 * 1. false: 不允许，发现外部链接禁用
+	 * 2. true: 允许，发现外部直接使用，不做任何限制
+	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
+	 */
+	external_link_action?: IExternalLinkAction;
+
+	/** 如果使用弹窗模式打开外部链接，则使用此警告消息，原网址使用 {url} 占位符 */
+	external_link_message?: string;
 }
 
 /** 全局事件名称前缀 */
@@ -60,7 +75,24 @@ export const APP = {
 	URL: 'https://www.hunandali.com',
 
 	/** 应用关键词 */
-	KEYWORDS: '大沥网络,组件库,astro,tabler'
+	KEYWORDS: '大沥网络,组件库,astro,tabler',
+
+	/** 应用白名单域名 */
+	WHITELIST_DOMAINS: ['localhost', '127.0.0.1'],
+
+	/**
+	 * 默认外部链接处理方式（Link.astro 组件默认外部链接处理方式）
+	 * 1. false: 不允许，发现外部链接禁用
+	 * 2. true: 允许，发现外部直接使用，不做任何限制
+	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
+	 * @default 'alert'
+	 */
+	EXTERNAL_LINK: 'alert' as IExternalLinkAction,
+
+	/** 如果使用弹窗模式打开外部链接，则使用此警告消息，原网址使用 {url} 占位符 */
+	EXTERNAL_LINK_MESSAGE:
+		'<div class="text-start text-wrap text-break" style="text-indent:2rem"><div>您需要访问的链接 ”<b class="text-primary">{url}</b>” 为外部链接，打开后将跳转到第三方页面，我们无法保证其页面的安全与合法性，打开后访问的所有信息与操作都与本站无关，请自行甄别并再次确认是否需要打开。</div></div>'
 };
 
 /** 全局事件变量 */
@@ -130,13 +162,56 @@ export const ERROR_CODES: Record<string, string | IMessage> = {
 export const init = (options: ConfigOptions) => {
 	!isObject(options) && (options = {});
 
+	// @ts-ignore
 	APP.NAME = options.name || import.meta.env.PUBLIC_APP_NAME;
+	// @ts-ignore
 	APP.VERSION = options.version || import.meta.env.PUBLIC_APP_VERSION;
+	// @ts-ignore
 	APP.DESCRIPTION = options.description || import.meta.env.PUBLIC_APP_DESCRIPTION;
+	// @ts-ignore
 	APP.COMPANY = options.company || import.meta.env.PUBLIC_APP_COMPANY;
-	APP.URL = options.url || import.meta.env.PUBLIC_APP_URL;
+
+	// 网址
+	// @ts-ignore
+	const url = options.url || import.meta.env.PUBLIC_APP_URL || import.meta.env.SITE;
+	APP.URL = url ? new URL(url).origin : '';
 
 	// 关键词
+	// @ts-ignore
 	const keywords = options.keywords || import.meta.env.PUBLIC_APP_KEYWORDS;
 	APP.KEYWORDS = keywords ? cleanDuplicate(keywords.split(',')).join(',') : '';
+
+	// 外部链接处理方式，未设置则默认开启
+	APP.EXTERNAL_LINK = isNil(options.external_link_action) ? true : options.external_link_action;
+
+	// 白名单网址，所有地址合并
+	// 1. 来自环境变量
+	// @ts-ignore
+	const domains = (import.meta.env.PUBLIC_APP_WHITELIST_DOMAINS || '').split(',');
+
+	// 2. 来自配置文件
+	hasArray(options.whitelistDomains) && domains.push(...options.whitelistDomains!);
+
+	// 3. 来自网址
+	APP.URL && domains.push(APP.URL, 'localhost', '127.0.0.1');
+
+	// 组后结果 仅保留域名，转换小写并去重
+	APP.WHITELIST_DOMAINS = cleanDuplicate(
+		domains
+			.map((item: string) => {
+				let host = '';
+
+				try {
+					host = new URL(item).host;
+				} catch {
+					host = item?.trim();
+				}
+
+				return host ? host.toLowerCase() : '';
+			})
+			.filter((item: string) => item !== '')
+	);
+
+	// 外部链接警告消息
+	APP.EXTERNAL_LINK_MESSAGE = options.external_link_message || '';
 };

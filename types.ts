@@ -170,19 +170,25 @@ export interface IIcon {
 }
 
 /** 链接属性 */
-export interface ILink {
-	/** 图标 */
-	icon?: string;
-
-	/** 文字 */
-	text: string | number;
-
-	/** 类型 */
-	theme?: IColorFull | string;
+export interface ILink extends Omit<IIcon, 'rotate' | 'logo'> {
+	/** 图标大小 1-6 */
+	size?: number;
 
 	/** 链接 */
 	href?: string;
 
 	/** 链接目标 */
 	target?: string;
+
+	/** 自定义样式 */
+	class?: string;
 }
+
+/**
+ * 外部链接处理方式
+ * 1. false: 不允许，发现外部链接禁用
+ * 2. true: 允许，发现外部直接使用，不做任何限制
+ * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+ * 4. alert: 允许，但是会弹窗提示手动点击打开。
+ */
+export type IExternalLinkAction = boolean | string | 'alert';

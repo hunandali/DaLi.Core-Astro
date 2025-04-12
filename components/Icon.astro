@@ -21,19 +21,19 @@ import { hasString } from '@da.li/core-libs';
 /** 图标组件属性 */
 export interface Props extends IIcon {
 	/** 图标大小 1-6 */
-	size?: number | undefined;
+	size?: number;
 
 	/** 文字大小  1-6 */
-	fontSize?: number | undefined;
+	fontSize?: number;
 
 	/** 粗体 */
-	bold?: boolean | undefined;
+	bold?: boolean;
 
 	/** 是否标签样式 */
-	tag?: boolean | undefined;
+	tag?: boolean;
 
 	/** 布局方式,水平还是垂直,默认水平 */
-	layout?: 'horizontal' | 'vertical' | undefined;
+	layout?: 'horizontal' | 'vertical';
 
 	/** 自定义类名 */
 	class?: string;

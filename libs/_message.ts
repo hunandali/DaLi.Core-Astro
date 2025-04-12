@@ -82,3 +82,48 @@ $Global.alert = (message) =>
 export const IsDarkTheme = (): boolean => {
 	return SERVERMODE ? false : Cookies.get('theme') === 'dark';
 };
+
+/** 直接打开链接 */
+export const openUrl = (url: string, target?: string) => {
+	if (!url || SERVERMODE) return;
+
+	// 创建一个临时的 <a> 元素
+	const link = document.createElement('a');
+	link.href = url;
+	link.target = target || '_blank'; // 在新标签页中打开
+	link.rel = 'noopener noreferrer'; // 安全属性，防止新页面访问 window.opener
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+};
+
+/**
+ * 打开链接
+ * @param url 		需要打开的网址
+ * @param message 	提示信息，如果设置，则将使用弹窗先提示此信息后再打开
+ */
+export const openLink = (url: string, message: string) => {
+	if (SERVERMODE || !url) return;
+
+	// 无提示信息
+	if (!message) return openUrl(url);
+
+	message = message.replace(/\{url\}/g, url);
+	message = `<div class="text-4"><div class="badge text-bg-primary text-4 num m-3">链接<input type="text" class="form-control ms-2" value="${url}${url}${url}" disabled></div>${message}</div>`;
+
+	// 显示弹窗
+	openModal({
+		title: '外链提醒',
+		message,
+		icon: 'link',
+		theme: 'warning',
+		showClose: true,
+		size: 'sm',
+		textOk: '确认并打开',
+		textCancel: '暂不打开',
+		onOk: () => {
+			openUrl(url);
+			return true;
+		}
+	});
+};

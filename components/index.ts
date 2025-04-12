@@ -26,6 +26,11 @@ export { default as DlDropcard } from './Dropcard.astro';
 export { default as DlDropdown } from './Dropdown.astro';
 export { default as DlEmpty } from './Empty.astro';
 export { default as DlIcon } from './Icon.astro';
+export { default as DlLink } from './Link.astro';
+
+export { default as DlNavbar } from './Navbar/index.astro';
+export { default as DlNavs } from './Navbar/menus.astro';
+
 export { default as DlPlaceholder } from './Placeholder.astro';
 
 export { default as DlProgress } from './Progress/index.astro';

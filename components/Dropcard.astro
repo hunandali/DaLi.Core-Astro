@@ -13,42 +13,98 @@
  * ------------------------------------------------------------
  */
 
+import { ClassClear } from '../libs';
+import type { IColorFull, ISize } from '../types';
+import Button from './Button.astro';
 import CARD, { type Props as ICard } from './Card.astro';
 
 export interface Props extends ICard {
-	/** 下拉按钮名称 */
-	label?: string;
+	/** 图标 */
+	icon?: string;
+
+	/** 文字 */
+	text?: string | number;
+
+	/** 下拉按钮颜色 */
+	theme?: IColorFull;
+
+	/** 链接 */
+	href?: string;
+
+	/** 链接目标 */
+	target?: string;
 
 	/** 弹出方向 */
 	direction?: 'down' | 'up' | 'start' | 'end';
 
-	/** 下拉按钮颜色 */
-	variant?: 'primary' | 'secondary' | 'success' | 'danger';
+	/** 按钮大小 */
+	size?: Exclude<ISize, 'xl'>;
+
+	/** 拆分按钮 */
+	split?: boolean;
 }
 
 const {
-	label,
-	title,
+	icon,
+	text,
+	theme,
+	href,
+	target,
 	direction = 'down',
-	variant = 'primary',
+	size,
+	split = false,
+	title,
 	class: className,
 	...props
 } = Astro.props;
 
 const hasTitle = title || Astro.slots.has('title');
+
+const classList = ClassClear([`drop${direction}`, split && 'btn-group', className]);
 ---
 
-<div class={`dropdown drop${direction}`}>
-	<button
-		class={`btn btn-${variant} dropdown-toggle`}
-		type="button"
-		data-bs-toggle="dropdown"
-		aria-expanded="false">
-		<slot name="label">
-			{label}
-		</slot>
-	</button>
-	<div class="dropdown-menu dropdown-menu-card" class:list={className}>
+<div class={classList} {...props}>
+	{
+		split ? (
+			<>
+				<slot name="button">
+					<Button
+						icon={icon}
+						text={text}
+						theme={theme}
+						href={href}
+						target={target}
+						size={size}>
+						<slot name="text" />
+					</Button>
+				</slot>
+				<Button
+					theme={theme}
+					class="dropdown-toggle dropdown-toggle-split"
+					type="button"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+				/>
+			</>
+		) : (
+			<slot name="button">
+				<Button
+					icon={icon}
+					text={text}
+					theme={theme}
+					href={href}
+					target={target}
+					size={size}
+					class="dropdown-toggle"
+					type="button"
+					data-bs-toggle="dropdown"
+					aria-expanded="false">
+					<slot name="text" />
+				</Button>
+			</slot>
+		)
+	}
+	<div class="dropdown-menu dropdown-menu-card">
 		<CARD {...props}>
 			{
 				hasTitle && (

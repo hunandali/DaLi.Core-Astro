@@ -1,0 +1,141 @@
+---
+/**
+ * 	Navbar 导航栏组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { globalId, hasArray, hasObject } from '@da.li/core-libs';
+import { ClassClear } from '../../libs';
+import type { ILink, IThemeFull } from '../../types';
+import Icon from '../Icon.astro';
+import NavMenu, { type NavbarItem } from './menus.astro';
+import Link from '../Link.astro';
+
+export interface Props {
+	/** 导航栏品牌/标题 */
+	brand?: ILink;
+
+	/** 切换按钮(开启或者图标) */
+	toggler?: boolean | string;
+
+	/** 导航项 */
+	items?: NavbarItem[];
+
+	/** 导航栏颜色主题 */
+	theme?: IThemeFull;
+
+	/** 导航栏位置 */
+	placement?: 'fixed-top' | 'fixed-bottom' | 'sticky-top' | 'sticky-bottom';
+
+	/** 导航栏展开断点 */
+	expand?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+
+	/** 布局类型 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 自定义标签 */
+	element?: string;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	layout,
+	element = 'nav',
+	brand,
+	toggler = true,
+	items = [],
+	theme,
+	placement,
+	expand = 'lg',
+	class: className = '',
+	...props
+} = Astro.props;
+
+// 构建类名
+const classList = ClassClear([
+	'navbar',
+	layout === 'vertical' && 'navbar-vertical',
+	expand && `navbar-expand-${expand}`,
+	theme && theme !== 'dark' && `bg-${theme}`,
+	placement,
+	className
+]);
+
+// 生成唯一ID
+const navbarId = globalId('navbar');
+
+const Element = element || 'nav';
+const ElementProps = {
+	...props,
+	class: classList,
+	id: navbarId,
+	'data-bs-theme': theme === 'dark' ? 'dark' : undefined
+};
+---
+
+<Element {...ElementProps}>
+	<div class="container-fluid">
+		<!-- 品牌 -->
+		{
+			Astro.slots.has('brand') ? (
+				<div class="navbar-brand">
+					<slot name="brand" />
+				</div>
+			) : (
+				hasObject(brand) && <Link class="navbar-brand" {...brand} />
+			)
+		}
+
+		<!-- 其他操作按钮 -->
+		<slot name="action" />
+
+		<!-- 切换开关 -->
+		{
+			toggler && (
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target={`#${navbarId}-content`}
+					aria-controls={`${navbarId}-content`}
+					aria-expanded="false"
+					aria-label="切换导航">
+					{toggler === true ? (
+						<span class="navbar-toggler-icon" />
+					) : (
+						<Icon icon={toggler} />
+					)}
+				</button>
+			)
+		}
+
+		<!-- 导航 -->
+		{
+			hasArray(items) && (
+				<div class="collapse navbar-collapse" id={`${navbarId}-content`}>
+					<NavMenu items={items} class="navbar-nav" />
+				</div>
+			)
+		}
+
+		<!-- 其他自定义 -->
+		<slot />
+	</div>
+</Element>
+
+<style is:global>
+	.navbar-vertical {
+		overflow-y: auto !important;
+	}
+</style>
