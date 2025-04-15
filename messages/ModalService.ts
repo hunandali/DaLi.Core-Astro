@@ -12,10 +12,10 @@
  * ------------------------------------------------------------
  */
 
-import { hasObject, htmlSafe, isFn } from '@da.li/core-libs';
+import { hasObject, isFn } from '@da.li/core-libs';
 import { Modal } from 'bootstrap';
 import { getIcon, getLogo } from '../icons';
-import { ThemeIcon } from '../libs';
+import { ThemeIcon, updateHTML } from '../libs';
 import type { ModalOptions } from '../types';
 
 class ModalService {
@@ -162,14 +162,14 @@ class ModalService {
 				: 'd-none';
 
 		if (title) {
-			elTitle.innerHTML = htmlSafe(title);
+			elTitle.innerHTML = updateHTML(title);
 			elTitle.style.display = 'block';
 		} else {
 			elTitle.style.display = 'none';
 		}
 
 		if (message) {
-			elMessage.innerHTML = htmlSafe(message);
+			elMessage.innerHTML = updateHTML(message);
 			elMessage.style.display = 'block';
 		} else {
 			elMessage.style.display = 'none';

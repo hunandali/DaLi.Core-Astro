@@ -1,11 +1,11 @@
 import { defineConfig } from 'astro/config';
 
 /** 集成项目 */
-import dali from './integration';
+import dali from './integration/demo';
 
 export default defineConfig({
 	// 插件
-	integrations: [dali()],
+	integrations: [dali({ external_link_action: 'alert' })],
 
 	// 设置 Astro 将读取网站的目录。
 	srcDir: './',
@@ -19,6 +19,13 @@ export default defineConfig({
 	// 为 Astro 网站启用安全措施。
 	security: {
 		checkOrigin: true
+	},
+
+	// 服务端设置
+	server: {
+		port: 4000,
+		host: true,
+		open: true // 打开浏览器（路径）
 	},
 
 	// 构建选项

@@ -23,77 +23,28 @@ import THEME from '../layouts/PageTheme.astro';
 
 import Navbar from '../components/Navbar/index.astro';
 
-// import ABOUT from './components/About.astro';
 interface Props extends ILayout, IHeader {}
 
 const props = Astro.props;
 
-const navbar = {
-	placement: 'sticky-top',
-	expand: 'md',
-	brand: {
-		href: '/',
-		text: '大沥网络',
-		icon: 'logo-logo'
-	},
-	items: [
-		{ icon: 'home', href: '/', text: '首页', bagde: { dot: true, theme: 'danger' } },
-		{
-			icon: 'code',
-			href: '/components',
-			text: '组件',
-			bagde: { dot: true },
-			children: [
-				{
-					icon: 'user',
-					href: '/components/button',
-					text: '按钮',
-					bagde: { text: 'hot', theme: 'danger' }
-				},
-				{
-					icon: 'id',
-					href: '/components/icon',
-					text: '图标'
-				},
-				{
-					href: '/components/navbar',
-					text: '导航栏'
-				}
-			]
-		},
-		{
-			icon: 'tag',
-			href: '/docs',
-			text: '文档'
-		},
-		{
-			icon: 'info',
-			href: '/about',
-			text: '关于'
-		}
-	]
-};
+import navbar from '../_data/_navbar';
+import footer from '../_data/_footer';
 ---
 
 <EMPTY {...props}>
 	<LAYOUT>
-		<slot slot="header" name="header">
-			<HEADER {...props}>
-				<THEME />
-				<THEME mode="icon" />
-			</HEADER>
-		</slot>
-		<slot slot="footer" name="footer">
-			<FOOTER>
-				<span slot="links">
-					Made with <Icon icon="ri:hearts-fill" theme="danger" /> in China.
-				</span>
-			</FOOTER>
-		</slot>
-
-		<Navbar {...navbar as any}>
-			<div class="nav-item">OK</div>
+		<Navbar {...navbar as any} slot="top">
+			<div class="nav-item"><THEME mode="icon" /></div>
 		</Navbar>
+
+		<slot slot="header" name="header">
+			<HEADER {...props} />
+		</slot>
+		<FOOTER links={footer} slot="footer">
+			<span slot="linkSuffix">
+				Made with <Icon icon="ri:hearts-fill" theme="danger" /> in China.
+			</span>
+		</FOOTER>
 		<slot />
 	</LAYOUT>
 </EMPTY>

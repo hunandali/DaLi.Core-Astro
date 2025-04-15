@@ -92,7 +92,10 @@ export const APP = {
 
 	/** 如果使用弹窗模式打开外部链接，则使用此警告消息，原网址使用 {url} 占位符 */
 	EXTERNAL_LINK_MESSAGE:
-		'<div class="text-start text-wrap text-break" style="text-indent:2rem"><div>您需要访问的链接 ”<b class="text-primary">{url}</b>” 为外部链接，打开后将跳转到第三方页面，我们无法保证其页面的安全与合法性，打开后访问的所有信息与操作都与本站无关，请自行甄别并再次确认是否需要打开。</div></div>'
+		'<div class="text-start text-wrap text-break" style="text-indent:2rem"><div>您需要访问的链接 ”<b class="text-primary">{url}</b>” 为外部链接，打开后将跳转到第三方页面，我们无法保证其页面的安全与合法性，打开后访问的所有信息与操作都与本站无关，请自行甄别并再次确认是否需要打开。</div></div>',
+
+	/** Prism 代码高亮语言默认路径，错误将无法高亮非常用语言 */
+	CODE_LANGUAGES_PATH: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/'
 };
 
 /** 全局事件变量 */
@@ -213,5 +216,6 @@ export const init = (options: ConfigOptions) => {
 	);
 
 	// 外部链接警告消息
-	APP.EXTERNAL_LINK_MESSAGE = options.external_link_message || '';
+	!isNil(options.external_link_message) &&
+		(APP.EXTERNAL_LINK_MESSAGE = options.external_link_message);
 };

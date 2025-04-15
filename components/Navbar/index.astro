@@ -15,7 +15,7 @@
 
 import { globalId, hasArray, hasObject } from '@da.li/core-libs';
 import { ClassClear } from '../../libs';
-import type { ILink, IThemeFull } from '../../types';
+import type { ILink, ISize, IThemeFull } from '../../types';
 import Icon from '../Icon.astro';
 import NavMenu, { type NavbarItem } from './menus.astro';
 import Link from '../Link.astro';
@@ -37,7 +37,10 @@ export interface Props {
 	placement?: 'fixed-top' | 'fixed-bottom' | 'sticky-top' | 'sticky-bottom';
 
 	/** 导航栏展开断点 */
-	expand?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+	expand?: ISize | 'xxl';
+
+	/** 是否整个页面宽度 */
+	size?: ISize | 'xxl' | 'fluid' | 'auto';
 
 	/** 布局类型 */
 	layout?: 'horizontal' | 'vertical';
@@ -58,6 +61,7 @@ const {
 	theme,
 	placement,
 	expand = 'lg',
+	size = 'auto',
 	class: className = '',
 	...props
 } = Astro.props;
@@ -82,10 +86,13 @@ const ElementProps = {
 	id: navbarId,
 	'data-bs-theme': theme === 'dark' ? 'dark' : undefined
 };
+
+/** 页面宽度布局 */
+const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
 ---
 
 <Element {...ElementProps}>
-	<div class="container-fluid">
+	<div class={containerClass}>
 		<!-- 品牌 -->
 		{
 			Astro.slots.has('brand') ? (

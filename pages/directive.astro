@@ -1,0 +1,154 @@
+---
+/**
+ * 	Directive 指令
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Layout from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+
+const code1 = `<div v-code="html"><!-- <div>当前区域的 html 代码全部展示</div> --></div>`;
+const code2 = `<input v-code="js" value="var code = 1" />`;
+const code3 = `<textarea v-code="js">var code = 1</textarea>`;
+const code4 = `<pre v-code="js">var code = 1</pre>`;
+const code5 = `<div v-code="html"><b>html 区域</b>内容<i>原样输出</i></div>`;
+---
+
+<Layout pretitle="大沥网络" title="Directive 指令">
+	<Card title="v-copy 复制">
+		<h4 v-copy="复制内容">自定义复制内容</h4>
+		<div v-code="html">
+			<!-- <div v-copy="自定义内容">v-copy 设置则内容，则复制其设置的内容</div> -->
+		</div>
+		<h4 class="mt-4" v-copy>当前内容</h4>
+		<div v-code="html">
+			<!-- <div v-copy>v-copy 不设置则内容，则复制当前内容</div> -->
+		</div>
+	</Card>
+
+	<Card class="mt-4" title="v-date / v-datetime 时间格式化">
+		<div v-code="html">
+			<!-- <div v-date="格式">时间数据</div> -->
+		</div>
+		<div v-code="html">
+			<!-- <div v-datetime="格式">时间数据</div> -->
+		</div>
+		<div><strong>原理：</strong>使用 dayjs 格式化后输出结果。</div>
+		<div>
+			<strong>格式值说明：</strong>
+			<ol>
+				<li>false / 'desc' 表示指定时间与当前时间的差异描述</li>
+				<li>true / 空值 表示 YYYY-MM-DD HH:mm:ss</li>
+				<li>
+					格式标签：<a
+						href="https://day.js.org/docs/zh-CN/display/format"
+						target="_blank">
+						参阅文档
+					</a>
+				</li>
+			</ol>
+			<div>
+				<strong>以 20080808200000 这个时间为例：</strong>
+				<ul>
+					<li><code class="me-4">v-date</code><span v-date>20080808200000</span></li>
+					<li>
+						<code class="me-4">v-datetime</code><span v-datetime>20080808200000</span>
+					</li>
+					<li>
+						<code class="me-4">v-date="false"</code><span v-date="false">
+							20080808200000
+						</span>
+					</li>
+					<li>
+						<code class="me-4">v-datetime="false"</code><span v-datetime="false">
+							20080808200000
+						</span>
+					</li><li>
+						<code class="me-4">v-date="YYYY-MM"</code><span v-date="YYYY-MM">
+							20080808200000
+						</span>
+					</li>
+					<li>
+						<code class="me-4">v-datetime="hh-mm"</code><span v-datetime="hh-mm">
+							20080808200000
+						</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</Card>
+
+	<Card class="mt-4" title="v-tooltip 文本提示">
+		<div v-code="html">
+			<!-- <div v-tooltip="提示内容">文本</div> -->
+		</div>
+		<div v-code="html">
+			<!-- <div v-tooltip title="提示内容">文本</div> -->
+		</div>
+		<div class="d-flex gap-4">
+			<div v-tooltip="使用 v-tooltip 值提示">使用 v-tooltip 值提示</div>
+			<div v-tooltip title="使用 title 属性提示">使用 title 属性提示</div>
+		</div>
+	</Card>
+
+	<Card class="mt-4" title="v-qr 二维码">
+		<div v-code="html">
+			<!-- <div v-qr="二维码内容" data-size="尺寸" data-color="颜色" data-backcolor="背景色"></div> -->
+		</div>
+		<div v-qr="二维码内容" data-color="#008000"></div>
+	</Card>
+
+	<Card class="mt-4" title="v-code 代码显示">
+		<h4>默认设置</h4>
+		<div v-code="html">
+			<!-- <div v-code="语言">代码</div> -->
+		</div>
+		<ul>
+			<li>
+				<b>支持语言主题：</b>
+				默认语言主题支持 html, js, css 等，如果不存在则将尝试自动加载对应语言样式文件，如果仍不存在则使用文本主题展示。
+			</li>
+			<li>
+				<b>代码区域：</b>
+				<ol>
+					<li>当代码区域仅使用 html 注释包含时，则注释中的内容将直接显示；</li>
+					<li>
+						当使用的语言为 html 或者使用 pre 标签包含代码时，则代码区域的 html
+						原始内容将直接输出为代码；
+					</li>
+					<li>当使用的语言为其他且使用 input 标签时，其 value 值内容作为代码；</li>
+					<li>
+						当使用的语言为其他非 pre / textare
+						标签包含代码区域则只使用展示的文本内容作为代码。
+					</li>
+				</ol>
+			</li>
+		</ul>
+
+		<h4 class="mt-4">示例一：唯一注释区域，直接输出</h4>
+		<textarea v-code="html">{code1}</textarea>
+		效果：
+		<Fragment set:html={code1} />
+
+		<h4 class="mt-4">示例二：input / textarea / pre 标签代码</h4>
+		<textarea v-code="html">{code2}</textarea>
+		<textarea v-code="html">{code3}</textarea>
+		<textarea v-code="html">{code4}</textarea>
+		效果：
+		<Fragment set:html={code2} />
+
+		<h4 class="mt-4">示例三：html</h4>
+		<textarea v-code="html">{code5}</textarea>
+		效果：
+		<Fragment set:html={code5} />
+	</Card>
+</Layout>

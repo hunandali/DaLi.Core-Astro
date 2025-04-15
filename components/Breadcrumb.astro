@@ -39,18 +39,58 @@ const {
 	...props
 } = Astro.props as Props;
 
-const separatorClasses = separator != 'slash' ? `breadcrumb-${separator}s` : '';
+const prefixSlot = Astro.slots.has('prefix') && (await Astro.slots.render('prefix'))?.trim();
+const defaultSlot = Astro.slots.has('default') && (await Astro.slots.render('default'))?.trim();
 
-const classList = ClassClear(['breadcrumb', separatorClasses, className]);
+const classSeparator = separator != 'slash' ? `breadcrumb-${separator}s` : '';
+const classList = ClassClear(['breadcrumb', classSeparator, className]);
+
+/**
+ * 面包屑项类名
+ *
+ * @param index 索引(-1 表示 default slot)
+ * @returns 类名
+ */
+const classItem = (index: number) => {
+	if (!showActive) return 'breadcrumb-item';
+
+	// 必须显示选中，只有最后一个才显示，如果包含 slots.default，则 slot 显示
+	if (index === -1) return 'breadcrumb-item active';
+	if (defaultSlot && index > -1) return 'breadcrumb-item';
+	if (index === items.length - 1) return 'breadcrumb-item active';
+};
 ---
 
 <ol class={classList} {...props}>
 	{
+		prefixSlot && (
+			<li class="breadcrumb-item">
+				<Fragment set:html={prefixSlot} />
+			</li>
+		)
+	}
+
+	{
 		items.map((item, index) => (
-			<li
-				class={`breadcrumb-item${index === items.length - 1 && showActive ? ' active' : ''}`}>
+			<li class={classItem(index)}>
 				<Link {...item} />
 			</li>
 		))
 	}
+
+	{
+		defaultSlot && (
+			<li class={classItem(-1)}>
+				<Fragment set:html={defaultSlot} />
+			</li>
+		)
+	}
 </ol>
+
+<style lang="less" is:global>
+	.page-footer {
+		.breadcrumb {
+			display: inline-flex;
+		}
+	}
+</style>

@@ -1,0 +1,21 @@
+---
+import { ClassClear } from '../libs';
+
+interface Props {
+	code: string;
+	language?: string;
+	lineNumbers?: boolean;
+}
+
+const { code, language = 'plaintext', lineNumbers = true } = Astro.props;
+
+// const id = `code-${Math.random().toString(36).substring(2, 9)}`;
+
+const classList = ClassClear([`language-${language}`, lineNumbers && 'line-numbers']);
+---
+
+<pre class=""><code class={classList}>{code}</code></pre>
+
+<script>
+	import '../integration/_prism';
+</script>

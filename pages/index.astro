@@ -22,12 +22,13 @@ import QR from '../customs/QR.astro';
 import LINK from '../components/Link.astro';
 
 import type { ITheme } from '../types';
+import Button from '../components/Button.astro';
 const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 ---
 
 <LAYOUT pretitle="大沥网络" title="基础组件演示">
 	<!-- 链接 -->
-	<h2 class="line-top">链接</h2>
+	<h2 class="line-top" @click="alert('ok')">链接</h2>
 	<div class="m-4 d-flex gap-4">
 		<LINK href="progress" target="_blank" text="本地链接不会被处理" />
 		<LINK href="http://www.lvdingjia.com" target="_blank" text="外链可以使用" />
@@ -35,9 +36,9 @@ const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', '
 			href="http://www.lvdingjia.com"
 			target="_blank"
 			external="alert"
-			text="外链不可以用"
+			text="弹窗提醒链接"
 		/>
-		<LINK href="http://www.lvdingjia.com" target="_blank" external={false} text="弹窗链接" />
+		<LINK href="http://www.lvdingjia.com" target="_blank" external={false} text="禁止打开" />
 		<LINK href="http://www.lvdingjia.com" target="_blank" external="#url={url}"
 			>使用 &#123;url&#125; 代替原始地址，原始地址将使用 base64 代替</LINK
 		>
@@ -45,7 +46,7 @@ const Themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', '
 
 	<!-- 二维码组件 -->
 	<h2 class="line-top">二维码组件</h2>
-	<div class="m-4">
+	<div class="m-4 d-flex gap-4">
 		<QR code="https://www.lvdingjia.com" />
 	</div>
 

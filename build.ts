@@ -96,6 +96,7 @@ async function postBuild() {
 		await floderCopy('customs');
 		await floderCopy('messages');
 		await floderCopy('layouts');
+		await floderCopy('integration');
 		// await floderCopy('libs');
 		// await fileCopy('index.ts');
 		await fileCopy('config.ts');
@@ -105,6 +106,7 @@ async function postBuild() {
 		// await fileCopy('package.json');
 		await fileCopy('.env');
 
+		await cleanupDist('dist/integration', ['demo.ts']);
 		await cleanupDist('dist/messages', ['Service.ts']);
 		await cleanupDist('dist/layouts', ['Demo.astro']);
 	} catch (error) {

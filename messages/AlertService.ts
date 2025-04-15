@@ -12,9 +12,8 @@
  * ------------------------------------------------------------
  */
 
-import { ThemeIcon } from '../libs';
+import { ThemeIcon, updateHTML } from '../libs';
 import { getIcon, getLogo } from '../icons';
-import { htmlSafe } from '@da.li/core-libs';
 import type { AlertOptions } from '../types';
 
 class AlertService {
@@ -104,7 +103,7 @@ class AlertService {
 		message && (content += `<div class="mt-1${ms} text-secondary">${message}</div>`);
 
 		// 区域
-		content = htmlSafe(`<div class="d-block">${content}</div>`);
+		content = updateHTML(`<div class="d-block">${content}</div>`);
 
 		// 关闭按钮
 		closeable &&

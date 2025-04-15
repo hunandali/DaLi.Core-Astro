@@ -51,7 +51,7 @@ export const hideToast = () => {
 export const showAlert = (message: string, title?: string, theme?: ITheme, important = false) => {
 	if (SERVERMODE) return;
 	if (!alert) alert = new AlertInstance();
-	alert.show({ message, title, theme, important });
+	alert.show({ message, title, theme: theme || 'primary', important });
 };
 
 export const openModal = (options?: ModalOptions) => {
@@ -109,7 +109,7 @@ export const openLink = (url: string, message: string) => {
 	if (!message) return openUrl(url);
 
 	message = message.replace(/\{url\}/g, url);
-	message = `<div class="text-4"><div class="badge text-bg-primary text-4 num m-3">链接<input type="text" class="form-control ms-2" value="${url}${url}${url}" disabled></div>${message}</div>`;
+	message = `<div class="text-4"><div class="badge text-bg-primary text-4 num m-3" v-copy="${url}">链接<input type="text" class="form-control ms-2" value="${url}" readonly></div>${message}</div>`;
 
 	// 显示弹窗
 	openModal({
@@ -126,4 +126,43 @@ export const openLink = (url: string, message: string) => {
 			return true;
 		}
 	});
+};
+
+/**
+ * 复制，仅客户端可互动使用
+ * @param content 	要复制的内容
+ * @param show		复制完成是否提示操作成功
+ */
+export const copy = (content: string, show: boolean = true) => {
+	if (SERVERMODE || !content || !window) return;
+
+	const showMessage = () => {
+		if (!show) return;
+
+		showToast('内容已复制', '', 'success', 3000);
+	};
+
+	// execCommand 已经弃用，注意替代方式
+
+	// navigator clipboard 需要https等安全上下文
+	if (navigator.clipboard && window.isSecureContext) {
+		// navigator clipboard 向剪贴板写文本
+		navigator.clipboard.writeText(content).then(() => showMessage());
+	} else {
+		// 创建text area
+		let input = document.createElement('textarea');
+		input.value = content; // 设置内容
+		// 使text area不在viewport，同时设置不可见
+		input.style.position = 'absolute';
+		input.style.opacity = '0';
+		input.style.left = '-999999px';
+		input.style.top = '-999999px';
+		document.body.appendChild(input); // 添加临时实例
+		input.select(); // 选择实例内容
+		document.execCommand('copy'); // 执行复制
+		document.body.removeChild(input); // 删除临时实例
+		input.remove();
+
+		showMessage();
+	}
 };

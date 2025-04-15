@@ -24,6 +24,8 @@ import {
 } from '@da.li/core-libs';
 import type { IExternalLinkAction, IPropsBase } from '../types';
 
+import DOMPurify from 'isomorphic-dompurify';
+
 /** 样式类型 */
 type ClassItem = string | boolean | number | undefined;
 type ClassData = ClassItem | ClassItem[];
@@ -157,4 +159,24 @@ export const updateLink = (
 	// 进行二次处理
 	url = action.replace('{url}', base64Encode(url));
 	return { enabled: true, url: url };
+};
+
+let DOMPurify_INIT = false;
+
+/** Html 代码 xss 过滤，返回安全 HTML 代码，针对当前项目保留了 x- v- 指令属性 */
+export const updateHTML = (html: string) => {
+	if (!DOMPurify_INIT) {
+		DOMPurify_INIT = true;
+		DOMPurify.addHook('uponSanitizeAttribute', (node, data) => {
+			const attrName = data.attrName;
+			if (/^(v-|@)/i.test(attrName)) {
+				data.keepAttr = true; // 核心：标记保留
+				data.forceKeepAttr = true; // 核心：标记强制保留
+			}
+		});
+	}
+
+	return DOMPurify.sanitize(html, {
+		USE_PROFILES: { html: true }
+	});
 };

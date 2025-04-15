@@ -25,6 +25,7 @@ body,
 		Cantarell, Fira Sans, Droid Sans, Helvetica Neue, '思源黑体', '思源黑体 CN', '等线',
 		'微软雅黑', sans-serif;
 }
+
 * {
 	box-sizing: border-box;
 }
@@ -48,7 +49,7 @@ code,
 .num,
 var,
 time {
-	font-family: 'Cascadia Code', Monaco, 'Liberation Mono';
+	font-family: 'Cascadia Code', Monaco, 'Liberation Mono' !important;
 	font-size: 110%;
 }
 
@@ -69,16 +70,19 @@ a {
 		margin-left: var(--space) !important;
 		border-left: 1px solid var(--tblr-secondary-bg) !important;
 	}
+
 	&-right {
 		padding-right: var(--space) !important;
 		margin-right: var(--space) !important;
 		border-right: 1px solid var(--tblr-secondary-bg) !important;
 	}
+
 	&-top {
 		padding-top: var(--space) !important;
 		margin-top: var(--space) !important;
 		border-top: 1px solid var(--tblr-secondary-bg) !important;
 	}
+
 	&-bottom {
 		padding-bottom: var(--space) !important;
 		margin-bottom: var(--space) !important;
@@ -93,6 +97,7 @@ a {
 			padding-left: 0 !important;
 			border-left: none !important;
 		}
+
 		&:last-child {
 			padding-right: 0 !important;
 		}
@@ -153,6 +158,7 @@ a {
 	filter: grayscale(1);
 	-webkit-filter: grayscale(1);
 }
+
 .disabled div,
 .disabled p,
 .disabled span,
@@ -160,6 +166,7 @@ a {
 .disabled button {
 	pointer-events: none;
 }
+
 .disabled:hover,
 .disabled:active {
 	opacity: 1;
@@ -195,4 +202,13 @@ a {
 			display: block;
 		}
 	}
+}
+
+/** 重置样式 */
+.reset,
+.reset * {
+	all: initial;
+	all: unset;
+	display: revert;
+	box-sizing: content-box;
 }

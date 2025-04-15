@@ -28,13 +28,14 @@ const isDark = Astro.cookies.get('theme')?.value === 'dark';
 ---
 
 <Switch
+	class="mb-0"
 	checked={isDark}
 	label="深色模式"
 	name="page-theme-switch"
 	{...props}
 	showSwitch={mode === 'switch'}>
 	<Icon icon="sun" theme="light" />
-	<Icon icon="moon" theme="dark" />
+	<Icon icon="moon" theme="gray" />
 </Switch>
 
 <script>

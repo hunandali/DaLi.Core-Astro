@@ -1,0 +1,74 @@
+---
+import PageLayout from '../layouts/Demo.astro';
+import CODE from '../components/Code.astro';
+
+const javaScriptExample = `function greet(name) {
+  return 'Hello, ' + name + '!';
+}
+
+console.log(greet('World'));`;
+
+const pythonExample = `def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10)fibonacci(10))
+<div class="container">
+<div class="container">
+<div class="container">`;
+
+const cssExample = `.button {
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #0056b3;
+}`;
+
+const htmlExample = `<div class="container">
+  <button class="button">Click meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick meClick me</button>
+  <div class="container">
+    <button class="button">Click me</button>
+</div>`;
+---
+
+<PageLayout title="代码高亮组件">
+	<div class="container py-4">
+		<h1>代码高亮组件示例</h1>
+		<section class="mt-4">
+			<h2>JavaScript 示例</h2>
+			<CODE code={javaScriptExample} language="javascript" />
+		</section>
+
+		<section class="mt-4">
+			<h2>Python 示例</h2>
+			<CODE code={pythonExample} language="python" />
+		</section>
+
+		<section class="mt-4">
+			<h2>CSS 示例</h2>
+			<CODE code={cssExample} language="css" />
+		</section>
+
+		<section class="mt-4">
+			<h2>无行号示例</h2>
+			<CODE code="console.log('Hello, World!');" language="javascript" lineNumbers={false} />
+		</section>
+
+		<section class="mt-4">
+			<h2>Html</h2>
+			<CODE code={htmlExample} language="html" />
+		</section>
+
+		<section class="mt-4">
+			<h2>无复制按钮示例</h2>
+			<CODE code="print('Hello, World!')" language="python" />
+		</section>
+	</div>
+</PageLayout>
