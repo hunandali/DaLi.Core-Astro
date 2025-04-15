@@ -167,7 +167,7 @@ let DOMPurify_INIT = false;
 export const updateHTML = (html: string) => {
 	if (!DOMPurify_INIT) {
 		DOMPurify_INIT = true;
-		DOMPurify.addHook('uponSanitizeAttribute', (node, data) => {
+		DOMPurify.addHook('uponSanitizeAttribute', (_, data) => {
 			const attrName = data.attrName;
 			if (/^(v-|@)/i.test(attrName)) {
 				data.keepAttr = true; // 核心：标记保留

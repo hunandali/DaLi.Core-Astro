@@ -96,7 +96,6 @@ export class DirectiveManager {
 	 */
 	private handleDOMChanges(mutations: MutationRecord[]) {
 		mutations.forEach((mutation) => {
-			echo('mutation', mutation);
 			// 处理属性变化
 			if (mutation.type === 'attributes') {
 				this.processDirective(mutation.target as HTMLElement, mutation.attributeName || '');

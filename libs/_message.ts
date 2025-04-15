@@ -136,33 +136,50 @@ export const openLink = (url: string, message: string) => {
 export const copy = (content: string, show: boolean = true) => {
 	if (SERVERMODE || !content || !window) return;
 
-	const showMessage = () => {
+	const showMessage = (result: boolean) => {
 		if (!show) return;
 
-		showToast('内容已复制', '', 'success', 3000);
+		result
+			? showToast('内容已复制', '', 'success', 300000)
+			: showToast(
+					`<div class="fw-bold">请手动选择并复制以下内容：</div><div class="p-3 mt-2 bg-danger-lt rounded-2">${content}${content}${content}${content}${content}${content}${content}</div>`,
+					'复制异常',
+					'danger',
+					10000
+			  );
 	};
-
-	// execCommand 已经弃用，注意替代方式
 
 	// navigator clipboard 需要https等安全上下文
 	if (navigator.clipboard && window.isSecureContext) {
 		// navigator clipboard 向剪贴板写文本
-		navigator.clipboard.writeText(content).then(() => showMessage());
-	} else {
-		// 创建text area
-		let input = document.createElement('textarea');
-		input.value = content; // 设置内容
-		// 使text area不在viewport，同时设置不可见
-		input.style.position = 'absolute';
-		input.style.opacity = '0';
-		input.style.left = '-999999px';
-		input.style.top = '-999999px';
-		document.body.appendChild(input); // 添加临时实例
-		input.select(); // 选择实例内容
-		document.execCommand('copy'); // 执行复制
-		document.body.removeChild(input); // 删除临时实例
-		input.remove();
+		navigator.clipboard
+			.writeText(content)
+			.then(() => showMessage(true))
+			.catch(() => showMessage(false));
 
-		showMessage();
+		return;
 	}
+
+	// 手动复制
+	showMessage(false);
+
+	// let successful = false;
+	// try {
+	// 	const textArea = document.createElement('textarea');
+	// 	textArea.value = content;
+	// 	textArea.style.position = 'fixed';
+	// 	textArea.style.opacity = '0';
+	// 	textArea.style.left = '-999999px';
+	// 	textArea.style.top = '-999999px';
+	// 	document.body.appendChild(textArea);
+	// 	textArea.focus();
+	// 	textArea.select();
+
+	// 	// @ts-ignore: 使用已弃用的API作为回退方案
+	// 	successful = document.execCommand('copy');
+	// 	document.body.removeChild(textArea);
+	// 	textArea.remove();
+	// } catch (err) {}
+
+	// showMessage(successful);
 };

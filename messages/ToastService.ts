@@ -14,7 +14,7 @@
 
 import { Toast } from 'bootstrap';
 import type { IPositionBase } from '../types';
-import { ThemeIcon } from '../libs';
+import { ThemeIcon, updateHTML } from '../libs';
 import { getIcon, getLogo } from '../icons';
 import { hasObject } from '@da.li/core-libs';
 import type { ToastOptions } from '../types';
@@ -99,6 +99,7 @@ class ToastService {
 	private createToastElement(options: ToastOptions): HTMLDivElement {
 		const { title, message, theme } = options;
 		const icon = ThemeIcon(theme);
+		const noMessage = (!title && message) || (title && !message);
 
 		// 创建 Toast 元素
 		const toast = document.createElement('div');
@@ -106,13 +107,17 @@ class ToastService {
 
 		const header = document.createElement('div');
 		header.classList.add('toast-header', `bg-${icon.theme}-lt`);
+
+		// 没有内容，只有标题则标题需要添加圆角效果
+		noMessage && header.classList.add('rounded', 'p-3');
+
 		toast.appendChild(header);
 
 		// 图标
 		const iconName = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
 		if (iconName) {
 			const iconEl = document.createElement('i');
-			iconEl.classList.add(iconName);
+			iconEl.classList.add(iconName, 'text-6');
 			header.appendChild(iconEl);
 		}
 
@@ -120,7 +125,7 @@ class ToastService {
 		const text = title ? title : message;
 		if (text) {
 			const titleEl = document.createElement('strong');
-			titleEl.classList.add('me-auto', 'ms-1');
+			titleEl.classList.add('me-auto', 'ms-1', 'text-4');
 			titleEl.textContent = text;
 			header.appendChild(titleEl);
 		}
@@ -137,7 +142,7 @@ class ToastService {
 		if (title && message) {
 			const body = document.createElement('div');
 			body.classList.add('toast-body');
-			body.textContent = message || '';
+			body.innerHTML = updateHTML(message);
 			toast.appendChild(body);
 		}
 
@@ -175,7 +180,7 @@ class ToastService {
 		container.appendChild(el);
 
 		const delay = options.duration || 0;
-		const toast = new Toast(el, { delay, autohide: delay > 0 });
+		const toast = new Toast(el, { delay, autohide: delay > 0, animation: true });
 		toast.show();
 
 		// 存储 Toast 实例
