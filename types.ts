@@ -192,3 +192,60 @@ export interface ILink extends Omit<IIcon, 'rotate' | 'logo'> {
  * 4. alert: 允许，但是会弹窗提示手动点击打开。
  */
 export type IExternalLinkAction = boolean | string | 'alert';
+
+/**
+ * 是否启用指令
+ * 1. false: 禁用
+ * 2. true: 启用全部类型指令
+ * 3. '@': 仅启用以 @ 开头的指令，例如 @click
+ * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
+ */
+export type IDirective = boolean | '@' | 'v-';
+
+/** 配置属性 */
+export interface ConfigOptions {
+	/** 应用名称 */
+	name?: string;
+
+	/** 应用版本 */
+	version?: string;
+
+	/** 应用描述 */
+	description?: string;
+
+	/** 企业 */
+	company?: string;
+
+	/** 应用网址 */
+	url?: string;
+
+	/** 应用关键词 */
+	keywords?: string;
+
+	/** 应用白名单网址 */
+	whitelistDomains?: string[];
+
+	/**
+	 * 默认外部链接处理方式（Link.astro 组件默认外部链接处理方式）
+	 * 1. false: 不允许，发现外部链接禁用
+	 * 2. true: 允许，发现外部直接使用，不做任何限制
+	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
+	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
+	 */
+	external_link_action?: IExternalLinkAction;
+
+	/** 如果使用弹窗模式打开外部链接，则使用此警告消息，原网址使用 {url} 占位符 */
+	external_link_message?: string;
+
+	/** 代码高亮语言默认路径 */
+	code_languages_path?: string;
+
+	/**
+	 * 是否启用指令
+	 * 1. false: 禁用
+	 * 2. true: 启用全部类型指令
+	 * 3. '@': 仅启用以 @ 开头的指令，例如 @click
+	 * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
+	 */
+	directives?: IDirective;
+}

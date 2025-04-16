@@ -19,6 +19,7 @@
  */
 
 import { $Global, isFn, SERVERMODE } from '@da.li/core-libs';
+import { APP } from '../config';
 
 /**
  * 指令处理函数类型定义
@@ -63,12 +64,19 @@ export class DirectiveManager {
 		return DirectiveManager.instance;
 	}
 
+	/** 是否可以使用指令 */
+	private enabled(directiveName?: '@' | 'v-') {
+		if (SERVERMODE || !APP.DIRECTIVES) return false;
+		if (APP.DIRECTIVES === true) return true;
+		return directiveName && directiveName === APP.DIRECTIVES;
+	}
+
 	/**
 	 * 开始观察 DOM 变化
 	 * 监听 document.body 的子元素变化和属性变化
 	 */
 	private startObserving() {
-		if (SERVERMODE) return;
+		if (!this.enabled()) return;
 
 		// 确保 document.body 已存在
 		if (document.body) {
@@ -203,7 +211,7 @@ export class DirectiveManager {
 	 */
 	private executeOnDirective(element: HTMLElement, attributeName: string, value: string | null) {
 		if (!attributeName.startsWith('@')) return false;
-		if (!value) return true;
+		if (!value || !this.enabled('@')) return true;
 
 		// 移除 @ 前缀
 		const eventName = `on${attributeName.slice(1)}`;
@@ -233,6 +241,7 @@ export class DirectiveManager {
 	 */
 	private executeVDirective(element: HTMLElement, attributeName: string, value: string | null) {
 		if (!attributeName.startsWith('v-')) return false;
+		if (!this.enabled('v-')) return true;
 
 		// 移除 v- 前缀
 		const directiveName = attributeName.slice(2);

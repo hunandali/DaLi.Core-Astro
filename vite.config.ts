@@ -10,10 +10,23 @@ export default defineConfig({
 			outDir: 'dist',
 
 			// 可选：包含你想要生成类型的文件
-			include: ['index.ts', 'icons.ts', 'libs/*.ts', 'messages/*.ts'],
+			include: [
+				'index.ts',
+				'icons.ts',
+				'integration/index.ts',
+				'integration/imports.ts',
+				'libs/*.ts',
+				'messages/*.ts'
+			],
 
 			// 可选：排除不需要生成类型的文件
-			exclude: ['**/types.ts', 'components/index.ts', 'layouts/index.ts', 'messages/index.ts']
+			exclude: [
+				'**/types.ts',
+				'components/index.ts',
+				'customs/index.ts',
+				'layouts/index.ts',
+				'messages/index.ts'
+			]
 		})
 	],
 
@@ -33,11 +46,13 @@ export default defineConfig({
 				'isomorphic-dompurify',
 				'localforage',
 				'ofetch',
-				'ufo'
+				'ufo',
+				'prismjs'
 			],
 			input: {
 				'index.css': 'themes/index.less',
 				index: 'index.ts',
+				// icons: 'icons.ts',
 				'libs/index': 'libs/index.ts',
 				'libs/client': 'libs/client.ts'
 			},

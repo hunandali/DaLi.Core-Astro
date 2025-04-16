@@ -12,44 +12,8 @@
  * ------------------------------------------------------------
  */
 
-import { cleanDuplicate, hasArray, isNil, isObject, type Dict } from '@da.li/core-libs';
-import type { IExternalLinkAction, IMessage } from './types';
-
-/** 配置属性 */
-export interface ConfigOptions extends Dict {
-	/** 应用名称 */
-	name?: string;
-
-	/** 应用版本 */
-	version?: string;
-
-	/** 应用描述 */
-	description?: string;
-
-	/** 企业 */
-	company?: string;
-
-	/** 应用网址 */
-	url?: string;
-
-	/** 应用关键词 */
-	keywords?: string;
-
-	/** 应用白名单网址 */
-	whitelistDomains?: string[];
-
-	/**
-	 * 默认外部链接处理方式（Link.astro 组件默认外部链接处理方式）
-	 * 1. false: 不允许，发现外部链接禁用
-	 * 2. true: 允许，发现外部直接使用，不做任何限制
-	 * 3. string: 允许，发现外部使用模板地址跳转，模板地址中使用 {url} 占位符，原始网址使用 base64 编码。未使用 {url} 则会直接跳到模板地址。
-	 * 4. alert: 允许，但是会弹窗提示手动点击打开。
-	 */
-	external_link_action?: IExternalLinkAction;
-
-	/** 如果使用弹窗模式打开外部链接，则使用此警告消息，原网址使用 {url} 占位符 */
-	external_link_message?: string;
-}
+import { cleanDuplicate, hasArray, isNil, isObject } from '@da.li/core-libs';
+import type { ConfigOptions, IDirective, IExternalLinkAction, IMessage } from './types';
 
 /** 全局事件名称前缀 */
 export const EVENT_PREFIX = 'dali:event:';
@@ -95,7 +59,16 @@ export const APP = {
 		'<div class="text-start text-wrap text-break" style="text-indent:2rem"><div>您需要访问的链接 ”<b class="text-primary">{url}</b>” 为外部链接，打开后将跳转到第三方页面，我们无法保证其页面的安全与合法性，打开后访问的所有信息与操作都与本站无关，请自行甄别并再次确认是否需要打开。</div></div>',
 
 	/** Prism 代码高亮语言默认路径，错误将无法高亮非常用语言 */
-	CODE_LANGUAGES_PATH: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/'
+	CODE_LANGUAGES_PATH: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/',
+
+	/**
+	 * 是否启用指令
+	 * 1. false: 禁用
+	 * 2. true: 启用全部类型指令
+	 * 3. '@': 仅启用以 @ 开头的指令，例如 @click
+	 * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
+	 */
+	DIRECTIVES: true as IDirective
 };
 
 /** 全局事件变量 */
@@ -218,4 +191,10 @@ export const init = (options: ConfigOptions) => {
 	// 外部链接警告消息
 	!isNil(options.external_link_message) &&
 		(APP.EXTERNAL_LINK_MESSAGE = options.external_link_message);
+
+	// 代码高亮语言默认路径
+	!isNil(options.code_languages_path) && (APP.CODE_LANGUAGES_PATH = options.code_languages_path);
+
+	// 指令
+	APP.DIRECTIVES = isNil(options.directives) ? true : options.directives;
 };

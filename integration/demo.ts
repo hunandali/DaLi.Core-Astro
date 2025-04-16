@@ -1,5 +1,5 @@
 import type { AstroIntegration } from 'astro';
-import type { ConfigOptions } from '../config';
+import type { ConfigOptions } from '../types';
 import { serverScript, clientScript } from './';
 
 /** 集成 */

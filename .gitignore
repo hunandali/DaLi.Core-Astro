@@ -140,3 +140,5 @@ yarn.lock
 # Astro
 .astro
 demo
+pnpm-lock.yaml
+package-lock.json

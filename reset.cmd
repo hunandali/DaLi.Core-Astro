@@ -16,6 +16,7 @@ RD /S /Q ".astro"
 RD /S /Q "dist"
 RD /S /Q "demo"
 DEL "yarn.lock"
-call yarn
+DEL "pnpm-lock.yaml"
+call pnpm install
 
-call yarn dev
+call npm run dev

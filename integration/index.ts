@@ -1,5 +1,5 @@
 import type { AstroIntegration } from 'astro';
-import type { ConfigOptions } from '../config';
+import type { ConfigOptions } from '../types';
 
 export { Imports as AutoImports } from './imports';
 

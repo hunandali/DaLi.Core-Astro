@@ -14,7 +14,7 @@
 
 import { dateFormat, htmlEncode, QRCreate, string2Value, type IQR } from '@da.li/core-libs';
 import { registerAction } from './_directive';
-import { copy } from './_message';
+import { copy } from '../libs/_message';
 import { Tooltip } from 'bootstrap';
 import '../integration/_prism';
 

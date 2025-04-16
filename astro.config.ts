@@ -3,9 +3,25 @@ import { defineConfig } from 'astro/config';
 /** 集成项目 */
 import dali from './integration/demo';
 
+/** 包信息 */
+import pkg from './package.json';
+
 export default defineConfig({
 	// 插件
-	integrations: [dali({ external_link_action: 'alert' })],
+	integrations: [
+		dali({
+			name: `${pkg.title}(${pkg.name})`,
+			version: pkg.version,
+			description: pkg.description,
+			company: pkg.company,
+			url: pkg.homepage,
+			keywords: pkg.keywords?.join(','),
+			whitelistDomains: [],
+			external_link_action: 'alert',
+			external_link_message: '此为外部链接，非本项目内链接，是否前往？',
+			directives: true
+		})
+	],
 
 	// 设置 Astro 将读取网站的目录。
 	srcDir: './',
