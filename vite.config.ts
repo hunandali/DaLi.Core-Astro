@@ -47,7 +47,9 @@ export default defineConfig({
 				'localforage',
 				'ofetch',
 				'ufo',
-				'prismjs'
+				'prismjs',
+				'../config',
+				'./config'
 			],
 			input: {
 				'index.css': 'themes/index.less',

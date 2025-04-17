@@ -19,6 +19,7 @@ import type { ILink, ISize } from '../types';
 import { ClassClear } from '../libs';
 import Button from './Button.astro';
 import Link from './Link.astro';
+import { undefined } from 'astro:schema';
 
 export interface DropdownItem extends ILink {
 	/** 分割线 */
@@ -50,6 +51,9 @@ export interface Props extends Omit<ILink, 'size'> {
 	/** 拆分按钮 */
 	split?: boolean;
 
+	/** 自定义标签 */
+	element?: string;
+
 	/** 其他样式 */
 	class?: string;
 }
@@ -64,6 +68,7 @@ const {
 	direction = 'down',
 	size,
 	split = false,
+	element = 'div',
 	class: className,
 	...props
 } = Astro.props;
@@ -75,10 +80,20 @@ const itemClass = (item: DropdownItem) => {
 	return ClassClear(classes);
 };
 
-const classList = ClassClear([`drop${direction}`, split && 'btn-group', className]);
+const Element = element || 'div';
+const ElementProps = {
+	...props,
+	class: ClassClear([`drop${direction}`, split && 'btn-group', className])
+};
+
+// const slotItem = async (item: DropdownItem, index: number) => {
+// 	return Astro.slots.has('item')
+// 		? (await Astro.slots.render('item', [item, index])).trim()
+// 		: undefined;
+// };
 ---
 
-<div class={classList} {...props}>
+<Element {...ElementProps}>
 	{
 		split ? (
 			<>
@@ -127,14 +142,20 @@ const classList = ClassClear([`drop${direction}`, split && 'btn-group', classNam
 			</div>
 		) : (
 			<div class="dropdown-menu">
-				{items.map((item) => (
+				{items.map((item, index) => (
 					<>
 						{item.divider && <div class="dropdown-divider" />}
-						{item.href ? (
+
+						{Astro.slots.has('item') ? (
+							// 使用 item 插槽展示，参数：item, index
+							<Fragment set:html={Astro.slots.render('item', [item, index])} />
+						) : item.href ? (
+							// 链接
 							<Link class={itemClass(item)} {...item}>
 								{item.bagde && <Bagde {...item.bagde} class="ms-auto" />}
 							</Link>
 						) : (
+							// 标题
 							<span class="dropdown-header">
 								{item.icon && <Icon icon={item.icon} />}
 								{item.text}
@@ -146,8 +167,4 @@ const classList = ClassClear([`drop${direction}`, split && 'btn-group', classNam
 			</div>
 		)
 	}
-</div>
-
-<script>
-	import '@tabler/core/js/src/dropdown.js';
-</script>
+</Element>

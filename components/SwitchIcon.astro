@@ -86,5 +86,13 @@ const iconB = { ...props, icon: iconOn, text: textOn, theme: themeOn };
 </button>
 
 <script>
-	import '@tabler/core/js/src/switch-icon';
+	const elements = document.querySelectorAll('[data-bs-toggle="switch-icon"]');
+	if (elements.length > 0) {
+		elements.forEach((element) => {
+			element.addEventListener('click', (e) => {
+				e.stopPropagation();
+				element.classList.toggle('active');
+			});
+		});
+	}
 </script>

@@ -196,11 +196,10 @@ export type IExternalLinkAction = boolean | string | 'alert';
 /**
  * 是否启用指令
  * 1. false: 禁用
- * 2. true: 启用全部类型指令
- * 3. '@': 仅启用以 @ 开头的指令，例如 @click
- * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
+ * 2. true: 启用默认(v-)类型指令
+ * 3. string: 启用并自定义指令前缀，例如 '@' 或 'v-'，空值则禁用
  */
-export type IDirective = boolean | '@' | 'v-';
+export type IDirective = boolean | string;
 
 /** 配置属性 */
 export interface ConfigOptions {
@@ -243,9 +242,8 @@ export interface ConfigOptions {
 	/**
 	 * 是否启用指令
 	 * 1. false: 禁用
-	 * 2. true: 启用全部类型指令
-	 * 3. '@': 仅启用以 @ 开头的指令，例如 @click
-	 * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
+	 * 2. true: 启用默认(v-)类型指令
+	 * 3. string: 启用并自定义指令前缀，例如 '@' 或 'v-'，空值则禁用
 	 */
 	directives?: IDirective;
 }

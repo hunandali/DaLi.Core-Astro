@@ -93,20 +93,6 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 
 <Element {...ElementProps}>
 	<div class={containerClass}>
-		<!-- 品牌 -->
-		{
-			Astro.slots.has('brand') ? (
-				<div class="navbar-brand">
-					<slot name="brand" />
-				</div>
-			) : (
-				hasObject(brand) && <Link class="navbar-brand" {...brand} />
-			)
-		}
-
-		<!-- 其他操作按钮 -->
-		<slot name="action" />
-
 		<!-- 切换开关 -->
 		{
 			toggler && (
@@ -127,6 +113,20 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 			)
 		}
 
+		<!-- 品牌 -->
+		{
+			Astro.slots.has('brand') ? (
+				<div class="navbar-brand">
+					<slot name="brand" />
+				</div>
+			) : (
+				hasObject(brand) && <Link class="navbar-brand" {...brand} />
+			)
+		}
+
+		<!-- 其他操作按钮 -->
+		<slot name="action" />
+
 		<!-- 导航 -->
 		{
 			hasArray(items) && (
@@ -141,8 +141,26 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 	</div>
 </Element>
 
-<style is:global>
+<style lang="less" is:global>
 	.navbar-vertical {
 		overflow-y: auto !important;
 	}
+
+	// @media screen and (max-width: 991.98px) {
+	// 	.navbar {
+	// 		background-color: rgba(0, 0, 0, 25%);
+	// 		position: absolute;
+	// 		left: 0;
+	// 		top: 0;
+	// 		z-index: 1000;
+	// 		height: 100vh;
+	// 		width: 100vw;
+	// 		overflow: hidden;
+
+	// 		.navbar-collapse {
+	// 			display: block;
+	// 			// background-color: transparent; // rgba(0, 0, 0, 25%);
+	// 		}
+	// 	}
+	// }
 </style>

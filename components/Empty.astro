@@ -23,7 +23,7 @@ export interface Props extends Omit<IIcon, 'disabled'> {
 	title: string;
 
 	/** 副标题 */
-	subtitle?: string;
+	message?: string;
 
 	/** 自定义图片URL */
 	image?: string;
@@ -34,7 +34,7 @@ export interface Props extends Omit<IIcon, 'disabled'> {
 
 const {
 	title = '暂无数据',
-	subtitle = '没有找到匹配的数据记录',
+	message = '没有找到匹配的数据记录',
 	text,
 	icon,
 	image,
@@ -62,7 +62,7 @@ const classList = ClassClear(['empty', className]);
 	}
 
 	<p class="empty-title">{title}</p>
-	<p class="empty-subtitle text-muted">{subtitle}</p>
+	<p class="empty-subtitle text-muted">{message}</p>
 
 	{
 		Astro.slots.has('default') && (

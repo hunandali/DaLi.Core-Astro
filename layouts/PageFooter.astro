@@ -67,8 +67,7 @@ const classList = ClassClear(['page-footer', 'footer', className]);
 					<slot name="about">
 						<About>
 							<slot name="Version" slot="version">
-								<Tooltip title="关于" element="i"><Icon icon="logo-logo" /></Tooltip
-								>
+								<Icon icon="logo-logo" v-tooltip="关于" />
 							</slot>
 							<slot name="About" slot="description">
 								{APP.DESCRIPTION}

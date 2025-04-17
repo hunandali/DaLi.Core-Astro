@@ -72,6 +72,7 @@ $Global.alert = (message) =>
 				theme: 'warning',
 				title: message,
 				icon: '-',
+				size: 'sm',
 				showClose: false,
 				textOk: '确定'
 			}),
@@ -109,7 +110,7 @@ export const openLink = (url: string, message: string) => {
 	if (!message) return openUrl(url);
 
 	message = message.replace(/\{url\}/g, url);
-	message = `<div class="text-4"><div class="badge text-bg-primary text-4 num m-3" v-copy="${url}">链接<input type="text" class="form-control ms-2" value="${url}" readonly></div>${message}</div>`;
+	message = `<div class="text-4"><div class="badge text-bg-primary text-4 num m-3" v-copy="${url}">链接<input type="text" class="form-control ms-2" value="${url}" readonly></div><div>${message}</div></div>`;
 
 	// 显示弹窗
 	openModal({

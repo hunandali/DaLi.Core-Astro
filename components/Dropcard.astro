@@ -42,6 +42,9 @@ export interface Props extends ICard {
 
 	/** 拆分按钮 */
 	split?: boolean;
+
+	/** 自定义标签 */
+	element?: string;
 }
 
 const {
@@ -54,16 +57,21 @@ const {
 	size,
 	split = false,
 	title,
+	element = 'div',
 	class: className,
 	...props
 } = Astro.props;
 
 const hasTitle = title || Astro.slots.has('title');
 
-const classList = ClassClear([`drop${direction}`, split && 'btn-group', className]);
+const Element = element || 'div';
+const ElementProps = {
+	...props,
+	class: ClassClear([`drop${direction}`, split && 'btn-group'])
+};
 ---
 
-<div class={classList} {...props}>
+<Element {...ElementProps}>
 	{
 		split ? (
 			<>
@@ -105,7 +113,7 @@ const classList = ClassClear([`drop${direction}`, split && 'btn-group', classNam
 		)
 	}
 	<div class="dropdown-menu dropdown-menu-card">
-		<CARD {...props}>
+		<CARD class={className}>
 			{
 				hasTitle && (
 					<div class="card-title">
@@ -116,8 +124,4 @@ const classList = ClassClear([`drop${direction}`, split && 'btn-group', classNam
 			<slot />
 		</CARD>
 	</div>
-
-	<script>
-		import '@tabler/core/js/src/dropdown.js';
-	</script>
-</div>
+</Element>

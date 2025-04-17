@@ -50,5 +50,16 @@ const attributes = {
 </Element>
 
 <script>
-	import '@tabler/core/js/src/tooltip.js';
+	import { Tooltip } from 'bootstrap';
+
+	const elements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+	if (elements.length > 0) {
+		elements.forEach((element) => {
+			return new Tooltip(element, {
+				delay: { show: 50, hide: 50 },
+				html: element.getAttribute('data-bs-html') === 'true',
+				placement: element.getAttribute('data-bs-placement') ?? ('auto' as any)
+			});
+		});
+	}
 </script>

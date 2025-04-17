@@ -29,5 +29,9 @@ export const ThemeICONS: Record<ITheme, IIcon> = {
  * @param theme 主题
  * @returns 图标
  */
-export const ThemeIcon = (theme = 'priamry' as IColorFull) =>
-	ThemeICONS[theme as ITheme] || { icon: 'logo', logo: true, theme };
+export const ThemeIcon = (theme = 'priamry' as IColorFull) => {
+	const icon = ThemeICONS[theme as ITheme];
+
+	// 克隆，防止被修改原始数据
+	return icon ? { ...icon } : { icon: 'logo', logo: true, theme };
+};

@@ -12,7 +12,8 @@
  * ------------------------------------------------------------
  */
 
-export { default as DlEmptyLayout } from './Empty.astro';
+export { default as DlLayoutBase } from './LayoutBase.astro';
+export { default as DlLayoutDefault } from './LayoutDefault.astro';
 export { default as DlHead } from './Head.astro';
 export { default as DlPageFooter } from './PageFooter.astro';
 export { default as DlPageHeader } from './PageHeader.astro';

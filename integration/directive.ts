@@ -16,7 +16,7 @@ import { dateFormat, htmlEncode, QRCreate, string2Value, type IQR } from '@da.li
 import { registerAction } from './_directive';
 import { copy } from '../libs/_message';
 import { Tooltip } from 'bootstrap';
-import '../integration/_prism';
+import './_prism';
 
 /** 复制指令 */
 registerAction('copy', (el, value) => {

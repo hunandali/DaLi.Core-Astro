@@ -17,14 +17,14 @@ import {
 	cleanDuplicate,
 	hasArray,
 	hasObject,
+	htmlSafe,
 	isArray,
 	isBoolean,
 	stringIncludes,
 	type Dict
 } from '@da.li/core-libs';
 import type { IExternalLinkAction, IPropsBase } from '../types';
-
-import DOMPurify from 'isomorphic-dompurify';
+import { APP } from '../config';
 
 /** 样式类型 */
 type ClassItem = string | boolean | number | undefined;
@@ -161,22 +161,13 @@ export const updateLink = (
 	return { enabled: true, url: url };
 };
 
-let DOMPurify_INIT = false;
-
 /** Html 代码 xss 过滤，返回安全 HTML 代码，针对当前项目保留了 x- v- 指令属性 */
-export const updateHTML = (html: string) => {
-	if (!DOMPurify_INIT) {
-		DOMPurify_INIT = true;
-		DOMPurify.addHook('uponSanitizeAttribute', (_, data) => {
-			const attrName = data.attrName;
-			if (/^(v-|@)/i.test(attrName)) {
-				data.keepAttr = true; // 核心：标记保留
-				data.forceKeepAttr = true; // 核心：标记强制保留
-			}
-		});
-	}
-
-	return DOMPurify.sanitize(html, {
-		USE_PROFILES: { html: true }
-	});
-};
+export const updateHTML = (html: string) =>
+	!html
+		? ''
+		: APP.DIRECTIVE_PREFIX
+		? htmlSafe(html.replace(APP.DIRECTIVE_PREFIX, 'data-directive-prefix-name-')).replace(
+				'data-directive-prefix-name-',
+				APP.DIRECTIVE_PREFIX
+		  )
+		: htmlSafe(html);

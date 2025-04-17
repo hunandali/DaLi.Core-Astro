@@ -1,0 +1,77 @@
+---
+/**
+ *	LayoutVertical 左侧竖直菜单模板
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LayoutBase, { type Props as ILayout } from './LayoutBase.astro';
+import Layout from './PageLayout.astro';
+import Header, { type Props as IHeader } from './PageHeader.astro';
+import Footer from './PageFooter.astro';
+import Icon from '../components/Icon.astro';
+import type { ILink, IThemeFull } from '../types';
+import Navbar from '../components/Navbar/index.astro';
+import type { NavbarItem } from '../components/Navbar/menus.astro';
+
+export interface Props extends ILayout, IHeader {
+	/** 导航栏品牌/标题 */
+	brand?: ILink;
+
+	/** 导航菜单 */
+	menus?: NavbarItem[];
+
+	/** 导航栏颜色主题 */
+	theme?: IThemeFull;
+
+	/** 布局类型 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 页脚链接 */
+	footerLinks?: ILink[];
+}
+
+const { brand, menus, theme, layout, footerLinks, ...props } = Astro.props;
+
+/** 导航属性 */
+const navProps = { brand, items: menus, theme, layout };
+---
+
+<LayoutBase {...props}>
+	<Layout size="md">
+		<!-- 头部 -->
+		<slot slot="top" name="top">
+			<Navbar {...navProps} expand="lg" size="md">
+				<a href="https://tabler.io/docs" target="_blank" class="nav-item">参考</a>
+			</Navbar>
+		</slot>
+
+		<!-- 页眉 -->
+		<slot slot="header" name="header">
+			<Header {...props} />
+		</slot>
+
+		<!-- 内容 -->
+		<slot />
+
+		<!-- 页脚 -->
+		<slot name="footer">
+			<Footer slot="footer" links={footerLinks}>
+				<span slot="linkSuffix">
+					Made with <Icon icon="ri:hearts-fill" theme="danger" /> in China.
+				</span>
+			</Footer>
+		</slot>
+
+		<!-- 底部 -->
+		<slot slot="bottom" name="bottom" />
+	</Layout>
+</LayoutBase>

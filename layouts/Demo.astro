@@ -13,38 +13,18 @@
  * ------------------------------------------------------------
  */
 
-import EMPTY, { type Props as ILayout } from './Empty.astro';
-import FOOTER from './PageFooter.astro';
-import HEADER, { type Props as IHeader } from './PageHeader.astro';
-import LAYOUT from './PageLayout.astro';
+import Layout, { type Props as ILayout } from './LayoutDefault.astro';
 
-import Icon from '../components/Icon.astro';
-import THEME from '../layouts/PageTheme.astro';
+export interface Props extends ILayout {}
 
-import Navbar from '../components/Navbar/index.astro';
+import props from '../_data';
 
-interface Props extends ILayout, IHeader {}
-
-const props = Astro.props;
-
-import navbar from '../_data/_navbar';
-import footer from '../_data/_footer';
+const layoutProps = {
+	...props,
+	...Astro.props
+};
 ---
 
-<EMPTY {...props}>
-	<LAYOUT>
-		<Navbar {...navbar as any} slot="top">
-			<div class="nav-item"><THEME mode="icon" /></div>
-		</Navbar>
-
-		<slot slot="header" name="header">
-			<HEADER {...props} />
-		</slot>
-		<FOOTER links={footer} slot="footer">
-			<span slot="linkSuffix">
-				Made with <Icon icon="ri:hearts-fill" theme="danger" /> in China.
-			</span>
-		</FOOTER>
-		<slot />
-	</LAYOUT>
-</EMPTY>
+<Layout {...layoutProps}>
+	<slot />
+</Layout>

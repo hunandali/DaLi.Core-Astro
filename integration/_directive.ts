@@ -42,13 +42,20 @@ export class DirectiveManager {
 	/** DOM 变化观察器 */
 	private observer: MutationObserver;
 
+	/** 指令前缀 */
+	private directivePrefix = 'v-';
+
 	/**
 	 * 私有构造函数，初始化指令管理器
 	 * 创建 MutationObserver 并开始监听 DOM 变化
 	 */
-	private constructor() {
+	private constructor(prefix = 'v-') {
 		this.directives = new Map();
 		this.observer = new MutationObserver(this.handleDOMChanges.bind(this));
+		this.directivePrefix = prefix;
+
+		// 不启用指令时，直接返回
+		if (!this.directivePrefix || SERVERMODE) return;
 
 		this.startObserving();
 	}
@@ -57,18 +64,21 @@ export class DirectiveManager {
 	 * 获取 DirectiveManager 单例实例
 	 * @returns DirectiveManager 实例
 	 */
-	public static getInstance(): DirectiveManager {
+	public static getInstance(prefix = 'v-'): DirectiveManager {
 		if (!DirectiveManager.instance) {
-			DirectiveManager.instance = new DirectiveManager();
+			DirectiveManager.instance = new DirectiveManager(prefix);
 		}
 		return DirectiveManager.instance;
 	}
 
-	/** 是否可以使用指令 */
-	private enabled(directiveName?: '@' | 'v-') {
-		if (SERVERMODE || !APP.DIRECTIVES) return false;
-		if (APP.DIRECTIVES === true) return true;
-		return directiveName && directiveName === APP.DIRECTIVES;
+	/** 是否禁用指令 */
+	public get disabled() {
+		return SERVERMODE || !this.directivePrefix;
+	}
+
+	/** 指令前缀 */
+	public get Prefix() {
+		return this.directivePrefix;
 	}
 
 	/**
@@ -76,7 +86,7 @@ export class DirectiveManager {
 	 * 监听 document.body 的子元素变化和属性变化
 	 */
 	private startObserving() {
-		if (!this.enabled()) return;
+		if (this.disabled) return;
 
 		// 确保 document.body 已存在
 		if (document.body) {
@@ -103,10 +113,16 @@ export class DirectiveManager {
 	 * @param mutations - DOM 变化记录列表
 	 */
 	private handleDOMChanges(mutations: MutationRecord[]) {
+		if (this.disabled) return;
+
 		mutations.forEach((mutation) => {
 			// 处理属性变化
-			if (mutation.type === 'attributes') {
-				this.processDirective(mutation.target as HTMLElement, mutation.attributeName || '');
+			if (mutation.type === 'attributes' && mutation.attributeName) {
+				const element = mutation.target as HTMLElement;
+				const attributeName = mutation.attributeName;
+				const attributeValue = element.getAttribute(attributeName);
+
+				this.executeDirective(element, attributeName, attributeValue);
 			}
 
 			// 处理子节点变化
@@ -126,14 +142,16 @@ export class DirectiveManager {
 	 * @param element - 要处理的元素
 	 */
 	private processElementDirectives(element: HTMLElement) {
+		if (this.disabled) return;
+
 		// 确保元素有效
 		if (!element) return;
 
 		// 检查元素的所有属性
 		if (element.attributes) {
-			const attributes = element.getAttributeNames();
+			const attributes = element.attributes;
 			for (let i = 0; i < attributes.length; i++) {
-				this.processDirective(element, attributes[i]);
+				this.executeDirective(element, attributes[i].name, attributes[i].value);
 			}
 		}
 
@@ -153,6 +171,8 @@ export class DirectiveManager {
 	 * @param immediate - 是否立即应用指令到已存在的元素
 	 */
 	public registerDirective(name: string, handler: DirectiveHandler, immediate = true) {
+		if (this.disabled) return;
+
 		if (name && isFn(handler)) {
 			this.directives.set(name, handler);
 
@@ -179,7 +199,7 @@ export class DirectiveManager {
 		elements.forEach((element) => {
 			if (element instanceof HTMLElement) {
 				const value = element.getAttribute(attributeName);
-				this.executeVDirective(element, attributeName, value);
+				this.executeDirective(element, attributeName, value);
 			}
 		});
 	}
@@ -188,70 +208,21 @@ export class DirectiveManager {
 	 * 执行指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
 	 * @param element - 应用指令的 HTML 元素
 	 * @param attributeName - 指令名称（不含 v- 前缀）
-	 */
-	private processDirective(element: HTMLElement, attributeName: string) {
-		if (attributeName.length < 1) return;
-
-		const value = element.getAttribute(attributeName);
-
-		// 处理 @ 指令
-		let flag = this.executeOnDirective(element, attributeName, value);
-		if (flag) return;
-
-		flag = this.executeVDirective(element, attributeName, value);
-		if (flag) return;
-	}
-
-	/**
-	 * 执行 @ 指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
-	 * @param element - 应用指令的 HTML 元素
-	 * @param attributeName - 指令名称（含 @ 前缀）
 	 * @param value - 指令的值
-	 * @returns ture 操作完成，后续无需再处理；false 操作未完成，后续需要再处理
 	 */
-	private executeOnDirective(element: HTMLElement, attributeName: string, value: string | null) {
-		if (!attributeName.startsWith('@')) return false;
-		if (!value || !this.enabled('@')) return true;
-
-		// 移除 @ 前缀
-		const eventName = `on${attributeName.slice(1)}`;
-
-		// 已经存在事件处理函数，不再处理
-		if (element.hasAttribute(eventName)) return true;
-
-		// 创建事件处理函数
-		element.setAttribute(eventName, value);
-
-		// 对于点击修改鼠标样式
-		if (eventName === 'onclick') {
-			element.style.cursor = 'pointer';
-		}
-
-		// 移除原始的 @event 属性
-		element.removeAttribute(attributeName);
-		return true;
-	}
-
-	/**
-	 * 执行 v- 指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
-	 * @param element - 应用指令的 HTML 元素
-	 * @param attributeName - 指令名称（不含 v- 前缀）
-	 * @param value - 指令的值
-	 * @returns ture 操作完成，后续无需再处理；false 操作未完成，后续需要再处理
-	 */
-	private executeVDirective(element: HTMLElement, attributeName: string, value: string | null) {
-		if (!attributeName.startsWith('v-')) return false;
-		if (!this.enabled('v-')) return true;
+	private executeDirective(element: HTMLElement, attributeName: string, value: string | null) {
+		if (this.disabled || !attributeName || !attributeName.startsWith(this.directivePrefix))
+			return;
 
 		// 移除 v- 前缀
-		const directiveName = attributeName.slice(2);
+		const directiveName = attributeName.slice(this.directivePrefix.length);
 
 		// 获取指令处理函数
 		const handler = this.directives.get(directiveName);
-		if (!handler) return true;
+		if (!handler) return;
 
 		// 标记状态，处理过不再处理
-		if (element.hasAttribute(`__${directiveName}`)) return true;
+		if (element.hasAttribute(`__${directiveName}`)) return;
 		element.setAttribute(`__${directiveName}`, '');
 
 		// 使用try-catch包装处理函数调用，防止单个指令错误影响整个系统
@@ -259,13 +230,94 @@ export class DirectiveManager {
 			// 执行指令处理函数
 			handler(element, value || '');
 		} catch (error) {
-			console.error(`Error executing directive v-${directiveName}:`, error);
+			console.error(`执行指令 ${directiveName} 异常：`, error);
 		}
 
 		// 移除指令属性
 		element.removeAttribute(attributeName);
-		return true;
 	}
+
+	// /**
+	//  * 执行指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
+	//  * @param element - 应用指令的 HTML 元素
+	//  * @param attributeName - 指令名称（不含 v- 前缀）
+	//  */
+	// private processDirective(element: HTMLElement, attributeName: string) {
+	// 	if (attributeName.length < 1) return;
+
+	// 	const value = element.getAttribute(attributeName);
+
+	// 	// 处理 @ 指令
+	// 	let flag = this.executeOnDirective(element, attributeName, value);
+	// 	if (flag) return;
+
+	// 	flag = this.executeVDirective(element, attributeName, value);
+	// 	if (flag) return;
+	// }
+	// /**
+	//  * 执行 @ 指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
+	//  * @param element - 应用指令的 HTML 元素
+	//  * @param attributeName - 指令名称（含 @ 前缀）
+	//  * @param value - 指令的值
+	//  * @returns ture 操作完成，后续无需再处理；false 操作未完成，后续需要再处理
+	//  */
+	// private executeOnDirective(element: HTMLElement, attributeName: string, value: string | null) {
+	// 	if (!attributeName.startsWith('@')) return false;
+	// 	if (!value || !this.enabled('@')) return true;
+
+	// 	// 移除 @ 前缀
+	// 	const eventName = `on${attributeName.slice(1)}`;
+
+	// 	// 已经存在事件处理函数，不再处理
+	// 	if (element.hasAttribute(eventName)) return true;
+
+	// 	// 创建事件处理函数
+	// 	element.setAttribute(eventName, value);
+
+	// 	// 对于点击修改鼠标样式
+	// 	if (eventName === 'onclick') {
+	// 		element.style.cursor = 'pointer';
+	// 	}
+
+	// 	// 移除原始的 @event 属性
+	// 	element.removeAttribute(attributeName);
+	// 	return true;
+	// }
+
+	// /**
+	//  * 执行 v- 指令 (注意不检测节点类型，属性名是否空等，请前置操作时做好检测)
+	//  * @param element - 应用指令的 HTML 元素
+	//  * @param attributeName - 指令名称（不含 v- 前缀）
+	//  * @param value - 指令的值
+	//  * @returns ture 操作完成，后续无需再处理；false 操作未完成，后续需要再处理
+	//  */
+	// private executeVDirective(element: HTMLElement, attributeName: string, value: string | null) {
+	// 	if (!attributeName.startsWith('v-')) return false;
+	// 	if (!this.enabled('v-')) return true;
+
+	// 	// 移除 v- 前缀
+	// 	const directiveName = attributeName.slice(2);
+
+	// 	// 获取指令处理函数
+	// 	const handler = this.directives.get(directiveName);
+	// 	if (!handler) return true;
+
+	// 	// 标记状态，处理过不再处理
+	// 	if (element.hasAttribute(`__${directiveName}`)) return true;
+	// 	element.setAttribute(`__${directiveName}`, '');
+
+	// 	// 使用try-catch包装处理函数调用，防止单个指令错误影响整个系统
+	// 	try {
+	// 		// 执行指令处理函数
+	// 		handler(element, value || '');
+	// 	} catch (error) {
+	// 		console.error(`Error executing directive v-${directiveName}:`, error);
+	// 	}
+
+	// 	// 移除指令属性
+	// 	element.removeAttribute(attributeName);
+	// 	return true;
+	// }
 
 	/**
 	 * 销毁指令管理器
@@ -282,7 +334,7 @@ export class DirectiveManager {
  * 导出单例实例
  * 用于在应用中访问指令管理器
  */
-export const directiveManager = DirectiveManager.getInstance();
+export const directiveManager = DirectiveManager.getInstance(APP.DIRECTIVE_PREFIX);
 
 /**
  * 导出注册指令的辅助函数

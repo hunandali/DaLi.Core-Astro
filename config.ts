@@ -13,7 +13,7 @@
  */
 
 import { cleanDuplicate, hasArray, isNil, isObject } from '@da.li/core-libs';
-import type { ConfigOptions, IDirective, IExternalLinkAction, IMessage } from './types';
+import type { ConfigOptions, IExternalLinkAction, IMessage } from './types';
 
 /** 全局事件名称前缀 */
 export const EVENT_PREFIX = 'dali:event:';
@@ -61,14 +61,8 @@ export const APP = {
 	/** Prism 代码高亮语言默认路径，错误将无法高亮非常用语言 */
 	CODE_LANGUAGES_PATH: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/',
 
-	/**
-	 * 是否启用指令
-	 * 1. false: 禁用
-	 * 2. true: 启用全部类型指令
-	 * 3. '@': 仅启用以 @ 开头的指令，例如 @click
-	 * 4. 'v-': 仅启用以 v- 开头的指令，例如 v-copy
-	 */
-	DIRECTIVES: true as IDirective
+	/** 自定义指令前缀，例如 '@' 或 'v-'，空值则为默认(v-)；不设置将关闭自定义指令 */
+	DIRECTIVE_PREFIX: 'v-'
 };
 
 /** 全局事件变量 */
@@ -195,6 +189,12 @@ export const init = (options: ConfigOptions) => {
 	// 代码高亮语言默认路径
 	!isNil(options.code_languages_path) && (APP.CODE_LANGUAGES_PATH = options.code_languages_path);
 
-	// 指令
-	APP.DIRECTIVES = isNil(options.directives) ? true : options.directives;
+	// 指令(未设置参数，默认开启)
+	APP.DIRECTIVE_PREFIX = isNil(options.directives)
+		? 'v-'
+		: !options.directives
+		? ''
+		: options.directives === true
+		? 'v-'
+		: options.directives;
 };

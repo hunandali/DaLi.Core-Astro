@@ -13,6 +13,6 @@
  */
 
 import '@da.li/core-libs';
-import '../libs/directive';
+import './directive';
 
 export { init } from '../config';

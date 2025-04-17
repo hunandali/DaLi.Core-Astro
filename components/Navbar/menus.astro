@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import { hasArray } from '@da.li/core-libs';
+import { hasArray, type Dict } from '@da.li/core-libs';
 import { ClassClear } from '../../libs';
 import type { DropdownItem } from '../Dropdown.astro';
 import Badge from '../Badge.astro';
@@ -77,16 +77,22 @@ const classList = ClassClear([
 	flex && `nav-${flex}`,
 	className
 ]);
+
+const dropdownProps = (item: NavbarItem) => {
+	const data: Dict = { ...item };
+	delete data.children;
+	return data;
+};
 ---
 
 <ul class={classList} {...props}>
 	{
 		items?.map((item) =>
 			hasArray(item.children) ? (
-				<Dropdown {...(item as any)} items={item.children} class="nav-item">
+				<Dropdown items={item.children} element="li" class="nav-item">
 					<Link
 						class={itemClass(item)}
-						{...item}
+						{...dropdownProps(item)}
 						slot="button"
 						href="#"
 						data-bs-toggle="dropdown"
