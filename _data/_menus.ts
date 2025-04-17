@@ -87,5 +87,54 @@ export default [
 				href: 'icon'
 			}
 		]
+	},
+	{
+		text: '其他',
+		href: '#',
+		icon: 'book',
+		children: [
+			{
+				text: '表格',
+				href: 'table'
+			},
+			{
+				text: '表单',
+				href: 'form'
+			},
+			{
+				text: '图标',
+				href: 'icon'
+			},
+
+			{
+				text: '计数器',
+				href: 'countup'
+			},
+			{
+				text: '空状态',
+				href: 'empty'
+			},
+			{
+				text: '错误',
+				href: 'error'
+			},
+			{ text: '进度条', href: 'progress' },
+			{
+				text: '徽标',
+				href: 'ribbon'
+			},
+			{
+				text: '滚动条',
+				href: 'spinner'
+			},
+			{
+				text: '切换按钮',
+				href: 'switch-icon'
+			},
+			{
+				text: '时间线',
+				href: 'timeline'
+			}
+		]
 	}
 ] as NavbarItem[];

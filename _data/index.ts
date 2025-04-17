@@ -9,9 +9,9 @@ const layout: Omit<Props, 'title'> = {
 	menus: _menus,
 	footerLinks: _footer,
 
-	layout: 'vertical',
+	// layout: 'vertical',
 	expanded: 'md',
-	theme: 'dark',
+	theme: 'light',
 	placement: 'fixed-top'
 };
 

@@ -4,6 +4,16 @@ import Empty from '../components/Empty.astro';
 ---
 
 <Layout pretitle="大沥网络" title="基础组件演示">
+	<button
+		class="navbar-toggler"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#navbar"
+		aria-controls="navbar"
+		aria-expanded="false"
+		aria-label="切换导航">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 	<div class="h-600">
 		<Empty title="演示数据" />
 	</div>

@@ -16,7 +16,6 @@
 import { ClassClear } from '../libs';
 import type { ILink, ISize } from '../types';
 import About from '../customs/About.astro';
-import Tooltip from '../components/Tooltip.astro';
 import Icon from '../components/Icon.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { APP } from '../config';
@@ -92,6 +91,10 @@ const classList = ClassClear(['page-footer', 'footer', className]);
 
 <style lang="less" is:global>
 	.page-footer {
-		padding: calc(var(--space) * 2) var(--space);
+		padding: calc(var(--space) * 4) var(--space);
+
+		@media screen and (min-width: 768px) {
+			padding: calc(var(--space) * 2) var(--space);
+		}
 	}
 </style>

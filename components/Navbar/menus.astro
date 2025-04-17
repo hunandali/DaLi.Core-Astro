@@ -86,6 +86,8 @@ const dropdownProps = (item: NavbarItem) => {
 ---
 
 <ul class={classList} {...props}>
+	<slot name="before" />
+
 	{
 		items?.map((item) =>
 			hasArray(item.children) ? (
@@ -109,4 +111,6 @@ const dropdownProps = (item: NavbarItem) => {
 			)
 		)
 	}
+
+	<slot name="after" />
 </ul>

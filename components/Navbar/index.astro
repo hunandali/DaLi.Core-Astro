@@ -48,6 +48,12 @@ export interface Props {
 	/** 自定义标签 */
 	element?: string;
 
+	/** 菜单表示，用于切换导航栏 */
+	id?: string;
+
+	/** 移动菜单模式：ture 左侧滑出，false 顶部弹出 */
+	mobileMenu?: boolean;
+
 	/** 自定义类名 */
 	class?: string;
 }
@@ -63,6 +69,8 @@ const {
 	expand = 'lg',
 	size = 'auto',
 	class: className = '',
+	mobileMenu = false,
+	id,
 	...props
 } = Astro.props;
 
@@ -72,18 +80,19 @@ const classList = ClassClear([
 	layout === 'vertical' && 'navbar-vertical',
 	expand && `navbar-expand-${expand}`,
 	theme && theme !== 'dark' && `bg-${theme}`,
-	placement,
+	mobileMenu ? 'fixed-top' : placement,
+	mobileMenu && 'navbar-mobile',
 	className
 ]);
 
 // 生成唯一ID
-const navbarId = globalId('navbar');
+const navbarId = id ? 'navbar' : globalId('navbar');
 
 const Element = element || 'nav';
 const ElementProps = {
 	...props,
 	class: classList,
-	id: navbarId,
+	id: `${navbarId}-container`,
 	'data-bs-theme': theme === 'dark' ? 'dark' : undefined
 };
 
@@ -97,11 +106,11 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 		{
 			toggler && (
 				<button
-					class="navbar-toggler"
+					class="navbar-toggler  order-0"
 					type="button"
 					data-bs-toggle="collapse"
-					data-bs-target={`#${navbarId}-content`}
-					aria-controls={`${navbarId}-content`}
+					data-bs-target={`#${navbarId}`}
+					aria-controls={navbarId}
 					aria-expanded="false"
 					aria-label="切换导航">
 					{toggler === true ? (
@@ -116,51 +125,136 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 		<!-- 品牌 -->
 		{
 			Astro.slots.has('brand') ? (
-				<div class="navbar-brand">
+				<div class="navbar-brand  order-1">
 					<slot name="brand" />
 				</div>
 			) : (
-				hasObject(brand) && <Link class="navbar-brand" {...brand} />
+				hasObject(brand) && <Link class="navbar-brand order-1" {...brand} />
 			)
 		}
-
-		<!-- 其他操作按钮 -->
-		<slot name="action" />
 
 		<!-- 导航 -->
 		{
 			hasArray(items) && (
-				<div class="collapse navbar-collapse" id={`${navbarId}-content`}>
-					<NavMenu items={items} class="navbar-nav" />
+				<div class="collapse navbar-collapse mx-lg-4 mx-0 order-3 order-md-2" id={navbarId}>
+					<NavMenu items={items} class="navbar-nav">
+						<slot name="navBefore" slot="before" />
+						<slot name="navAfter" slot="after" />
+					</NavMenu>
 				</div>
 			)
 		}
 
 		<!-- 其他自定义 -->
-		<slot />
+		{
+			Astro.slots.has('default') && (
+				<div class="order-2 order-md-3">
+					<slot />
+				</div>
+			)
+		}
 	</div>
 </Element>
 
 <style lang="less" is:global>
-	.navbar-vertical {
-		overflow-y: auto !important;
+	@media screen and (max-width: 991.98px) {
+		.navbar-mobile.navbar {
+			.navbar-collapse {
+				position: fixed;
+				top: 0;
+				left: -100%;
+				// top: 3.5rem;
+				z-index: 1045;
+				// height: calc(100vh - 3.5rem);
+				height: 100vh;
+				min-width: 200px;
+				max-width: 300px;
+				width: 30%;
+				background-color: var(--bs-body-bg);
+				margin: 0;
+				transition: left 0.3s ease-in-out;
+				box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+				&.show {
+					left: 0;
+					&::before {
+						content: '';
+						position: fixed;
+						left: 0;
+						top: 0;
+						width: 100vw;
+						height: 100vh;
+						background-color: rgba(0, 0, 0, 0.5);
+						z-index: -1;
+					}
+				}
+
+				.nav {
+					background: var(--tblr-navbar-bg);
+					height: 100%;
+					width: 100%;
+					display: block;
+					overflow: hidden;
+					overflow-y: auto;
+
+					.dropdown-menu {
+						background: rgba(255, 255, 255, 0.1);
+						margin: 0 0.5rem 0.5rem 0.5rem;
+					}
+					.nav-item {
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
-
-	// @media screen and (max-width: 991.98px) {
-	// 	.navbar {
-	// 		background-color: rgba(0, 0, 0, 25%);
-	// 		position: absolute;
-	// 		left: 0;
-	// 		top: 0;
-	// 		z-index: 1000;
-	// 		height: 100vh;
-	// 		width: 100vw;
-	// 		overflow: hidden;
-
-	// 		.navbar-collapse {
-	// 			display: block;
-	// 			// background-color: transparent; // rgba(0, 0, 0, 25%);
-	// 		}
-	// 	}
-	// }
 </style>
+
+<script>
+	const elements = document.querySelectorAll('.navbar.navbar-mobile');
+	if (elements.length) {
+		elements.forEach((element) => {
+			const navbar = element.querySelector(`.navbar-collapse`);
+			if (!navbar) return;
+
+			// 所有切换按钮
+			const navId = navbar.id;
+			const togglers = navId ? document.querySelectorAll(`[data-bs-target="#${navId}"]`) : [];
+
+			// 获取body元素
+			const body = document.body;
+
+			// 监听菜单展开/关闭事件
+			navbar.addEventListener('show.bs.collapse', () => {
+				body.style.overflow = 'hidden';
+			});
+
+			navbar.addEventListener('hide.bs.collapse', () => {
+				body.style.overflow = 'auto';
+			});
+
+			// 点击页面任意位置关闭菜单
+			navbar.addEventListener('click', (event) => {
+				// 导航菜单区域
+				const nav = navbar.querySelector('.nav');
+				if (!nav) return;
+
+				// 当前点击项目
+				const target = event.target as Element;
+
+				// 非菜单区域才可以关闭菜单
+				if (target === nav || !nav.contains(target)) {
+					navbar.classList.remove('show');
+					body.style.overflow = 'auto';
+
+					// 同步更新切换按钮状态
+					togglers &&
+						togglers.length &&
+						togglers.forEach((toggler) => {
+							toggler.setAttribute('aria-expanded', 'false');
+						});
+				}
+			});
+		});
+	}
+</script>
