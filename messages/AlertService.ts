@@ -17,9 +17,6 @@ import { getIcon, getLogo } from '../icons';
 import type { AlertOptions } from '../types';
 
 class AlertService {
-	/** 位置 */
-	Position: 'top' | 'bottom' | 'center' = 'top';
-
 	/** 容器 */
 	private container: HTMLDivElement | null = null;
 
@@ -32,34 +29,8 @@ class AlertService {
 
 			// 创建新的容器
 			this.container = document.createElement('div');
-			this.container.classList.add('alert-container', 'p-2', 'position-absolute');
+			this.container.classList.add('alert-container');
 			document.body.appendChild(this.container);
-		}
-
-		// 位置设置
-		if (this.container.getAttribute('data-bs-position') === this.Position)
-			return this.container;
-
-		this.container.setAttribute('data-bs-position', this.Position);
-		this.container.classList.remove(
-			'top-0',
-			'bottom-0',
-			'top-50',
-			'start-50',
-			'translate-middle-x',
-			'translate-middle'
-		);
-
-		switch (this.Position) {
-			case 'top':
-				this.container?.classList.add('top-0', 'start-50', 'translate-middle-x');
-				break;
-			case 'center':
-				this.container?.classList.add('top-50', 'start-50', 'translate-middle');
-				break;
-			case 'bottom':
-				this.container?.classList.add('bottom-0', 'start-50', 'translate-middle-x');
-				break;
 		}
 
 		return this.container;
@@ -68,7 +39,7 @@ class AlertService {
 	/** 创建消息项目 */
 	private createAlertElement(options: AlertOptions): HTMLDivElement {
 		let { title, message } = options;
-		const { icon: iconName, theme: themeName, important, closeable = true } = options;
+		const { icon: iconName, theme: themeName, mini, important, closeable = true } = options;
 
 		const icon = ThemeIcon(themeName);
 		const theme = icon.theme;
@@ -84,6 +55,7 @@ class AlertService {
 		// 创建 Alert 元素
 		const alert = document.createElement('div');
 		alert.className = 'alert alert-dismissible';
+		mini !== false && alert.classList.add('alert-mini');
 		important && alert.classList.add('alert-important');
 		theme && alert.classList.add(`bg-${icon.theme}-lt`);
 
@@ -92,15 +64,14 @@ class AlertService {
 		let content = '';
 
 		// 标题
-		if (theme === 'primary') {
-			content = `<div class="dl-icon user-select-none text-primary text-6 fw-bold"><i class="${icon.icon}"></i><span class="text ms-1 text-4">${title}</span></div>`;
-		} else {
-			content = `<div class="dl-icon user-select-none text-${icon.theme} text-5 fw-bold"><i class="${icon.icon}"></i><span class="text ms-1 text-4">${title}</span></div>`;
-		}
+		const iconSize = icon.logo ? (mini ? 5 : 4) : mini ? 4 : 3;
+		const fontSize = mini ? 4 : 3;
+		content = `<div class="dl-icon user-select-none text-${icon.theme} text-${iconSize} fw-bold"><i class="${icon.icon}"></i><span class="text ms-1 text-${fontSize}">${title}</span></div>`;
 
 		// 消息内容
 		const ms = theme === 'secondary' ? '' : ' ps-5';
-		message && (content += `<div class="mt-1${ms} text-secondary">${message}</div>`);
+		message &&
+			(content += `<div class="mt-1${ms} text-secondary alert-message">${message}</div>`);
 
 		// 区域
 		content = updateHTML(`<div class="d-block">${content}</div>`);

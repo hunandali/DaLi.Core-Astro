@@ -24,6 +24,7 @@
 		--size: if(@index < 9, @font-base-step * @index, @font-base-step * @index * 2 - 2rem);
 		font-size: var(--size);
 	}
+
 	.generate-font-size(@index - 1);
 }
 
@@ -44,20 +45,17 @@
 .generate-size(@prefix, @property) {
 	each(@size, {
 		.@{prefix}-@{value} {
-			@{property}: if(
-                @value = auto,
-                auto,
-                unit(
-                    if(@value < 10,  // 新数值计算规则
-                        if(@value <= 2, 
-                            0.25,      // 1→0.25rem 2→0.5rem
-                            0.5 * (@value - 1)  // 3→1rem 4→1.5rem...
-                        ),
-                        @value                  // 保持原值
-                    ), 
-                    if(@value > 100, px, if(@value < 10, rem, ~"%")) // 单位规则保持不变
-                )
-            ) !important;
+			@{property}: if(@value =auto,
+				auto,
+				unit(if(@value < 10, // 新数值计算规则
+						if(@value <=2,
+							0.25, // 1→0.25rem 2→0.5rem
+							0.5 * (@value - 1) // 3→1rem 4→1.5rem...
+						),
+						@value // 保持原值
+					),
+					if(@value > 100, px, if(@value < 10, rem, ~"%")) // 单位规则保持不变
+				)) !important;
 		}
 	});
 }

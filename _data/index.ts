@@ -7,12 +7,13 @@ import _footer from './_footer';
 const layout: Omit<Props, 'title'> = {
 	brand: _brand,
 	menus: _menus,
-	footerLinks: _footer,
+	footerLinks: _footer
 
 	// layout: 'vertical',
-	expanded: 'md',
-	theme: 'light',
-	placement: 'fixed-top'
+	// expanded: 'md',
+	// theme: 'dark',
+	// placement: 'fixed-top',
+	// size: 'md'
 };
 
 export default layout;

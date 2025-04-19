@@ -18,18 +18,18 @@ import Card from '../components/Card.astro';
 import EMPTY from '../components/Empty.astro';
 ---
 
-<LAYOUT pretitle="大沥网络" title="Empty 空状态组件示例">
+<LAYOUT pretitle="大沥网络" title="空状态组件示例" description="Empty">
 	<div class="row">
 		<div class="col-md-6 my-1">
 			<Card title="默认效果">
-				<EMPTY title="空状态标题" subtitle="空状态副标题，描述" />
+				<EMPTY title="空状态标题" message="空状态描述" />
 			</Card>
 		</div>
 		<div class="col-md-6 my-1">
 			<Card title="基础用法">
 				<EMPTY
 					title="暂无数据"
-					subtitle="没有找到匹配的数据记录"
+					message="没有找到匹配的数据记录"
 					icon="message"
 					theme="primary"
 				/>
@@ -42,7 +42,7 @@ import EMPTY from '../components/Empty.astro';
 			<Card title="自定义图片">
 				<EMPTY
 					title="页面未找到"
-					subtitle="您访问的页面不存在"
+					message="您访问的页面不存在"
 					image="https://iconfont.alicdn.com/p/illus/preview_image/I05BTMQvOPvB/04ff3fa2-7f3d-4263-a868-31ce81151c34.png"
 					theme="danger">
 					<div slot="actions">
@@ -53,7 +53,7 @@ import EMPTY from '../components/Empty.astro';
 		</div>
 		<div class="col-md-6 my-1">
 			<Card title="带操作按钮">
-				<EMPTY title="暂无数据" subtitle="请稍后再试" text="404" theme="danger">
+				<EMPTY title="暂无数据" message="请稍后再试" text="404" theme="danger">
 					<div>
 						<button class="btn btn-primary">刷新</button>
 						<button class="btn btn-outline-secondary ms-2">返回</button>

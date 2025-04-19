@@ -19,20 +19,25 @@
  * 		bottom	底部, 其他页面数据
  */
 
+import { ClassClear } from '../libs';
 import type { ISize } from '../types';
 
 export interface Props {
 	/** 是否整个页面宽度 */
 	size?: ISize | 'xxl' | 'fluid' | 'auto';
+
+	/** 自定义样式 */
+	class?: string;
 }
 
-const { size = 'auto', ...props } = Astro.props as Props;
+const { size = 'auto', class: className, ...props } = Astro.props as Props;
 
 /** 页面宽度布局 */
 const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
+const classList = ClassClear(['page', className]);
 ---
 
-<div class="page" {...props}>
+<div class={classList} {...props}>
 	<slot name="top" />
 
 	<div class="page-wrapper">

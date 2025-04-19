@@ -71,6 +71,9 @@ export interface AlertOptions extends IMessage {
 	/** 是否重要 */
 	important?: boolean;
 
+	/** 小窗口模式 */
+	mini?: boolean;
+
 	/** 是否可关闭 */
 	closeable?: boolean;
 }

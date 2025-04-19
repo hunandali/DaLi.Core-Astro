@@ -43,7 +43,10 @@ export interface Props {
 	size?: ISize | 'xxl' | 'fluid' | 'auto';
 
 	/** 布局类型 */
-	layout?: 'horizontal' | 'vertical';
+	layout?: 'horizontal' | 'vertical' | 'multiple';
+
+	/** 是否透明，及与背景一致 */
+	transparent?: boolean;
 
 	/** 自定义标签 */
 	element?: string;
@@ -52,7 +55,7 @@ export interface Props {
 	id?: string;
 
 	/** 移动菜单模式：ture 左侧滑出，false 顶部弹出 */
-	mobileMenu?: boolean;
+	mobileAppMenu?: boolean;
 
 	/** 自定义类名 */
 	class?: string;
@@ -69,7 +72,8 @@ const {
 	expand = 'lg',
 	size = 'auto',
 	class: className = '',
-	mobileMenu = false,
+	transparent = false,
+	mobileAppMenu = false,
 	id,
 	...props
 } = Astro.props;
@@ -79,9 +83,10 @@ const classList = ClassClear([
 	'navbar',
 	layout === 'vertical' && 'navbar-vertical',
 	expand && `navbar-expand-${expand}`,
-	theme && theme !== 'dark' && `bg-${theme}`,
-	mobileMenu ? 'fixed-top' : placement,
-	mobileMenu && 'navbar-mobile',
+	theme && theme !== 'dark' && !transparent && `bg-${theme}`,
+	mobileAppMenu ? 'sticky-top' : placement,
+	(mobileAppMenu || layout === 'multiple') && 'navbar-mobile',
+	transparent && 'navbar-transparent',
 	className
 ]);
 
@@ -92,8 +97,14 @@ const Element = element || 'nav';
 const ElementProps = {
 	...props,
 	class: classList,
-	id: `${navbarId}-container`,
-	'data-bs-theme': theme === 'dark' ? 'dark' : undefined
+	'data-bs-theme': theme === 'dark' && !transparent ? 'dark' : undefined
+};
+
+const ElementMultiProps = {
+	...props,
+	class: `${classList} nav-multiple `,
+	id: navbarId,
+	'data-bs-theme': theme === 'dark' && !transparent ? 'dark' : undefined
 };
 
 /** 页面宽度布局 */
@@ -106,7 +117,7 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 		{
 			toggler && (
 				<button
-					class="navbar-toggler  order-0"
+					class="navbar-toggler order-0"
 					type="button"
 					data-bs-toggle="collapse"
 					data-bs-target={`#${navbarId}`}
@@ -125,7 +136,7 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 		<!-- 品牌 -->
 		{
 			Astro.slots.has('brand') ? (
-				<div class="navbar-brand  order-1">
+				<div class="navbar-brand order-1">
 					<slot name="brand" />
 				</div>
 			) : (
@@ -135,12 +146,16 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 
 		<!-- 导航 -->
 		{
-			hasArray(items) && (
-				<div class="collapse navbar-collapse mx-lg-4 mx-0 order-3 order-md-2" id={navbarId}>
-					<NavMenu items={items} class="navbar-nav">
-						<slot name="navBefore" slot="before" />
-						<slot name="navAfter" slot="after" />
-					</NavMenu>
+			layout !== 'multiple' && (
+				<div
+					class="collapse navbar-collapse order-3 mx-lg-4"
+					class:list={[layout !== 'vertical' && 'order-lg-2']}
+					id={navbarId}>
+					{hasArray(items) && (
+						<NavMenu items={items} class="navbar-nav flex-fill" porpsOnItem />
+					)}
+
+					<slot name="nav" />
 				</div>
 			)
 		}
@@ -148,7 +163,9 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 		<!-- 其他自定义 -->
 		{
 			Astro.slots.has('default') && (
-				<div class="order-2 order-md-3">
+				<div
+					class="navbar-end order-2"
+					class:list={[layout !== 'vertical' && 'order-lg-3']}>
 					<slot />
 				</div>
 			)
@@ -156,56 +173,222 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 	</div>
 </Element>
 
+{
+	layout === 'multiple' && (
+		<Element {...ElementProps} class:list={['navbar-multiple']}>
+			<div class={containerClass}>
+				<div class="navbar-collapse collapse" id={navbarId}>
+					{hasArray(items) && (
+						<NavMenu items={items} class="navbar-nav flex-fill" porpsOnItem />
+					)}
+
+					<slot name="nav" />
+				</div>
+			</div>
+		</Element>
+	)
+}
+
 <style lang="less" is:global>
-	@media screen and (max-width: 991.98px) {
-		.navbar-mobile.navbar {
-			.navbar-collapse {
-				position: fixed;
-				top: 0;
-				left: -100%;
-				// top: 3.5rem;
-				z-index: 1045;
-				// height: calc(100vh - 3.5rem);
-				height: 100vh;
-				min-width: 200px;
-				max-width: 300px;
-				width: 30%;
-				background-color: var(--bs-body-bg);
-				margin: 0;
-				transition: left 0.3s ease-in-out;
-				box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+	.card {
+		z-index: -1 !important;
+	}
+	.navbar {
+		// 容器区域必须设置尺寸，否则下级获取不到尺寸
+		> div {
+			height: 100%;
+			width: 100%;
 
-				&.show {
-					left: 0;
-					&::before {
-						content: '';
-						position: fixed;
-						left: 0;
-						top: 0;
-						width: 100vw;
-						height: 100vh;
-						background-color: rgba(0, 0, 0, 0.5);
-						z-index: -1;
-					}
-				}
+			.navbar-collapse.show {
+				.nav-item {
+					&.active {
+						border-left: 3px var(--tblr-border-style)
+							var(--tblr-navbar-active-border-color);
 
-				.nav {
-					background: var(--tblr-navbar-bg);
-					height: 100%;
-					width: 100%;
-					display: block;
-					overflow: hidden;
-					overflow-y: auto;
-
-					.dropdown-menu {
-						background: rgba(255, 255, 255, 0.1);
-						margin: 0 0.5rem 0.5rem 0.5rem;
-					}
-					.nav-item {
-						width: 100%;
+						.nav-link {
+							color: var(--tblr-navbar-active-color);
+						}
 					}
 				}
 			}
+		}
+
+		// 透明导航
+		&.navbar-transparent {
+			--tblr-navbar-color: var(--tblr-secondary) !important;
+			--tblr-navbar-active-color: var(--tblr-body-color) !important;
+
+			.nav {
+				padding-right: calc(var(--tblr-gutter-x) * 0.5);
+				padding-left: calc(var(--tblr-gutter-x) * 0.5);
+			}
+		}
+
+		// 垂直导航样式
+		&.navbar-vertical {
+			overflow: hidden !important;
+
+			/** 菜单滚动条，导航不滚动 */
+			.navbar-collapse {
+				overflow: hidden !important;
+				margin: 0 !important;
+				height: 100%;
+				width: 100%;
+
+				.nav {
+					flex-wrap: nowrap;
+					width: 100%;
+					height: 100%;
+					overflow-y: auto;
+				}
+			}
+		}
+
+		// 多行导航样式
+		&.navbar-multiple {
+			@media screen and (max-width: 1399.98px) {
+				position: fixed;
+				top: 0;
+				left: -100%;
+			}
+
+			&.navbar-expand-xl {
+				@media screen and (min-width: 1200px) {
+					position: unset !important;
+				}
+			}
+
+			&.navbar-expand-lg {
+				@media screen and (min-width: 992px) {
+					position: unset !important;
+				}
+			}
+
+			&.navbar-expand-md {
+				@media screen and (min-width: 768px) {
+					position: unset !important;
+				}
+			}
+
+			&.navbar-expand-sm {
+				@media screen and (min-width: 576px) {
+					position: unset !important;
+				}
+			}
+		}
+
+		// 移动左侧滑出菜单样式
+		&.navbar-mobile {
+			@media screen and (max-width: 1399.98px) {
+				.navbar-collapse {
+					display: flex;
+					position: fixed;
+					top: 0;
+					left: -100%;
+					height: 100vh;
+					width: 15rem;
+					background: var(--tblr-navbar-bg);
+					transition: left 0.3s ease-in-out;
+					box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+					z-index: 99999999;
+
+					&.show {
+						left: 0;
+
+						&::before {
+							content: '';
+							position: fixed;
+							left: 0;
+							top: 0;
+							width: 100vw;
+							height: 100vh;
+							background-color: rgba(0, 0, 0, 0.5);
+							z-index: -1;
+						}
+					}
+
+					> * {
+						background: inherit !important;
+						width: 100%;
+					}
+
+					.nav {
+						padding: 0.25rem;
+					}
+				}
+			}
+
+			&.navbar-expand-sm {
+				@media screen and (min-width: 576px) {
+					.navbar-collapse {
+						position: inherit;
+						background-color: inherit;
+						box-shadow: none;
+						height: auto;
+						width: 100%;
+
+						> * {
+							width: auto;
+						}
+					}
+				}
+			}
+
+			&.navbar-expand-md {
+				@media screen and (min-width: 768px) {
+					.navbar-collapse {
+						position: inherit;
+						background-color: inherit;
+						box-shadow: none;
+						height: auto;
+						width: 100%;
+
+						> * {
+							width: auto;
+						}
+					}
+				}
+			}
+
+			&.navbar-expand-lg {
+				@media screen and (min-width: 992px) {
+					.navbar-collapse {
+						position: inherit;
+						background-color: inherit;
+						box-shadow: none;
+						height: auto;
+						width: 100%;
+
+						> * {
+							width: auto;
+						}
+					}
+				}
+			}
+
+			&.navbar-expand-xl {
+				@media screen and (min-width: 1200px) {
+					.navbar-collapse {
+						position: inherit;
+						background-color: inherit;
+						box-shadow: none;
+						height: auto;
+						width: 100%;
+
+						> * {
+							width: auto;
+						}
+					}
+				}
+			}
+		}
+
+		// 菜单尾部
+		.navbar-end {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 </style>

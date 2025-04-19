@@ -42,6 +42,9 @@ export interface Props {
 	/** 是否为下划线 */
 	underline?: boolean;
 
+	/** 状态属性是在 item 上还是 link 上 */
+	porpsOnItem?: boolean;
+
 	/** 布局方式: fill 填充 | justified 等分 */
 	flex?: 'fill' | 'justified';
 
@@ -54,6 +57,7 @@ const {
 	tab = false,
 	pill = false,
 	underline = false,
+	porpsOnItem = false,
 	flex,
 	items = [],
 	class: className,
@@ -61,10 +65,25 @@ const {
 } = Astro.props;
 
 const itemClass = (item: NavbarItem) => {
+	const classes = ['nav-item', item.class];
+
+	if (porpsOnItem) {
+		if (item.disabled) classes.push('disabled');
+		if (item.active) classes.push('active');
+	}
+
+	return ClassClear(classes);
+};
+
+const linkClass = (item: NavbarItem) => {
 	const classes = ['nav-link', item.class];
-	if (item.disabled) classes.push('disabled');
-	if (item.active) classes.push('active');
 	if (hasArray(item.children)) classes.push('dropdown-toggle');
+
+	if (!porpsOnItem) {
+		if (item.disabled) classes.push('disabled');
+		if (item.active) classes.push('active');
+	}
+
 	return ClassClear(classes);
 };
 
@@ -91,9 +110,9 @@ const dropdownProps = (item: NavbarItem) => {
 	{
 		items?.map((item) =>
 			hasArray(item.children) ? (
-				<Dropdown items={item.children} element="li" class="nav-item">
+				<Dropdown items={item.children} element="li" class={itemClass(item)}>
 					<Link
-						class={itemClass(item)}
+						class={linkClass(item)}
 						{...dropdownProps(item)}
 						slot="button"
 						href="#"
@@ -103,8 +122,8 @@ const dropdownProps = (item: NavbarItem) => {
 					</Link>
 				</Dropdown>
 			) : (
-				<li class="nav-item">
-					<Link class={itemClass(item)} {...item}>
+				<li class={itemClass(item)}>
+					<Link class={linkClass(item)} {...item}>
 						{item.bagde && <Badge {...item.bagde} />}
 					</Link>
 				</li>

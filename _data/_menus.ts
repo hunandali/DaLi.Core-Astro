@@ -11,6 +11,7 @@ export default [
 		text: '基础组件',
 		href: '#',
 		icon: 'setting',
+		active: true,
 		children: [
 			{
 				text: '计数器',
@@ -18,7 +19,8 @@ export default [
 			},
 			{
 				text: '空状态',
-				href: 'empty'
+				href: 'empty',
+				active: true
 			},
 			{
 				text: '错误',

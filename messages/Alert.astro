@@ -27,6 +27,7 @@ const {
 	theme: themeName,
 	title,
 	message,
+	mini,
 	icon: iconName,
 	closeable = false,
 	important = false,
@@ -44,19 +45,26 @@ icon.bold = true;
 // `alert-${theme}` 貌似在 1.1.1 版 Tabler 中失效了，后续看调整修改，先手动设置
 const classList = ClassClear([
 	'alert',
-	// theme && `alert-${theme}`,
+	mini && 'alert-mini',
 	theme && `bg-${theme}-lt`,
 	important && 'alert-important',
 	closeable && 'alert-dismissible',
 	className
 ]);
 
-let messageStyle = 'mt-1 text-secondary';
+let messageStyle = 'mt-1 alert-message text-secondary';
 theme !== 'secondary' && (messageStyle += ' ms-5');
 
-if (theme === 'primary') {
+if (icon.logo || icon.icon?.startsWith('logo-')) {
 	icon.size = 6;
-	icon.fontSize = 4;
+} else {
+	icon.size = 4;
+}
+icon.fontSize = 4;
+
+if (mini) {
+	icon.size -= 1;
+	icon.fontSize -= 1;
 }
 ---
 
@@ -79,3 +87,43 @@ if (theme === 'primary') {
 		}
 	</div>
 </div>
+
+<style lang="less" is:global>
+	.alert {
+		&.alert-mini {
+			margin: 0.25rem;
+			padding: 0.325rem;
+			border-radius: var(--tblr-border-radius-sm);
+
+			.btn-close {
+				width: 0.5rem;
+				height: 0.5rem;
+				font-size: 0.5rem;
+				margin: 0;
+				padding: 0.625rem;
+			}
+			.d-block {
+				display: flex !important;
+				align-items: center;
+				justify-content: flex-start;
+				font-size: 0.75rem;
+				width: 100%;
+				padding-right: 2rem;
+
+				.dl-icon {
+					display: inline-block;
+				}
+
+				.alert-message {
+					margin: 0 0 0 1rem !important;
+					padding: 0 !important;
+
+					flex: 1;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			}
+		}
+	}
+</style>

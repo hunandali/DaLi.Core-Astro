@@ -3,13 +3,22 @@ import ALERT from '../messages/Alert.astro';
 import LAYOUT from '../layouts/Demo.astro';
 ---
 
-<LAYOUT pretitle="大沥网络" title="Alert 警告信息">
+<LAYOUT description="Alert" title="警告信息">
 	<ALERT title="这是默认警告信息，仅包含标题" />
 	<ALERT
 		title="这是正确信息"
 		message="这里是提示内容，可以关闭，且标记为重点信息（带边框）！ 警告信息只能手工关闭。"
 		theme="success"
 		important
+		closeable
+	/>
+	<ALERT title="这是默认警告信息，仅包含标题" mini />
+	<ALERT
+		title="这是正确信息"
+		message="这里是提示内容，可以关闭，且标记为重点信息（带边框）！ 警告信息只能手工关闭。"
+		theme="success"
+		important
+		mini
 		closeable
 	/>
 </LAYOUT>
@@ -23,6 +32,8 @@ import LAYOUT from '../layouts/Demo.astro';
 		const important = index % 3 === 0;
 		const message = `第 ${index + 1} 个 Alert，使用了 ${theme} 样式，本次 Alert ${important ? '很重要' : '不重要'}`;
 		const title = `样式：${theme}`;
-		showAlert(message, title, theme, important);
+		setTimeout(() => {
+			showAlert(message, title, theme, important);
+		}, index * 3000);
 	});
 </script>

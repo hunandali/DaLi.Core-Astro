@@ -33,11 +33,22 @@ export interface Props {
 	/** 左右区域交换 */
 	reverse?: boolean;
 
+	/** 透明 */
+	transparent?: boolean;
+
 	/** 自定义类名 */
 	class?: string;
 }
 
-const { size, ICP, reverse = false, links = [], class: className, ...props } = Astro.props as Props;
+const {
+	size,
+	ICP,
+	reverse = false,
+	links = [],
+	transparent,
+	class: className,
+	...props
+} = Astro.props as Props;
 
 /** 页面宽度布局 */
 const classContainer = size && size !== 'auto' ? `container-${size}` : 'container';
@@ -47,7 +58,12 @@ const classRow = ClassClear([
 	'text-center',
 	reverse ? 'text-md-end flex-md-row-reverse flex-column-reverse' : 'text-md-start'
 ]);
-const classList = ClassClear(['page-footer', 'footer', className]);
+const classList = ClassClear([
+	'page-footer',
+	'footer',
+	transparent && 'footer-transparent',
+	className
+]);
 ---
 
 <footer class={classList} {...props}>
