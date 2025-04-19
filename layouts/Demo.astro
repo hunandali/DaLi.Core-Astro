@@ -20,12 +20,12 @@ export interface Props extends ILayout {}
 import props from '../_data';
 
 const layoutProps = {
+	alertContainer: false,
 	...props,
 	...Astro.props
 };
 ---
 
 <Layout {...layoutProps}>
-	<div slot="navMenu" class="bg-red">sss</div>
 	<slot />
 </Layout>

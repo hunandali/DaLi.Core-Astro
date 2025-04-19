@@ -41,10 +41,13 @@ export interface Props extends ILayout, IHeader {
 	size?: ISize | 'xxl' | 'fluid' | 'auto';
 
 	/** 布局类型 */
-	layout?: 'horizontal' | 'vertical';
+	// layout?: 'horizontal' | 'vertical';
 
 	/** 页脚链接 */
 	footerLinks?: ILink[];
+
+	/** 开启警告区域（默认开启） */
+	alertContainer?: boolean;
 
 	/**
 	 * 页面常用布局模式。参数优先级最高，影响导航栏、页脚、内容等布局。
@@ -52,7 +55,16 @@ export interface Props extends ILayout, IHeader {
 	 * - `vertical` 左侧菜单，内容固定 https://preview.tabler.io/layout-vertical.html
 	 *
 	 */
-	mode?: 'vertical' | 'fluid-vertical' | 'transparent-vertical' | 'navbar-overlap' | 'boxed';
+	mode?:
+		| 'default'
+		| 'boxed'
+		| string
+		| 'fluid'
+		| 'transparent'
+		| 'vertical'
+		| 'fluid-vertical'
+		| 'transparent-vertical'
+		| 'navbar-overlap';
 }
 
 const {
@@ -60,50 +72,68 @@ const {
 	menus,
 	theme,
 	size = 'lg',
-	layout,
 	mode = '',
 	mobileAppMenu = false,
+	alertContainer = true,
 	footerLinks,
 	...props
 } = Astro.props;
 
-const pageSize = mode.startsWith('fluid') ? 'fluid' : size;
-
-/** 页面宽度布局 */
-const containerClass = pageSize && pageSize !== 'auto' ? `container-${pageSize}` : 'container';
-
 /** 导航属性 */
-const navProps = { brand, items: menus, theme, layout, size, transparent: false, mobileAppMenu };
+const navProps = {
+	brand,
+	items: menus,
+	theme,
+	layout: 'horizontal',
+	size,
+	transparent: false,
+	mobileAppMenu
+} as Dict;
 const headerProps = { ...props, size, overlayer: false } as Dict;
-const layoutProps = { size: pageSize, class: '' };
+const layoutProps = { size, class: '' };
 const pageProps = { ...props, class: '' };
 
-if (mode.endsWith('vertical')) {
-	navProps.layout = 'vertical';
-	navProps.theme = 'dark';
-	navProps.size = pageSize;
-	navProps.mobileAppMenu = true;
-} else if (mode === 'navbar-overlap') {
-	navProps.layout = 'horizontal';
-	navProps.theme = 'dark';
-	navProps.size = pageSize;
-	navProps.mobileAppMenu = true;
+/** 宽度 */
+let pageSize = size;
 
-	headerProps.overlayer = 'fixed';
-	headerProps.theme = 'dark';
-} else if (mode === 'boxed') {
-	navProps.layout = 'multiple' as any;
+if (mode === 'boxed') {
+	pageSize = 'lg';
+	navProps.layout = 'multiple';
 	navProps.mobileAppMenu = true;
 	layoutProps.class = 'container-lg';
 	pageProps.class = 'boxed';
 } else {
-	// 默认
+	if (mode.includes('fluid')) {
+		pageSize = 'fluid';
+	}
 
-	navProps.layout = 'multiple' as any;
-	navProps.mobileAppMenu = false;
+	if (mode.includes('vertical')) {
+		navProps.layout = 'vertical';
+		!theme && (navProps.theme = 'dark');
+	}
+
+	if (mode.includes('overlap')) {
+		navProps.layout = 'horizontal';
+		!theme && (navProps.theme = 'dark');
+
+		headerProps.overlayer = 'fixed';
+		headerProps.theme = theme || 'dark';
+	}
+
+	if (mode.includes('multiple')) {
+		navProps.layout = 'multiple';
+	}
+	if (mode.includes('transparent')) {
+		navProps.transparent = true;
+	}
 }
 
-mode.startsWith('transparent') && (navProps.transparent = true);
+/** 页面宽度布局 */
+const containerClass = pageSize && pageSize !== 'auto' ? `container-${pageSize}` : 'container';
+
+navProps.size = pageSize;
+headerProps.size = pageSize;
+layoutProps.size = pageSize;
 ---
 
 <LayoutBase {...pageProps} }>
@@ -111,7 +141,8 @@ mode.startsWith('transparent') && (navProps.transparent = true);
 		<!-- 头部 -->
 		<slot slot="top" name="top">
 			<Navbar {...navProps} expand="lg">
-				<slot name="navMenu" slot="nav" />
+				<slot name="navStart" slot="navStart" />
+				<slot name="navEnd" slot="navEnd" />
 				<slot name="navAction">
 					<PageTheme mode="icon" />
 				</slot>
@@ -119,11 +150,15 @@ mode.startsWith('transparent') && (navProps.transparent = true);
 		</slot>
 
 		<!-- 警告 -->
-		<div class="bg-secondary-lt" slot="header">
-			<div class={containerClass}>
-				<div class="alert-container"></div>
-			</div>
-		</div>
+		{
+			alertContainer && (
+				<div class="bg-secondary-lt" slot="header">
+					<div class={containerClass}>
+						<div class="alert-container" />
+					</div>
+				</div>
+			)
+		}
 
 		<!-- 页眉 -->
 		<slot slot="header" name="header">
@@ -150,6 +185,7 @@ mode.startsWith('transparent') && (navProps.transparent = true);
 <style lang="less" is:global>
 	body.boxed {
 		background: #1f2937 linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent) fixed;
+		height: auto;
 
 		.page {
 			background-color: var(--tblr-body-bg);

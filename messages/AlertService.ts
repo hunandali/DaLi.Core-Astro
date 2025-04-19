@@ -28,9 +28,13 @@ class AlertService {
 			if (this.container) return this.container;
 
 			// 创建新的容器
+			const div = document.createElement('div');
+			div.classList.add('bg-secondary-lt', 'w-100', 'order-first');
+			document.body.appendChild(div);
+
 			this.container = document.createElement('div');
-			this.container.classList.add('alert-container');
-			document.body.appendChild(this.container);
+			this.container.classList.add('alert-container', 'container-lg', 'p-0');
+			div.appendChild(this.container);
 		}
 
 		return this.container;

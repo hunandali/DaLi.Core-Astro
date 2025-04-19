@@ -60,7 +60,7 @@ const {
 /** 页面宽度布局 */
 const containerClass = size && size !== 'auto' ? `container-${size}` : 'container';
 
-const classList = ClassClear(['page-header', theme && `text-bg-${theme}`, className]);
+const classList = ClassClear(['page-header', theme && `bg-${theme}`, className]);
 const overlayerClass = ClassClear([
 	'page-header-overlayer',
 	theme && `bg-${theme}`,
@@ -107,14 +107,34 @@ const overlayerClass = ClassClear([
 	.page-header {
 		padding: var(--tblr-page-padding-y) 0;
 		margin: 0 !important;
-	}
-	.page-header-overlayer {
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 15rem;
-		display: block;
-		z-index: -1;
-		//border-radius: var(--tblr-border-radius-sm);
+
+		.page-header-overlayer {
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 15rem;
+			display: block;
+			z-index: -1;
+			//border-radius: var(--tblr-border-radius-sm);
+		}
+
+		// 菜单颜色
+		@themes: primary, secondary, success, warning, danger, info, blue, azure, indigo, purple,
+			dark, pink, red, orange, yellow, lime, green, teal, cyan;
+		each(@themes, {
+			&-overlayer.bg-@{value},
+			&.bg-@{value} {
+				--tblr-bg:var(--tblr-@{value}-darken);
+				background-color: var(--tblr-bg) !important;
+				color: var(--tblr-light) !important;
+			}
+
+			[data-bs-theme=dark] &-overlayer.bg-@{value},
+			[data-bs-theme=dark] &.bg-@{value},
+			&[data-bs-theme=dark].bg-@{value} {
+				--tblr-bg:var(--tblr-@{value}-lt);
+				
+			}
+		});
 	}
 </style>

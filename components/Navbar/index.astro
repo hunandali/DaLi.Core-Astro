@@ -78,17 +78,43 @@ const {
 	...props
 } = Astro.props;
 
-// 构建类名
-const classList = ClassClear([
-	'navbar',
-	layout === 'vertical' && 'navbar-vertical',
-	expand && `navbar-expand-${expand}`,
-	theme && theme !== 'dark' && !transparent && `bg-${theme}`,
-	mobileAppMenu ? 'sticky-top' : placement,
-	(mobileAppMenu || layout === 'multiple') && 'navbar-mobile',
-	transparent && 'navbar-transparent',
-	className
-]);
+/**
+ * 构建类名
+ * @param isMenu 是否为多行时的菜单导航栏
+ */
+const classList = (isMenu: boolean) => {
+	// 非多行没有单独的菜单栏
+	if (layout !== 'multiple') isMenu = false;
+
+	const list = [
+		'navbar',
+		layout === 'vertical' && 'navbar-vertical',
+		expand && `navbar-expand-${expand}`,
+		mobileAppMenu ? 'sticky-top' : placement,
+		(mobileAppMenu || layout === 'multiple') && 'navbar-mobile',
+		className
+	];
+
+	if (isMenu) {
+		list.push('navbar-multiple');
+
+		// 菜单栏
+		if (transparent && !theme) {
+			list.push('navbar-transparent');
+		}
+		theme !== 'dark' && list.push(`bg-${theme}`);
+	} else {
+		// LOGO 栏
+		if (transparent) {
+			list.push('navbar-transparent');
+			theme && list.push(`navbar-${theme}`);
+		} else {
+			theme && theme !== 'dark' && list.push(`bg-${theme}`);
+		}
+	}
+
+	return ClassClear(list);
+};
 
 // 生成唯一ID
 const navbarId = id ? 'navbar' : globalId('navbar');
@@ -96,15 +122,14 @@ const navbarId = id ? 'navbar' : globalId('navbar');
 const Element = element || 'nav';
 const ElementProps = {
 	...props,
-	class: classList,
+	class: classList(false),
 	'data-bs-theme': theme === 'dark' && !transparent ? 'dark' : undefined
 };
 
-const ElementMultiProps = {
+const NavProps = {
 	...props,
-	class: `${classList} nav-multiple `,
-	id: navbarId,
-	'data-bs-theme': theme === 'dark' && !transparent ? 'dark' : undefined
+	class: classList(true),
+	'data-bs-theme': theme === 'dark' ? 'dark' : undefined
 };
 
 /** 页面宽度布局 */
@@ -151,11 +176,11 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 					class="collapse navbar-collapse order-3 mx-lg-4"
 					class:list={[layout !== 'vertical' && 'order-lg-2']}
 					id={navbarId}>
+					<slot name="navStart" />
 					{hasArray(items) && (
 						<NavMenu items={items} class="navbar-nav flex-fill" porpsOnItem />
 					)}
-
-					<slot name="nav" />
+					<slot name="navEnd" />
 				</div>
 			)
 		}
@@ -175,14 +200,14 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 
 {
 	layout === 'multiple' && (
-		<Element {...ElementProps} class:list={['navbar-multiple']}>
+		<Element {...NavProps}>
 			<div class={containerClass}>
 				<div class="navbar-collapse collapse" id={navbarId}>
+					<slot name="navStart" />
 					{hasArray(items) && (
 						<NavMenu items={items} class="navbar-nav flex-fill" porpsOnItem />
 					)}
-
-					<slot name="nav" />
+					<slot name="navEnd" />
 				</div>
 			</div>
 		</Element>
@@ -190,9 +215,6 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 }
 
 <style lang="less" is:global>
-	.card {
-		z-index: -1 !important;
-	}
 	.navbar {
 		// 容器区域必须设置尺寸，否则下级获取不到尺寸
 		> div {
@@ -200,6 +222,8 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 			width: 100%;
 
 			.navbar-collapse.show {
+				background: var(--tblr-navbar-bg);
+
 				.nav-item {
 					&.active {
 						border-left: 3px var(--tblr-border-style)
@@ -221,6 +245,36 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 			.nav {
 				padding-right: calc(var(--tblr-gutter-x) * 0.5);
 				padding-left: calc(var(--tblr-gutter-x) * 0.5);
+			}
+
+			&.navbar-expand-xxl {
+				@media screen and (min-width: 1400px) {
+					background-color: transparent !important;
+				}
+			}
+
+			&.navbar-expand-xl {
+				@media screen and (min-width: 1200px) {
+					background-color: transparent !important;
+				}
+			}
+
+			&.navbar-expand-lg {
+				@media screen and (min-width: 992px) {
+					background-color: transparent !important;
+				}
+			}
+
+			&.navbar-expand-md {
+				@media screen and (min-width: 768px) {
+					background-color: transparent !important;
+				}
+			}
+
+			&.navbar-expand-sm {
+				@media screen and (min-width: 576px) {
+					background-color: transparent !important;
+				}
 			}
 		}
 
@@ -250,6 +304,7 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 				position: fixed;
 				top: 0;
 				left: -100%;
+				z-index: 1000;
 			}
 
 			&.navbar-expand-xl {
@@ -390,6 +445,57 @@ const containerClass = size && size !== 'auto' ? `container-${size}` : 'containe
 			justify-content: center;
 			align-items: center;
 		}
+
+		// 菜单颜色
+		@themes: primary, secondary, success, warning, danger, info, blue, azure, indigo, purple,
+			pink, red, orange, yellow, lime, green, teal, cyan;
+		each(@themes, {
+			&.bg-@{value} {
+				--tblr-navbar-bg:var(--tblr-@{value}-darken);
+				--tblr-navbar-color: rgba(var(--tblr-@{value}-lt-rgb),0.75);
+				--tblr-navbar-active-color: var(--tblr-@{value}-fg) ;
+				--tblr-navbar-active-border-color: var(--tblr-navbar-color);
+				--tblr-navbar-border-color: rgba(var(--tblr-@{value}-lt-rgb),0.05);
+
+				background-color: var(--tblr-navbar-bg) !important;
+
+				.nav{
+					--tblr-nav-link-hover-color: var(--tblr-navbar-active-color);
+				}
+  
+				.dropdown-menu {
+					--tblr-dropdown-color: var(--tblr-@{value}-darken);
+					--tblr-dropdown-bg: var(--tblr-@{value}-fg);
+					--tblr-dropdown-link-hover-bg: rgba(var(--tblr-@{value}-rgb), 0.08);
+					--tblr-dropdown-link-active-color: var(--tblr-@{value}-lt);
+					--tblr-dropdown-link-active-bg: var(--tblr-@{value});
+				}
+
+			}
+
+			[data-bs-theme=dark] &.bg-@{value},
+			&[data-bs-theme=dark].bg-@{value} {
+				--tblr-navbar-bg: var(--tblr-@{value}-lt);
+				--tblr-navbar-color: var(--tblr-@{value}-darken);
+				--tblr-navbar-active-color: var(--tblr-@{value});
+				--tblr-navbar-border-color: rgba(var(--tblr-@{value}-rgb),0.15);
+
+				.dropdown-menu {
+				 	--tblr-dropdown-color: var(--tblr-@{value}-darken);
+				 	--tblr-dropdown-bg: var(--tblr-@{value}-lt);
+				 }
+			}
+
+			&.navbar-@{value} {
+				--tblr-navbar-bg:var(--tblr-@{value}-darken);
+				background-color: var(--tblr-navbar-bg) !important;
+			}
+
+			[data-bs-theme=dark] &.navbar-@{value},
+			&[data-bs-theme=dark].navbar-@{value}{
+				--tblr-navbar-bg: var(--tblr-@{value}-lt);
+			}
+		});
 	}
 </style>
 
