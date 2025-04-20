@@ -1,0 +1,73 @@
+---
+import SIDEBAR from '../messages/Sidebar.astro';
+import MESSAGE from '../messages/MessageModal.astro';
+import LAYOUT from '../layouts/Demo.astro';
+import Button from '../components/Button.astro';
+---
+
+<LAYOUT description="Sidebar" title="侧边栏">
+	<h2>默认侧边栏</h2>
+	<SIDEBAR title="默认侧边栏" id="basic-sidebar">
+		<p>这是一个基础的侧边栏示例，展示了标题、内容区域。</p>
+		<div slot="footer">
+			<Button theme="secondary" data-bs-dismiss="offcanvas">关闭</Button>
+		</div>
+	</SIDEBAR>
+	<Button data-bs-toggle="offcanvas" data-bs-target="#basic-sidebar">打开侧边栏</Button>
+
+	<SIDEBAR
+		title={{ text: '侧边栏介绍', icon: 'dialog', theme: 'primary' }}
+		scroll={false}
+		size={50}
+		theme="success"
+		placement="bottom"
+		id="diy-sidebar">
+		<ol>
+			<li>含图标标题</li>
+			<li>标题绿色背景</li>
+			<li>背景不能滚动</li>
+			<li>底部侧滑</li>
+			<li>高度 50%</li>
+		</ol>
+		<div slot="footer">
+			<Button theme="secondary" data-bs-dismiss="offcanvas">关闭</Button>
+		</div>
+	</SIDEBAR>
+	<Button data-bs-toggle="offcanvas" data-bs-target="#diy-sidebar">自定义侧边栏</Button>
+
+	<h2 class="line-top">脚本操作</h2>
+	<Button class="btnA">设置</Button>
+	<Button class="btnB">确认</Button>
+</LAYOUT>
+
+<script>
+	import { openSidebar } from '../libs/client';
+
+	const btnA = document.querySelector('.btnA');
+	const btnB = document.querySelector('.btnB');
+	btnA?.addEventListener('click', () => {
+		openSidebar({
+			theme: 'primary',
+			icon: 'question',
+			title: '你知道这首诗吗？',
+			message: '“<b>东临碣石，以观沧海</b>”这是什么诗词？',
+			placement: 'end',
+			showClose: true,
+			textCancel: '不知道',
+			textOk: '当然知道',
+			onCancel: () => alert('你应该多学习学习'),
+			onOk: () => alert('你真牛！')
+		});
+	});
+	btnB?.addEventListener('click', () => {
+		openSidebar({
+			theme: 'danger',
+			message: '使用本站需要同意 Cookies 使用，否则无法正常使用本站。',
+			placement: 'bottom',
+			size: 30,
+			showClose: false,
+			textOk: '好的',
+			onOk: () => alert('我会加油的')
+		});
+	});
+</script>

@@ -40,3 +40,30 @@ code[class*="language-"] {
 	border-width: 0;
 	border-radius: 0.25rem;
 }
+
+
+// 侧边栏增加底部按钮
+.offcanvas {
+	.offcanvas-footer {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+
+		button {
+			margin: 0 0.5rem;
+		}
+	}
+
+	&.offcanvas-end {
+		.offcanvas-footer {
+			justify-content: flex-start;
+		}
+	}
+
+	&&-top,
+	&&-bottom {
+		.offcanvas-footer {
+			justify-content: center;
+		}
+	}
+}

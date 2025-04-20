@@ -16,7 +16,8 @@ import LoadingInstance from '../messages/LoadingService';
 import ToastInstance from '../messages/ToastService';
 import AlertInstance from '../messages/AlertService';
 import ModalInstance from '../messages/ModalService';
-import type { LoadingOptions, ModalOptions } from '../types';
+import SidebarInstance from '../messages/SidebarService';
+import type { LoadingOptions, ModalOptions, SidebarOptions } from '../types';
 
 import type { ITheme } from '../types';
 import { $Global, Cookies, SERVERMODE } from '@da.li/core-libs';
@@ -25,6 +26,7 @@ let loading: LoadingInstance;
 let toast: ToastInstance;
 let alert: AlertInstance;
 let modal: ModalInstance;
+let sidebar: SidebarInstance;
 
 export const showLoading = (options?: LoadingOptions) => {
 	if (SERVERMODE) return;
@@ -63,6 +65,17 @@ export const openModal = (options?: ModalOptions) => {
 export const closeModal = () => {
 	if (SERVERMODE) return;
 	modal && modal.close();
+};
+
+export const openSidebar = (options?: SidebarOptions) => {
+	if (SERVERMODE) return;
+	if (!sidebar) sidebar = new SidebarInstance();
+	sidebar.open(options);
+};
+
+export const closeSidebar = () => {
+	if (SERVERMODE) return;
+	sidebar && sidebar.close();
 };
 
 $Global.alert = (message) =>

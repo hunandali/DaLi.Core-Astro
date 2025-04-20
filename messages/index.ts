@@ -16,8 +16,10 @@ export { default as DlAlert } from './Alert.astro';
 export { default as DlMessageModal } from './MessageModal.astro';
 export { default as DlModal } from './Modal.astro';
 export { default as DlToast } from './Toast.astro';
+export { default as DlSidebar } from './Sidebar.astro';
 
 export { default as AlertService } from './AlertService';
 export { default as LoadingService } from './LoadingService';
 export { default as ModalService } from './ModalService';
 export { default as ToastService } from './ToastService';
+export { default as SidebarService } from './SidebarService';

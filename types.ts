@@ -129,6 +129,36 @@ export interface ModalOptions extends IMessage {
 	onClose?: (e: Event) => boolean | void;
 }
 
+/** 侧边栏类型 */
+export interface SidebarOptions extends IMessage {
+	/** 侧边栏位置 */
+	placement?: 'start' | 'end' | 'top' | 'bottom';
+
+	/** 尺寸，左右侧边栏为宽度，上下侧边栏为高度，兼容样式款高度 */
+	size?: number;
+
+	/** 允许关闭 */
+	showClose?: boolean;
+
+	/** 取消按钮文字 */
+	textCancel?: string;
+
+	/** 确认按钮文字 */
+	textOk?: string;
+
+	/** 确认事件，返回 true 关闭窗口 */
+	onOk?: (e: Event) => boolean | void;
+
+	/** 取消事件，返回 false 取消关闭 */
+	onCancel?: (e: Event) => boolean | void;
+
+	/** 打开事件，返回 false 取消打开 */
+	onOpen?: (e: Event) => boolean | void;
+
+	/** 关闭事件，返回 false 取消关闭 */
+	onClose?: (e: Event) => boolean | void;
+}
+
 /** 提示消息类型 */
 export interface ToastOptions extends Omit<IMessage, 'icon'> {
 	/** 显示时长(毫秒)，0表示不自动关闭 */

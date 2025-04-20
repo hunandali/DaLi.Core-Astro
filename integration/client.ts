@@ -13,6 +13,7 @@
  */
 
 import '@da.li/core-libs';
+import 'bootstrap';
 import './directive';
 
 export { init } from '../config';

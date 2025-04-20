@@ -1,0 +1,122 @@
+---
+/**
+ * 	Sidebar 侧边栏组件(Offcanvas)
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { isObject, isString } from '@da.li/core-libs';
+import { ClassClear } from '../libs';
+import type { ISize, IThemeFull } from '../types';
+import Icon, { type Props as IIcon } from '../components/Icon.astro';
+
+export interface Props {
+	/** 侧边栏ID */
+	id?: string;
+
+	/** 侧边栏标题 */
+	title?: string | IIcon;
+
+	/** 侧边栏位置 */
+	placement?: 'start' | 'end' | 'top' | 'bottom';
+
+	/** 尺寸，左右侧边栏为宽度，上下侧边栏为高度，兼容样式款高度 */
+	size?: number;
+
+	/** 主题颜色 */
+	theme?: IThemeFull;
+
+	/** 是否启用滚动锁定 */
+	scroll?: boolean;
+
+	/** 是否启用背景暗化 */
+	backdrop?: boolean | 'static';
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	id = `offcanvas-${Math.random().toString(36).substring(2, 10)}`,
+	title = '',
+	placement = 'start',
+	size,
+	theme,
+	scroll = false,
+	backdrop = true,
+	class: className = '',
+	...props
+} = Astro.props;
+
+// 构建类名
+const classList = ClassClear([
+	'offcanvas',
+	placement && `offcanvas-${placement}`,
+	size ? (placement === 'start' || placement === 'end' ? `w-${size}` : `h-${size}`) : '',
+	className
+]);
+
+const headerClass = ClassClear(['offcanvas-header', theme && `bg-${theme}-lt text-${theme}`]);
+
+/** 创建头部数据 */
+const getTitle = () => {
+	let ret: IIcon = { disabled: true };
+	if (!title) ret;
+
+	if (isString(title)) {
+		ret.text = title;
+	} else if (isObject(title)) {
+		ret = title as IIcon;
+	}
+
+	/** 存在内容则有效 */
+	ret.disabled = !ret.icon && !ret.text;
+
+	return ret;
+};
+
+const titleIcon = getTitle();
+---
+
+<div
+	class={classList}
+	tabindex="-1"
+	id={id}
+	aria-labelledby={`${id}-label`}
+	data-bs-scroll={scroll ? 'true' : 'false'}
+	data-bs-backdrop={backdrop}
+	{...props}>
+	<div class={headerClass}>
+		{
+			(
+				<h5 class="offcanvas-title" id={`${id}-label`}>
+					<slot name="title">
+						{titleIcon.disabled ? titleIcon.text : <Icon {...titleIcon} />}
+					</slot>
+				</h5>
+			)
+		}
+
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+		</button>
+	</div>
+	<div class="offcanvas-body">
+		<slot />
+	</div>
+
+	{
+		Astro.slots.has('footer') && (
+			<div class="offcanvas-footer">
+				<slot name="footer" />
+			</div>
+		)
+	}
+</div>

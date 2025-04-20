@@ -14,7 +14,7 @@
  */
 
 import { isObject, isString } from '@da.li/core-libs';
-import ICON, { type Props as IIcon } from '../components/Icon.astro';
+import Icon, { type Props as IIcon } from '../components/Icon.astro';
 import { ClassClear } from '../libs';
 import type { ISize } from '../types';
 
@@ -97,7 +97,7 @@ const headerIcon = getHeader();
 					<div class={`modal-header bg-${headerIcon.theme}-lt`}>
 						<h5 class="modal-title">
 							<slot name="header">
-								{headerIcon.disabled ? headerIcon.text : <ICON {...headerIcon} />}
+								{headerIcon.disabled ? headerIcon.text : <Icon {...headerIcon} />}
 							</slot>
 						</h5>
 

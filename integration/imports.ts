@@ -153,7 +153,8 @@ const components = [
 
 /** 布局组件 */
 const layouts = [
-	'DlEmptyLayout',
+	'DlLayoutBase',
+	'DlLayoutDefault',
 	'DlHead',
 	'DlPageFooter',
 	'DlPageHeader',
