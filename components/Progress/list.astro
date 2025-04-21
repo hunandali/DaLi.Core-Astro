@@ -77,11 +77,11 @@ const getPercent = (value: number) => {
 };
 
 /** 高度样式 */
-const heightClass = weight === 0 ? '' : `h-${weight}`;
+const heightClass = weight ? '' : `h-${weight}`;
 
 /** 组样式 */
 let ClassList = [`progress-${layout}`, className];
-if (layout === 'stacked' && weight > 0) ClassList.push(heightClass);
+if (layout === 'stacked' && weight) ClassList.push(heightClass);
 
 /** 进度条样式 */
 const itemClass = (item: IProgress) =>

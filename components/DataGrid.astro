@@ -39,14 +39,11 @@ const { items = [], class: className, ...props } = Astro.props;
 
 const itemClass = (item: DataItem) => ClassClear(['datagrid-item', item.class]);
 
-/**
- * 构建类名
- * @param isMenu 是否为多行时的菜单导航栏
- */
+/** 构建类名 */
 const classList = ClassClear(['datagrid', className]);
 ---
 
-<div class="datagrid">
+<div class={classList} {...props}>
 	<slot name="before" />
 	{
 		items?.map((item, index) => (

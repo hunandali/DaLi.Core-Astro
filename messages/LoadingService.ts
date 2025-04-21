@@ -66,9 +66,15 @@ class LoadingService {
 			this._element = el;
 		}
 
-		const { theme, mode = 1, message = '加载中...', size = 8, showTime = true } = options;
+		const {
+			theme,
+			mode = 1,
+			message = '加载中...',
+			size: sourceSize = 8,
+			showTime = true
+		} = options;
 
-		echo(options, theme, mode, message, size, showTime);
+		const size = Number(sourceSize) || 8;
 
 		const nodeEL = this._element.querySelector('div');
 		const iconEL = nodeEL?.children[0] as HTMLElement;
