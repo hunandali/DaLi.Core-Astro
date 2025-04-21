@@ -1,0 +1,99 @@
+---
+/**
+ * 	Segment 分段控制导航按钮
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { Dict } from '@da.li/core-libs';
+import { ClassClear } from '../../libs';
+import type { ILink, ISize } from '../../types';
+import Bagde, { type Props as IBagde } from '../Badge.astro';
+import Button from '../Button.astro';
+
+export interface NavItem extends ILink {
+	/** 选中状态 */
+	active?: boolean;
+
+	/** 禁用状态 */
+	disabled?: boolean;
+
+	/** 右侧 badge 提示 */
+	bagde?: IBagde;
+
+	/** 其他样式 */
+	class?: string;
+}
+
+export interface Props {
+	/** 导航项 */
+	items?: NavItem[];
+
+	/** 宽度，兼容样式宽度 */
+	width?: number | string;
+
+	/** 是否整个页面宽度 */
+	size?: ISize | 'xxl';
+
+	/** 布局类型 */
+	layout?: 'horizontal' | 'vertical';
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { items = [], width, size, layout, class: className, ...props } = Astro.props;
+
+/**
+ * 构建类名
+ * @param isMenu 是否为多行时的菜单导航栏
+ */
+const classList = ClassClear([
+	'nav',
+	'nav-segmented',
+	layout === 'vertical' && 'nav-segmented-vertical',
+	width && `w-${width}`,
+	size && `nav-${size}`,
+	className
+]);
+
+const itemClass = (item: NavItem) => {
+	const classes = ['nav-link', item.class];
+	if (item.disabled) classes.push('disabled');
+	if (item.active) classes.push('active');
+	return ClassClear(classes);
+};
+
+const itemPorps = (item: NavItem) =>
+	({
+		...item,
+		class: itemClass(item),
+		active: undefined,
+		'data-bs-toggle': 'tab'
+	}) as Dict;
+---
+
+<nav {...props} class={classList} role="tablist">
+	<slot name="before" />
+	{
+		items?.map((item, index) =>
+			Astro.slots.has('item') ? (
+				// 使用 item 插槽展示，参数：item, index
+				<Fragment set:html={Astro.slots.render('item', [item, index + 1])} />
+			) : (
+				<Button {...itemPorps(item)}>
+					{item.bagde && <Bagde {...item.bagde} class="ms-auto" />}
+				</Button>
+			)
+		)
+	}
+	<slot name="after" />
+</nav>

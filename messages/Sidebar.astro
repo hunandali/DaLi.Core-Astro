@@ -15,7 +15,7 @@
 
 import { isObject, isString } from '@da.li/core-libs';
 import { ClassClear } from '../libs';
-import type { ISize, IThemeFull } from '../types';
+import type { IThemeFull } from '../types';
 import Icon, { type Props as IIcon } from '../components/Icon.astro';
 
 export interface Props {
@@ -28,8 +28,8 @@ export interface Props {
 	/** 侧边栏位置 */
 	placement?: 'start' | 'end' | 'top' | 'bottom';
 
-	/** 尺寸，左右侧边栏为宽度，上下侧边栏为高度，兼容样式款高度 */
-	size?: number;
+	/** 尺寸，左右侧边栏为宽度，上下侧边栏为高度，兼容样式宽高度 */
+	size?: number | string;
 
 	/** 主题颜色 */
 	theme?: IThemeFull;

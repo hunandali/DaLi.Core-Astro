@@ -112,6 +112,7 @@ const ElementProps = {
 					class="dropdown-toggle dropdown-toggle-split"
 					type="button"
 					data-bs-toggle="dropdown"
+					data-bs-trigger="hover"
 					aria-expanded="false"
 				/>
 			</>
@@ -127,6 +128,7 @@ const ElementProps = {
 					class="dropdown-toggle"
 					type="button"
 					data-bs-toggle="dropdown"
+					data-bs-trigger="hover"
 					aria-expanded="false">
 					<slot name="text" />
 				</Button>
@@ -147,7 +149,7 @@ const ElementProps = {
 
 						{Astro.slots.has('item') ? (
 							// 使用 item 插槽展示，参数：item, index
-							<Fragment set:html={Astro.slots.render('item', [item, index])} />
+							<Fragment set:html={Astro.slots.render('item', [item, index + 1])} />
 						) : item.href ? (
 							// 链接
 							<Link class={itemClass(item)} {...item}>

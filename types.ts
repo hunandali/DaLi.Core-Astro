@@ -99,7 +99,7 @@ export interface LoadingOptions {
 	showTime?: boolean;
 
 	/** 尺寸 */
-	size?: number;
+	size?: number | string;
 }
 
 /** 弹窗消息类型 */
@@ -135,7 +135,7 @@ export interface SidebarOptions extends IMessage {
 	placement?: 'start' | 'end' | 'top' | 'bottom';
 
 	/** 尺寸，左右侧边栏为宽度，上下侧边栏为高度，兼容样式款高度 */
-	size?: number;
+	size?: number | string;
 
 	/** 允许关闭 */
 	showClose?: boolean;
@@ -205,7 +205,7 @@ export interface IIcon {
 /** 链接属性 */
 export interface ILink extends Omit<IIcon, 'rotate' | 'logo'> {
 	/** 图标大小 1-6 */
-	size?: number;
+	size?: number | string;
 
 	/** 链接 */
 	href?: string;

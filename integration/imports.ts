@@ -129,6 +129,7 @@ const components = [
 	'DlCard',
 	'DlCarousel',
 	'DlCountup',
+	'DlDataGrid',
 	'DlDivider',
 	'DlDropcard',
 	'DlDropdown',
@@ -137,6 +138,7 @@ const components = [
 	'DlLink',
 	'DlNavbar',
 	'DlNavs',
+	'DlNavSegment',
 	'DlPlaceholder',
 	'DlProgress',
 	'DlProgressBar',
@@ -171,10 +173,12 @@ const messages = [
 	'DlMessageModal',
 	'DlModal',
 	'DlToast',
+	'DlSidebar',
 	'AlertService',
 	'LoadingService',
 	'ModalService',
-	'ToastService'
+	'ToastService',
+	'SidebarService'
 ];
 
 /** unplugin-auto-import 自动导入类型、函数与组件 */

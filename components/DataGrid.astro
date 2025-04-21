@@ -1,0 +1,83 @@
+---
+/**
+ * 	DataGrid 使用网格展示数据
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { Dict } from '@da.li/core-libs';
+import { ClassClear } from '../libs';
+
+export interface DataItem extends Dict {
+	/** 标题 */
+	title?: string;
+
+	/** 内容 */
+	value?: string;
+
+	/** 其他样式 */
+	class?: string;
+}
+
+export interface Props {
+	/** 导航项 */
+	items?: DataItem[];
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const { items = [], class: className, ...props } = Astro.props;
+
+const itemClass = (item: DataItem) => ClassClear(['datagrid-item', item.class]);
+
+/**
+ * 构建类名
+ * @param isMenu 是否为多行时的菜单导航栏
+ */
+const classList = ClassClear(['datagrid', className]);
+---
+
+<div class="datagrid">
+	<slot name="before" />
+	{
+		items?.map((item, index) => (
+			<div class={itemClass(item)}>
+				{Astro.slots.has('item') ? (
+					// 使用 item 插槽展示，参数：item, index
+					<Fragment set:html={Astro.slots.render('item', [item, index + 1])} />
+				) : (
+					<>
+						<div class="datagrid-title">
+							{Astro.slots.has('title') ? (
+								<Fragment
+									set:html={Astro.slots.render('title', [item, index + 1])}
+								/>
+							) : (
+								item.title
+							)}
+						</div>
+						<div class="datagrid-content">
+							{Astro.slots.has('value') ? (
+								<Fragment
+									set:html={Astro.slots.render('value', [item, index + 1])}
+								/>
+							) : (
+								item.value
+							)}
+						</div>
+					</>
+				)}
+			</div>
+		))
+	}
+	<slot name="after" />
+</div>

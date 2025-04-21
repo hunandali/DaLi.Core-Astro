@@ -1,19 +1,44 @@
 ---
 import Layout from '../layouts/Demo.astro';
 import Empty from '../components/Empty.astro';
+import Segment from '../components/Navbar/segment.astro';
+import DataGrid from '../components/DataGrid.astro';
+import type { Dict } from '@da.li/core-libs';
 ---
 
 <Layout pretitle="大沥网络" title="基础组件演示">
-	<button
-		class="navbar-toggler"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#navbar"
-		aria-controls="navbar"
-		aria-expanded="false"
-		aria-label="切换导航">
-		<span class="navbar-toggler-icon"></span>
-	</button>
+	<Segment
+		items={[
+			{ href: '#', text: '首页', icon: 'user' },
+			{ href: '#', text: '首页', icon: 'user', disabled: true },
+			{ href: '#', text: '首页', icon: 'user', active: true },
+			{ href: '#', text: '首页' }
+		]}
+		layout="vertical"
+	/>
+
+	<DataGrid
+		items={[
+			{ title: 'AAAA', value: 'BBBB' },
+			{ title: 'AAAA', value: 'BBBB' },
+			{ title: 'AAAA', value: 'BBBB' },
+			{ title: 'AAAA', value: 'BBBB' },
+			{ title: 'AAAA', value: 'BBBB' }
+		]}>
+		<div slot="title">
+			{
+				(item: Dict, index: number) => (
+					<b>
+						{index}.{item.title}
+					</b>
+				)
+			}
+		</div>
+		<div slot="value">
+			{(item: Dict, index: number) => <b>{item.value}</b>}
+		</div>
+	</DataGrid>
+
 	<div class="h-600">
 		<Empty title="演示数据" />
 	</div>

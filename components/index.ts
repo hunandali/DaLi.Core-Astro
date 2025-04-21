@@ -21,6 +21,7 @@ export { default as DlButton } from './Button.astro';
 export { default as DlCard } from './Card.astro';
 export { default as DlCarousel } from './Carousel.astro';
 export { default as DlCountup } from './Countup.astro';
+export { default as DlDataGrid } from './DataGrid.astro';
 export { default as DlDivider } from './Divider.astro';
 export { default as DlDropcard } from './Dropcard.astro';
 export { default as DlDropdown } from './Dropdown.astro';
@@ -30,6 +31,7 @@ export { default as DlLink } from './Link.astro';
 
 export { default as DlNavbar } from './Navbar/index.astro';
 export { default as DlNavs } from './Navbar/menus.astro';
+export { default as DlNavSegment } from './Navbar/segment.astro';
 
 export { default as DlPlaceholder } from './Placeholder.astro';
 
