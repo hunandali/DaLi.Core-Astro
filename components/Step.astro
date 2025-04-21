@@ -1,0 +1,89 @@
+---
+/**
+ * 	Step 步骤条
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import type { ILink, IThemeFull } from '../types';
+import { type Dict } from '@da.li/core-libs';
+import { ClassClear } from '../libs';
+import Link from './Link.astro';
+
+export interface StepItem extends ILink {
+	/** 描述 */
+	description?: string;
+
+	/** 是否为当前项 */
+	active?: boolean;
+}
+
+export interface Props {
+	/** 时间线项目列表 */
+	items?: StepItem[];
+
+	/** 样式 */
+	theme?: IThemeFull;
+
+	/** 是否简约模式 */
+	simple?: boolean;
+
+	/** 是否显示数字 */
+	showNumber?: boolean;
+
+	/** 自定义类名 */
+	class?: string;
+}
+
+const {
+	items = [],
+	simple = false,
+	showNumber = false,
+	theme = false,
+	class: className,
+	...props
+} = Astro.props as Props;
+
+// 构建类名
+const classList = ClassClear(['steps', showNumber && 'steps-counter', className]);
+
+const itemClass = (item: StepItem) => {
+	const classes = ['step-item', item.class];
+	if (item.disabled) classes.push('disabled');
+	if (item.active) classes.push('active');
+	return ClassClear(classes);
+};
+
+const itemProps = (item: StepItem) => {
+	const ret: Dict = {
+		...item,
+		disabled: item.disabled,
+		class: itemClass(item),
+		theme: item.theme || theme
+	};
+
+	if (item.description) {
+		// ret.title = item.description;
+		// ret['data-bs-toggle'] = 'tooltip';
+		ret['v-tooltip'] = item.description;
+	}
+
+	if (simple) ret.text = '';
+
+	return ret;
+};
+---
+
+<div class={classList} {...props}>
+	<slot>
+		{items?.map((item) => <Link {...itemProps(item)} />)}
+	</slot>
+</div>

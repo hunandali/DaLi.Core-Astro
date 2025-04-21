@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from '../components/Icon.astro';
+import Icon from '../components/Icon.astro';
 import BUTTON from '../components/Button.astro';
 import type { ModalOptions } from '../types';
 import { ThemeIcon } from '../libs';
@@ -60,7 +60,7 @@ if (iconName) {
 			}
 			<div class={`modal-status bg-${icon.theme}`}></div>
 			<div class="modal-body text-center py-6">
-				<ICON {...icon} size={14} />
+				<Icon {...icon} size={14} />
 				<h2 class="mt-2 mb-4">{title}</h2>
 				<div class="text-secondary"><slot>{message}</slot></div>
 			</div>

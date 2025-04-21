@@ -148,6 +148,7 @@ const components = [
 	'DlStatus',
 	'DlSwitch',
 	'DlSwitchIcon',
+	'DlTab',
 	'DlTimeline',
 	'DlTooltip',
 	'DlTracking'

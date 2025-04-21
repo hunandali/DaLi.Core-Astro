@@ -44,6 +44,7 @@ export { default as DlSpinner } from './Spinner.astro';
 export { default as DlStatus } from './Status.astro';
 export { default as DlSwitch } from './Switch.astro';
 export { default as DlSwitchIcon } from './SwitchIcon.astro';
+export { default as DlTab } from './Tab.astro';
 export { default as DlTimeline } from './Timeline.astro';
 export { default as DlTooltip } from './Tooltip.astro';
 export { default as DlTracking } from './Tracking.astro';

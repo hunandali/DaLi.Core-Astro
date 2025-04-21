@@ -4,9 +4,36 @@ import Empty from '../components/Empty.astro';
 import Segment from '../components/Navbar/segment.astro';
 import DataGrid from '../components/DataGrid.astro';
 import type { Dict } from '@da.li/core-libs';
+import Step from '../components/Step.astro';
+import Tab from '../components/Tab.astro';
 ---
 
 <Layout pretitle="大沥网络" title="基础组件演示">
+	<Tab>
+		<div>
+			<h2>选项卡 1</h2>
+			<div>选项卡内容 1</div>
+		</div>
+		<div>
+			<h2 class="active">选项卡 2</h2>
+			<div>选项卡内容 2</div>
+		</div>
+		<div>
+			<h2 class="ms-auto">选项卡 3</h2>
+			<div class="text-10">选项卡内容 3</div>
+		</div>
+	</Tab>
+
+	<Step
+		showNumber
+		items={[
+			{ href: '#', text: '首页', icon: 'user', description: '描述信息' },
+			{ href: '#', text: '首页', icon: 'user' },
+			{ href: '#', text: '首页', icon: 'user', active: true },
+			{ href: '#', text: '首页' }
+		]}
+	/>
+
 	<Segment
 		items={[
 			{ href: '#', text: '首页', icon: 'user' },

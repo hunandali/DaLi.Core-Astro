@@ -15,7 +15,7 @@
 
 import { ClassClear } from '../../libs';
 import type { ISize, ITheme } from '../../types';
-import ICON from '../Icon.astro';
+import Icon from '../Icon.astro';
 
 /** 头像状态 */
 type IStatus = 'online' | 'offline' | 'away' | 'busy';
@@ -117,7 +117,7 @@ const iconSize =
 
 <span class={classList} style={avatarUrl} {...props}>
 	<slot>
-		{icon ? <ICON icon={icon} size={iconSize} /> : name}
+		{icon ? <Icon icon={icon} size={iconSize} /> : name}
 	</slot>
 	{status && <span class:list={['badge', `bg-${statusClasses[status]}`]} />}
 </span>

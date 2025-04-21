@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from '../components/Icon.astro';
+import Icon from '../components/Icon.astro';
 import type { ToastOptions } from '../types';
 import { ClassClear, ThemeIcon } from '../libs';
 
@@ -49,7 +49,7 @@ const classList = ClassClear(['toast', visible && 'show', className]);
 <div data-duration={duration} class={classList} {...props}>
 	<div class="toast-header" class:list={`bg-${icon.theme}-lt`}>
 		<slot name="header">
-			{Astro.slots.has('icon') ? <slot name="icon" /> : <ICON {...icon} bold />}
+			{Astro.slots.has('icon') ? <slot name="icon" /> : <Icon {...icon} bold />}
 			<strong class="me-auto ms-2">
 				<slot name="title" />
 			</strong>

@@ -70,7 +70,7 @@ registerAction('tooltip', (el, value) => {
 		new Tooltip(el, {
 			delay: { show: 50, hide: 50 },
 			html: false,
-			placement: 'auto'
+			placement: (el.dataset.placement || 'top') as any
 		});
 	}
 });

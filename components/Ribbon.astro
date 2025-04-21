@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON, { type Props as IIcon } from './Icon.astro';
+import Icon, { type Props as IIcon } from './Icon.astro';
 import { ClassClear } from '../libs';
 
 export interface Props extends Omit<IIcon, 'type'> {
@@ -47,7 +47,7 @@ const classList = ClassClear([
 ---
 
 <div class={classList}>
-	<slot><ICON {...props} /></slot>
+	<slot><Icon {...props} /></slot>
 </div>
 
 <style lang="less" is:global>

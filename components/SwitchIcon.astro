@@ -14,7 +14,7 @@
  */
 
 import type { IColorFull } from '../types';
-import ICON, { type Props as IIcon } from './Icon.astro';
+import Icon, { type Props as IIcon } from './Icon.astro';
 import { ClassClear } from '../libs';
 
 export interface Props extends Omit<IIcon, 'icon' | 'text' | 'theme'> {
@@ -78,10 +78,10 @@ const iconB = { ...props, icon: iconOn, text: textOn, theme: themeOn };
 
 <button class={classList} data-bs-toggle="switch-icon" name={name} disabled={disabled}>
 	<span class="switch-icon-a text-secondary">
-		<ICON {...iconA} />
+		<Icon {...iconA} />
 	</span>
 	<span class="switch-icon-b text-primary">
-		<ICON {...iconB} />
+		<Icon {...iconB} />
 	</span>
 </button>
 

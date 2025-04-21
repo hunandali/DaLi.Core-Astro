@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from './Icon.astro';
+import Icon from './Icon.astro';
 import { ClassClear } from '../libs';
 import type { IIcon } from '../types';
 
@@ -53,11 +53,11 @@ const classList = ClassClear(['empty', className]);
 				<img src={image} alt={title} />
 			</div>
 		) : icon ? (
-			<ICON class="empty-icon" icon={icon} theme={theme} size={10} />
+			<Icon class="empty-icon" icon={icon} theme={theme} size={10} />
 		) : text ? (
 			<div class={`empty-header text-${theme} fw-bold`}>{text}</div>
 		) : (
-			<ICON class="empty-icon" icon="logo" logo theme={theme} size={10} />
+			<Icon class="empty-icon" icon="logo" logo theme={theme} size={10} />
 		)
 	}
 

@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from './Icon.astro';
+import Icon from './Icon.astro';
 import { ClassClear, updateLink } from '../libs';
 import type { IExternalLinkAction, IIcon, ILink, ISize } from '../types';
 import { APP } from '../config';
@@ -98,6 +98,6 @@ const slotHtml = (await Astro.slots.render('default'))?.trim();
 ---
 
 <Element {...ElementProps}>
-	<ICON icon={icon} text={slotHtml ? '' : text} logo={logo} rotate={rotate} />
+	<Icon icon={icon} text={slotHtml ? '' : text} logo={logo} rotate={rotate} />
 	{slotHtml && <Fragment set:html={slotHtml} />}
 </Element>

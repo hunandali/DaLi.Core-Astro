@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON from './Icon.astro';
+import Icon from './Icon.astro';
 import type { ITheme } from '../types';
 import { dateFormat } from '@da.li/core-libs';
 import { ClassClear } from '../libs';
@@ -88,7 +88,7 @@ const data = items?.map((item) => {
 			data?.map((item) => (
 				<li class="timeline-event">
 					{item.icon ? (
-						<ICON
+						<Icon
 							class="timeline-event-icon"
 							class:list={[item.theme && `text-bg-${item.theme}`]}
 							icon={item.icon}

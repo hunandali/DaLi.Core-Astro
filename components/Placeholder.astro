@@ -18,7 +18,7 @@ import { ClassClear } from '../libs';
 
 export interface Props {
 	/** 占位符宽度(1-12) */
-	col?: number;
+	col?: number | string;
 
 	/** 占位符大小 */
 	size?: 'xs' | Exclude<ISize, 'xl'>;
@@ -33,7 +33,7 @@ export interface Props {
 	class?: string;
 }
 
-const { col = 12, size, animation, theme, class: className = '', ...props } = Astro.props;
+const { col = 12, size, animation = 'glow', theme, class: className = '', ...props } = Astro.props;
 
 // 构建类名
 const classes = ClassClear([
@@ -48,9 +48,9 @@ const classes = ClassClear([
 
 {
 	animation ? (
-		<p class={`placeholder-${animation}`}>
+		<div class={`placeholder-${animation}`}>
 			<span class={classes} {...props} />
-		</p>
+		</div>
 	) : (
 		<span class={classes} {...props} />
 	)

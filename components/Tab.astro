@@ -1,0 +1,188 @@
+---
+/**
+ * 	Tab 选项卡
+ *
+ *  使用 dl-tab 类，将自动生成选项卡
+ *  需严格使用以下结构：
+ * 		<div class="dl-tab">
+ * 			<div>
+ * 				<h2 class="选项卡头部样式">选项卡标题</h2>
+ * 				<div class="选项卡内容样式">选项卡内容</div>
+ * 			</div>
+ * 		</div>
+ *  选项卡头部样式 如果包含 active 类，将自动激活该选项卡，多个 active 类将只激活第一个，如果没有 active 类，将激活第一个选项卡
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Placeholder from './Placeholder.astro';
+
+export interface Props {
+	/** 是否加载中 */
+	loading?: boolean;
+}
+
+const { loading = true } = Astro.props;
+---
+
+<div class="dl-tab card">
+	{
+		loading ? (
+			<>
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+						<li class="nav-item">
+							<a href="#" class="nav-link active" data-bs-toggle="tab">
+								<Placeholder class="w-6" />
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link disabled" data-bs-toggle="tab">
+								<Placeholder class="w-6" />
+								<Placeholder class="w-6 mx-2" />
+								<Placeholder class="w-6" />
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div class="tab-content">
+						<div class="tab-pane active show">
+							<Placeholder class="h-150" />
+						</div>
+					</div>
+				</div>
+				<div class="d-none">
+					<slot />
+				</div>
+			</>
+		) : (
+			<slot>
+				<div>
+					<h2>选项卡 1</h2>
+					<div>选项卡内容 1</div>
+				</div>
+				<div>
+					<h2 class="active">选项卡 2</h2>
+					<div>选项卡内容 2</div>
+				</div>
+				<div>
+					<h2 class="ms-auto">选项卡 3</h2>
+					<div>选项卡内容 3</div>
+				</div>
+			</slot>
+		)
+	}
+</div>
+
+<script>
+	import { globalId } from '@da.li/core-libs';
+
+	const elements = document.querySelectorAll('.dl-tab');
+	if (elements.length) {
+		elements.forEach((element) => {
+			// 检查是否存在 loading
+			const loading = element.querySelector('.card-header .placeholder');
+			const tabArea = loading ? element.querySelector('.d-none') : element;
+			if (!tabArea) return;
+
+			const tabs = tabArea.children;
+			if (!tabs.length) return;
+
+			const navs: HTMLElement[] = [];
+			const contents: HTMLElement[] = [];
+
+			for (let i = 0; i < tabs.length; i++) {
+				const tab = tabs[i];
+				if (tab.tagName !== 'DIV') continue;
+
+				// 找不到标题，不再处理
+				const nav = tab.querySelector('h2');
+				if (!nav) continue;
+
+				let content = tab.querySelector('div');
+				if (!content) {
+					nav.classList.add('disabled');
+					content = document.createElement('div');
+				}
+
+				navs.push(nav);
+				contents.push(content);
+			}
+
+			// 没有选项卡，不再处理
+			if (!navs.length) return;
+
+			// 创建选项卡
+			element.classList.add('card');
+			element.innerHTML = '';
+
+			const id = globalId('tab');
+
+			// 头部
+			const header = document.createElement('div');
+			header.classList.add('card-header');
+			element.appendChild(header);
+
+			const ul = document.createElement('ul');
+			ul.classList.add('nav', 'nav-tabs', 'card-header-tabs');
+			ul.setAttribute('data-bs-toggle', 'tabs');
+			header.appendChild(ul);
+
+			let activeIndex = 0;
+
+			navs.forEach((nav, index) => {
+				const li = document.createElement('li');
+				nav.className && (li.className = nav.className);
+				li.classList.add('nav-item');
+				ul.appendChild(li);
+
+				const a = document.createElement('a');
+				a.classList.add('nav-link');
+				a.setAttribute('href', `#${id}-${index}`);
+				a.setAttribute('data-bs-toggle', 'tab');
+				a.innerHTML = nav.innerHTML;
+
+				if (nav.classList.contains('active') && activeIndex === 0) {
+					activeIndex = index;
+					a.classList.add('active');
+				}
+
+				li.appendChild(a);
+			});
+
+			// 默认未设置选项卡，则激活第一个选项卡
+			if (activeIndex === 0) {
+				ul.querySelector('.nav-link')?.classList.add('active');
+			}
+
+			// 内容
+			const body = document.createElement('div');
+			body.classList.add('card-body');
+			element.appendChild(body);
+
+			const tabContent = document.createElement('div');
+			tabContent.classList.add('tab-content');
+			body.appendChild(tabContent);
+
+			contents.forEach((content, index) => {
+				const tabPane = document.createElement('div');
+				content.className && (tabPane.className = content.className);
+				tabPane.classList.add('tab-pane');
+
+				if (index === activeIndex) tabPane.classList.add('active');
+				tabPane.setAttribute('id', `${id}-${index}`);
+				tabPane.setAttribute('role', 'tabpanel');
+				tabPane.innerHTML = content.innerHTML;
+				tabContent.appendChild(tabPane);
+			});
+		});
+	}
+</script>

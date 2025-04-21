@@ -13,7 +13,7 @@
  * ------------------------------------------------------------
  */
 
-import ICON, { type Props as IIcon } from '../components/Icon.astro';
+import Icon, { type Props as IIcon } from '../components/Icon.astro';
 import { getIcon } from '../icons';
 import { ClassClear, ThemeIcon } from '../libs';
 import type { AlertOptions } from '../types';
@@ -75,7 +75,7 @@ if (mini) {
 		)
 	}
 	<div class="d-block">
-		<slot name="title"><ICON {...icon} /></slot>
+		<slot name="title"><Icon {...icon} /></slot>
 		{
 			Astro.slots.has('default') ? (
 				<div class={messageStyle}>
