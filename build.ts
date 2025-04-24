@@ -102,6 +102,7 @@ async function postBuild() {
 		await fileCopy('config.ts');
 		// await fileCopy('icons.ts');
 		await fileCopy('types.ts');
+		await fileCopy('env.d.ts');
 		// await fileCopy('README.md');
 		// await fileCopy('package.json');
 		await fileCopy('.env');

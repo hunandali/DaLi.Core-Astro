@@ -13,18 +13,17 @@
  * ------------------------------------------------------------
  */
 
-import LayoutBase, { type Props as ILayout } from './LayoutBase.astro';
-import Layout from './PageLayout.astro';
+import LayoutBase, { type Props as IBase } from './LayoutBase.astro';
+import Layout, { type Props as ILayout } from './PageLayout.astro';
 import Header, { type Props as IHeader } from './PageHeader.astro';
 import Footer from './PageFooter.astro';
 import Icon from '../components/Icon.astro';
 import type { ILink, ISize, IThemeFull } from '../types';
-import Navbar from '../components/Navbar/index.astro';
+import Navbar, { type Props as INavbar } from '../components/Navbar/index.astro';
 import type { NavbarItem } from '../components/Navbar/menus.astro';
 import PageTheme from './PageTheme.astro';
-import type { Dict } from '@da.li/core-libs';
 
-export interface Props extends ILayout, IHeader {
+export interface Props extends IBase, IHeader {
 	/** 导航栏品牌/标题 */
 	brand?: ILink;
 
@@ -87,11 +86,20 @@ const navProps = {
 	layout: 'horizontal',
 	size,
 	transparent: false,
-	mobileAppMenu
-} as Dict;
-const headerProps = { ...props, size, overlayer: false } as Dict;
-const layoutProps = { size, class: '' };
-const pageProps = { ...props, class: '' };
+	mobileAppMenu,
+	expand: 'lg'
+} as INavbar;
+
+const headerProps = {
+	title: props.title,
+	description: props.description,
+	subtitle: props.subtitle,
+	size,
+	overlayer: false
+} as IHeader;
+
+const layoutProps = { size, class: '' } as ILayout;
+const pageProps = { ...props, class: '' } as IBase;
 
 /** 宽度 */
 let pageSize = size;
@@ -140,7 +148,7 @@ layoutProps.size = pageSize;
 	<Layout {...layoutProps}>
 		<!-- 头部 -->
 		<slot slot="top" name="top">
-			<Navbar {...navProps} expand="lg">
+			<Navbar {...navProps}>
 				<slot name="navStart" slot="navStart" />
 				<slot name="navEnd" slot="navEnd" />
 				<slot name="navAction">
@@ -162,7 +170,7 @@ layoutProps.size = pageSize;
 
 		<!-- 页眉 -->
 		<slot slot="header" name="header">
-			<Header {...headerProps as any} />
+			<Header {...headerProps} />
 		</slot>
 
 		<!-- 内容 -->

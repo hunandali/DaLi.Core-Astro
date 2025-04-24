@@ -57,11 +57,15 @@ export const ClassClear = (classData: ClassData) => {
 /**
  * 基础属性更新
  * @param props 属性
- * @param prefix 同时处理的前缀，默认为 ['data-', 'x-']
+ * @param prefix 同时处理的前缀，默认为 ['data-', 'x-', 'v-']
  * @param ignoreCase 前缀是否忽略大小写，默认为 true
  * @returns 更新后的属性，与被移除的属性
  */
-export const PropsUpdate = (props: IPropsBase, prefix = ['data-', 'x-'], ignoreCase = true) => {
+export const PropsUpdate = (
+	props: IPropsBase,
+	prefix = ['data-', 'x-', 'v-'],
+	ignoreCase = true
+) => {
 	const ret: Dict = {};
 	if (!hasObject(props)) {
 		return [ret, props];

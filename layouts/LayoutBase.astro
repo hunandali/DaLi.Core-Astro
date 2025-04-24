@@ -16,13 +16,19 @@
 import Head, { type Props as IHead } from './Head.astro';
 import type { IPropsBase } from '../types';
 import { PropsUpdate } from '../libs';
+import type { Dict } from '@da.li/core-libs';
 
-export interface Props extends IHead, IPropsBase {}
-const [propsBody, propsHead] = PropsUpdate(Astro.props);
+export interface Props extends IHead, IPropsBase {
+	htmlAttrs?: Dict<string>;
+	bodyAttrs?: Dict<string>;
+}
+
+const { htmlAttrs = {}, bodyAttrs = {}, ...props } = Astro.props;
+const [propsBody, propsHead] = PropsUpdate(props);
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang="zh" {...htmlAttrs}>
 	<Head {...propsHead as IHead} />
-	<body {...propsBody}><slot /></body>
+	<body {...propsBody} {...bodyAttrs}><slot /></body>
 </html>
