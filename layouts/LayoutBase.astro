@@ -23,12 +23,19 @@ export interface Props extends IHead, IPropsBase {
 	bodyAttrs?: Dict<string>;
 }
 
+// 从 cookie 中获取主题设置
+const isDark = Astro.cookies.get('theme')?.value === 'dark';
+
 const { htmlAttrs = {}, bodyAttrs = {}, ...props } = Astro.props;
 const [propsBody, propsHead] = PropsUpdate(props);
+const propsHtml = {
+	...htmlAttrs,
+	'data-bs-theme': isDark ? 'dark' : undefined
+};
 ---
 
 <!doctype html>
-<html lang="zh" {...htmlAttrs}>
+<html lang="zh" {...propsHtml}>
 	<Head {...propsHead as IHead} />
 	<body {...propsBody} {...bodyAttrs}><slot /></body>
 </html>
