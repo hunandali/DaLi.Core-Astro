@@ -24,16 +24,16 @@ class SidebarService {
 
 	private _events = {
 		/** 确认事件，返回 true 关闭窗口 */
-		onOk: (_: Event) => true,
+		onConfirm: (_: Event, __: SidebarOptions) => true,
 
 		/** 取消事件，返回 false 取消关闭 */
-		onCancel: (_: Event) => true,
+		onCancel: (_: Event, __: SidebarOptions) => true,
 
 		/** 打开事件，返回 false 取消打开 */
-		onOpen: (_: Event) => true,
+		onOpen: (_: Event, __: SidebarOptions) => true,
 
 		/** 关闭事件，返回 false 取消关闭 */
-		onClose: (_: Event) => true
+		onClose: (_: Event, __: SidebarOptions) => true
 	};
 
 	/** 创建消息项目 */
@@ -60,20 +60,23 @@ class SidebarService {
 </div>
 `;
 
-			const exit = (e: Event) => this._events.onCancel(e) && this.close();
+			const exit = (e: Event) => this._events.onCancel(e, options) && this.close();
 			SidebarEL.addEventListener(
 				'hide.bs.offcanvas',
-				(e) => this._events.onClose(e) === false && e.preventDefault()
+				(e) => this._events.onClose(e, options) === false && e.preventDefault()
 			);
 			SidebarEL.addEventListener(
 				'show.bs.offcanvas',
-				(e) => this._events.onOpen(e) === false && e.preventDefault()
+				(e) => this._events.onOpen(e, options) === false && e.preventDefault()
 			);
 			SidebarEL.addEventListener('hidePrevented.bs.offcanvas', exit);
 
 			const btns = SidebarEL.querySelectorAll('div.offcanvas-footer button');
 			btns[0].addEventListener('click', exit);
-			btns[1].addEventListener('click', (e) => this._events.onOk(e) && this.close());
+			btns[1].addEventListener(
+				'click',
+				(e) => this._events.onConfirm(e, options) && this.close()
+			);
 
 			const btnClose = SidebarEL.querySelector('button.btn-close');
 			btnClose?.addEventListener('click', exit);
@@ -105,11 +108,11 @@ class SidebarService {
 			showClose = true,
 			size,
 			textCancel = '取消',
-			textOk = '确定',
+			textConfirm = '确定',
 			onCancel,
 			onOpen,
 			onClose,
-			onOk
+			onConfirm
 		} = options;
 
 		// 参数
@@ -141,10 +144,11 @@ class SidebarService {
 		}
 		icon.icon = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
 
-		this._events.onCancel = (e) => showClose && (!isFn(onCancel) || onCancel(e) !== false);
-		this._events.onOk = (e) => !isFn(onOk) || onOk(e) !== false;
-		this._events.onClose = (e) => !isFn(onClose) || onClose(e) !== false;
-		this._events.onOpen = (e) => !isFn(onOpen) || onOpen(e) !== false;
+		this._events.onCancel = (e) =>
+			showClose && (!isFn(onCancel) || onCancel(options, e) !== false);
+		this._events.onConfirm = (e) => !isFn(onConfirm) || onConfirm(options, e) !== false;
+		this._events.onClose = (e) => !isFn(onClose) || onClose(options, e) !== false;
+		this._events.onOpen = (e) => !isFn(onOpen) || onOpen(options, e) !== false;
 
 		//////////////////////////////////////////////////////////
 
@@ -156,7 +160,7 @@ class SidebarService {
 			btnCancel.style.display = 'none';
 		}
 
-		if (isFn(onOk)) {
+		if (isFn(onConfirm)) {
 			btnOk.style.display = 'block';
 		} else {
 			btnOk.style.display = 'none';
@@ -184,7 +188,7 @@ class SidebarService {
 		}
 
 		btnCancel.textContent = textCancel;
-		btnOk.textContent = textOk;
+		btnOk.textContent = textConfirm;
 		btnOk.className = `btn btn-${icon.theme}`;
 
 		//////////////////////////////////////////////////////////
@@ -198,7 +202,7 @@ class SidebarService {
 		if (!this._sidebar) {
 			this._sidebar = new Offcanvas(SidebarEL, {
 				backdrop: showClose ? true : 'static',
-				keyboard: showClose,
+				keyboard: false,
 				scroll: false
 			});
 		}

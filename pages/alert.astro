@@ -25,7 +25,7 @@ import LAYOUT from '../layouts/Demo.astro';
 
 <script>
 	import type { ITheme } from '../types';
-	import { showAlert } from '../libs/client';
+	import { showNotice } from '../libs/client';
 
 	const themes: ITheme[] = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
 	themes.forEach((theme, index) => {
@@ -33,7 +33,7 @@ import LAYOUT from '../layouts/Demo.astro';
 		const message = `第 ${index + 1} 个 Alert，使用了 ${theme} 样式，本次 Alert ${important ? '很重要' : '不重要'}`;
 		const title = `样式：${theme}`;
 		setTimeout(() => {
-			showAlert(message, title, theme, important);
+			showNotice(message, title, theme, important);
 		}, index * 3000);
 	});
 </script>

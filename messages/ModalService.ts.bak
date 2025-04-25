@@ -1,0 +1,285 @@
+/**
+ * ModalService 模态窗体服务
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	https://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import { hasObject, isFn } from '@da.li/core-libs';
+import { Modal } from 'bootstrap';
+import { getIcon, getLogo } from '../icons';
+import { ThemeIcon, updateHTML } from '../libs';
+import type { ModalOptions } from '../types';
+import { InputMask } from 'imask';
+import { createMask } from '../libs/_mask';
+
+class ModalService {
+	private _modal: Modal | undefined;
+	private _element: HTMLElement | undefined;
+	private _mask: InputMask<any> | undefined;
+	private _events = {
+		/** 确认事件，返回 true 关闭窗口 */
+		onConfirm: (_: Event, __: ModalOptions) => true,
+
+		/** 取消事件，返回 false 取消关闭 */
+		onCancel: (_: Event, __: ModalOptions) => true,
+
+		/** 打开事件，返回 false 取消打开 */
+		onOpen: (_: Event, __: ModalOptions) => true,
+
+		/** 关闭事件，返回 false 取消关闭 */
+		onClose: (_: Event, __: ModalOptions) => true
+	};
+
+	/** 创建消息项目 */
+	private createModal(options: ModalOptions) {
+		if (!this._element) {
+			// 创建 Modal 元素
+			const ModalEL = document.createElement('div');
+			ModalEL.className = 'modal fade';
+			ModalEL.setAttribute('tabindex', '-1');
+
+			const ModalDialog = document.createElement('div');
+			ModalDialog.className = 'modal-dialog modal-dialog-centered';
+			ModalDialog.setAttribute('role', 'document');
+
+			const ModalContent = document.createElement('div');
+			ModalContent.className = 'modal-content';
+
+			ModalContent.innerHTML = `
+<button type="button" class="btn-close" aria-label="Close"></button>
+<div class="modal-status"></div>
+<div class="modal-body text-center py-6">
+	<i class="user-select-none text-14"></i>
+	<h2 class="mt-2 mb-4"></h2>
+	<div class="text-secondary"></div>
+	<div class="justify-content-center mt-6">
+		<div class="form-floating w-400">
+			<input type="text" class="form-control border-primary border-2" value="" autocomplete="off">
+			<label>Email address</label>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="w-100 text-center">
+		<div class="row">
+			<div class="col">
+				<button type="button" class="btn btn-default w-100" aria-label="Close"></button>
+			</div>
+			<div class="col">
+				<button type="button"></button>
+			</div>
+		</div>
+	</div>
+</div>
+`;
+
+			const exit = (e: Event) => this._events.onCancel(e, options) && this.close();
+			ModalDialog.appendChild(ModalContent);
+			ModalEL.appendChild(ModalDialog);
+			ModalEL.addEventListener(
+				'hide.bs.modal',
+				(e) => this._events.onClose(e, options) === false && e.preventDefault()
+			);
+			ModalEL.addEventListener(
+				'show.bs.modal',
+				(e) => this._events.onOpen(e, options) === false && e.preventDefault()
+			);
+			ModalEL.addEventListener('hidePrevented.bs.modal', exit);
+
+			const btns = ModalEL.querySelectorAll('div.modal-footer button');
+			btns[0].addEventListener('click', exit);
+			btns[1].addEventListener(
+				'click',
+				(e) => this._events.onConfirm(e, options) && this.close()
+			);
+
+			const btnClose = ModalEL.querySelector('button.btn-close');
+			btnClose?.addEventListener('click', exit);
+
+			this._element = ModalEL;
+		}
+
+		//////////////////////////////////////////////////////////
+
+		const el = this._element.querySelector('div.modal-content') as HTMLDivElement;
+
+		const btnClose = el.querySelector('button.btn-close') as HTMLButtonElement;
+		const elStatus = el.querySelector('div.modal-status') as HTMLDivElement;
+		const elIcon = el.querySelector('i') as HTMLElement;
+		const elTitle = el.querySelector('h2') as HTMLHeadingElement;
+		const elMessage = el.querySelector('div.text-secondary') as HTMLDivElement;
+
+		const elInputArea = el.querySelector('div.justify-content-center') as HTMLDivElement;
+		const elInput = elInputArea.querySelector('input') as HTMLInputElement;
+		const elInputLabel = elInputArea.querySelector('label') as HTMLLabelElement;
+
+		const btns = el.querySelectorAll('div.modal-footer button');
+		const btnCancel = btns[0] as HTMLButtonElement;
+		const btnOk = btns[1] as HTMLButtonElement;
+
+		//////////////////////////////////////////////////////////
+
+		const {
+			icon: iconName,
+			title,
+			message,
+			theme,
+			showClose = true,
+			size,
+			textCancel = '取消',
+			textConfirm = '确定',
+			onCancel,
+			onOpen,
+			onClose,
+			onConfirm
+		} = options;
+
+		// 设置尺寸，先移除原始尺寸后添加新尺寸
+		this._element.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
+		size && ['sm', 'lg', 'xl'].includes(size) && this._element.classList.add(`modal-${size}`);
+
+		// logo- 开头的图标为 logo
+		// - 表示隐藏图标
+		const icon = ThemeIcon(theme);
+		if (iconName) {
+			icon.icon = iconName;
+			icon.logo = iconName && iconName.startsWith('logo-');
+		}
+		icon.icon = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
+
+		// 输入框
+		if (this._mask) {
+			this._mask.destroy();
+			this._mask = undefined;
+		}
+
+		if (options.prompt) {
+			elInputArea.style.display = 'flex';
+			elInputLabel.textContent = options.prompt === true ? '请输入' : options.prompt;
+			elInput.value = `${options.value || ''}`;
+			elInput.focus();
+			this._mask = createMask(elInput, options.mask || '');
+		} else {
+			elInputLabel.textContent = '';
+			elInput.value = '';
+			elInputArea.style.display = 'none';
+		}
+
+		this._events.onCancel = (e, options) =>
+			showClose && (!isFn(onCancel) || onCancel(e, options) !== false);
+
+		this._events.onConfirm = (e, options) => {
+			if (!isFn(onConfirm)) return true;
+
+			// 输入框赋值
+			if (options.prompt) {
+				options.value = this._mask ? this._mask.unmaskedValue : elInput.value;
+			}
+			return onConfirm(e, options) !== false;
+		};
+
+		this._events.onClose = (e, options) => !isFn(onClose) || onClose(e, options) !== false;
+		this._events.onOpen = (e, options) => !isFn(onOpen) || onOpen(e, options) !== false;
+
+		//////////////////////////////////////////////////////////
+
+		if (showClose) {
+			btnClose.style.display = 'block';
+			btnCancel.parentElement!.style.display = 'block';
+		} else {
+			btnClose.style.display = 'none';
+			btnCancel.parentElement!.style.display = 'none';
+		}
+
+		elStatus.className = `modal-status bg-${icon.theme}`;
+
+		elIcon.className =
+			icon.icon && icon.icon !== '-'
+				? `${icon.icon} user-select-none text-${icon.theme} text-14`
+				: 'd-none';
+
+		if (title) {
+			elTitle.innerHTML = updateHTML(title);
+			elTitle.style.display = 'block';
+		} else {
+			elTitle.style.display = 'none';
+		}
+
+		if (message) {
+			elMessage.innerHTML = updateHTML(message);
+			elMessage.style.display = 'block';
+		} else {
+			elMessage.style.display = 'none';
+		}
+
+		btnCancel.textContent = textCancel;
+		btnOk.textContent = textConfirm;
+		btnOk.className = `btn btn-${icon.theme} w-${showClose ? 100 : 50}`;
+
+		//////////////////////////////////////////////////////////
+
+		if (!this._modal) {
+			this._modal = new Modal(this._element, {
+				backdrop: 'static',
+				keyboard: false,
+				focus: true
+			});
+		}
+
+		return this._modal;
+	}
+
+	open(options?: ModalOptions) {
+		!hasObject(options) && (options = {});
+
+		const modal = this.createModal(options);
+		modal.show();
+	}
+
+	close() {
+		this._modal?.hide();
+	}
+
+	dispose() {
+		this._modal?.hide();
+		this._modal?.dispose();
+		this._element?.remove();
+		this._element = undefined;
+	}
+
+	// 公共 API
+	alert(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'danger', message, title, showClose: false, ...options });
+	}
+
+	// 公共 API
+	success(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'success', message, title, ...options });
+	}
+
+	warning(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'warning', message, title, ...options });
+	}
+
+	danger(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'danger', message, title, ...options });
+	}
+
+	info(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'info', message, title, ...options });
+	}
+
+	primary(message: string, title?: string, options: Partial<ModalOptions> = {}) {
+		this.open({ theme: 'primary', message, title, ...options });
+	}
+}
+
+export default ModalService;

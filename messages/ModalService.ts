@@ -17,224 +17,244 @@ import { Modal } from 'bootstrap';
 import { getIcon, getLogo } from '../icons';
 import { ThemeIcon, updateHTML } from '../libs';
 import type { ModalOptions } from '../types';
+import { InputMask } from 'imask';
+import { createMask } from '../libs/_mask';
 
-class ModalService {
-	private _modal: Modal | undefined;
-	private _element: HTMLElement | undefined;
-	private _events = {
-		/** 确认事件，返回 true 关闭窗口 */
-		onOk: (_: Event) => true,
+/** 对话框集合 */
+export const modals = new WeakMap<HTMLElement, Modal>();
 
-		/** 取消事件，返回 false 取消关闭 */
-		onCancel: (_: Event) => true,
+/** 当前所有对话框节点 */
+export const modalElements = (): HTMLElement[] =>
+	Array.from(document.querySelectorAll('div[data-model-message]'));
 
-		/** 打开事件，返回 false 取消打开 */
-		onOpen: (_: Event) => true,
+/** 移除并销毁所有对话框节点 */
+export const disponseAll = () => {
+	modalElements().forEach((element) => {
+		if (modals.has(element)) {
+			const modal = modals.get(element);
+			// modal?.hide();
+			modal?.dispose();
+		}
 
-		/** 关闭事件，返回 false 取消关闭 */
-		onClose: (_: Event) => true
+		element.remove();
+	});
+};
+
+/** 创建对话框 */
+export default function (options: ModalOptions) {
+	if (!hasObject(options)) return;
+
+	const {
+		icon: iconName,
+		title,
+		message,
+		theme,
+		showClose = true,
+		size,
+		textCancel = '取消',
+		textConfirm = '确定',
+		onCancel,
+		onOpen,
+		onClose,
+		onConfirm
+	} = options;
+
+	/** 启动前检测，禁止启动则不在执行 */
+	if (isFn(onOpen) && onOpen(options) === false) return;
+
+	// logo- 开头的图标为 logo
+	// - 表示隐藏图标
+	const icon = ThemeIcon(theme);
+	if (iconName) {
+		icon.icon = iconName;
+		icon.logo = iconName && iconName.startsWith('logo-');
+	}
+	icon.icon = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
+
+	let mask: InputMask<any> | undefined;
+	let modal: Modal | undefined;
+	let element: HTMLElement | undefined;
+	let input: HTMLInputElement | undefined;
+
+	/** 销毁 */
+	const dispose = () => {
+		// 检测是否禁止关闭
+		if (isFn(onClose) && onClose(options) === false) return;
+
+		modal?.hide();
+		setTimeout(() => {
+			if (modal) {
+				modal.dispose();
+				modal = undefined;
+			}
+		}, 500);
+
+		if (element) {
+			modals.delete(element);
+			element.remove();
+			element = undefined;
+		}
 	};
 
-	/** 创建消息项目 */
-	private createModal(options: ModalOptions) {
-		if (!this._element) {
-			// 创建 Modal 元素
-			const ModalEL = document.createElement('div');
-			ModalEL.className = 'modal fade';
-			ModalEL.setAttribute('tabindex', '-1');
+	/** 取消事件，执行取消事件并关闭窗口 */
+	const cancelEvent = (e: Event) => {
+		if (!showClose) return;
+		if (isFn(onCancel) && onCancel(options, e) === false) return;
+		dispose();
+	};
 
-			const ModalDialog = document.createElement('div');
-			ModalDialog.className = 'modal-dialog modal-dialog-centered';
-			ModalDialog.setAttribute('role', 'document');
+	/** 确认事件，执行确认事件并关闭窗 */
+	const confirmEvent = (e: Event) => {
+		if (!isFn(onConfirm)) return dispose();
 
-			const ModalContent = document.createElement('div');
-			ModalContent.className = 'modal-content';
-
-			ModalContent.innerHTML = `
-<button type="button" class="btn-close" aria-label="Close"></button>
-<div class="modal-status"></div>
-<div class="modal-body text-center py-6">
-	<i class="user-select-none text-14"></i>
-	<h2 class="mt-2 mb-4"></h2>
-	<div class="text-secondary"></div>
-</div>
-<div class="modal-footer">
-	<div class="w-100 text-center">
-		<div class="row">
-			<div class="col">
-				<button type="button" class="btn btn-default w-100" aria-label="Close"></button>
-			</div>
-			<div class="col">
-				<button type="button"></button>
-			</div>
-		</div>
-	</div>
-</div>
-`;
-
-			const exit = (e: Event) => this._events.onCancel(e) && this.close();
-			ModalDialog.appendChild(ModalContent);
-			ModalEL.appendChild(ModalDialog);
-			ModalEL.addEventListener(
-				'hide.bs.modal',
-				(e) => this._events.onClose(e) === false && e.preventDefault()
-			);
-			ModalEL.addEventListener(
-				'show.bs.modal',
-				(e) => this._events.onOpen(e) === false && e.preventDefault()
-			);
-			ModalEL.addEventListener('hidePrevented.bs.modal', exit);
-
-			const btns = ModalEL.querySelectorAll('div.modal-footer button');
-			btns[0].addEventListener('click', exit);
-			btns[1].addEventListener('click', (e) => this._events.onOk(e) && this.close());
-
-			const btnClose = ModalEL.querySelector('button.btn-close');
-			btnClose?.addEventListener('click', exit);
-
-			this._element = ModalEL;
+		// 输入框赋值
+		if (options.prompt && input) {
+			options.value = mask ? mask.unmaskedValue : input.value;
 		}
 
-		//////////////////////////////////////////////////////////
+		onConfirm(options, e) !== false && dispose();
+	};
 
-		const el = this._element.querySelector('div.modal-content') as HTMLDivElement;
+	/////////////////////////////////////////////////////////////////////////
 
-		const btnClose = el.querySelector('button.btn-close') as HTMLButtonElement;
-		const elStatus = el.querySelector('div.modal-status') as HTMLDivElement;
-		const elIcon = el.querySelector('i') as HTMLElement;
-		const elTitle = el.querySelector('h2') as HTMLHeadingElement;
-		const elMessage = el.querySelector('div.text-secondary') as HTMLDivElement;
+	element = document.createElement('div');
+	element.setAttribute('tabindex', '-1');
+	element.setAttribute('data-model-message', '');
+	element.className = 'modal fade';
+	size && ['sm', 'lg', 'xl'].includes(size) && element.classList.add(`modal-${size}`);
+	// element.addEventListener('hide.bs.modal', closeEvent);
+	element.addEventListener('hidePrevented.bs.modal', cancelEvent);
+	document.body.appendChild(element);
 
-		const btns = el.querySelectorAll('div.modal-footer button');
-		const btnCancel = btns[0] as HTMLButtonElement;
-		const btnOk = btns[1] as HTMLButtonElement;
+	const dialogEL = document.createElement('div');
+	dialogEL.className = 'modal-dialog modal-dialog-centered';
+	dialogEL.setAttribute('role', 'document');
+	element.appendChild(dialogEL);
 
-		//////////////////////////////////////////////////////////
+	const contentEL = document.createElement('div');
+	contentEL.className = 'modal-content';
+	dialogEL.appendChild(contentEL);
 
-		const {
-			icon: iconName,
-			title,
-			message,
-			theme,
-			showClose = true,
-			size,
-			textCancel = '取消',
-			textOk = '确定',
-			onCancel,
-			onOpen,
-			onClose,
-			onOk
-		} = options;
+	// 创建关闭按钮
+	if (showClose) {
+		const btnClose = document.createElement('button');
+		btnClose.className = 'btn-close';
+		btnClose.setAttribute('type', 'button');
+		btnClose.setAttribute('aria-label', 'Close');
+		btnClose.addEventListener('click', cancelEvent);
+		contentEL.appendChild(btnClose);
+	}
 
-		// 设置尺寸，先移除原始尺寸后添加新尺寸
-		this._element.classList.remove('modal-sm', 'modal-lg', 'modal-xl');
-		size && ['sm', 'lg', 'xl'].includes(size) && this._element.classList.add(`modal-${size}`);
+	// 创建状态区域
+	const statusEL = document.createElement('div');
+	statusEL.className = `modal-status bg-${icon.theme}`;
+	contentEL.appendChild(statusEL);
 
-		// logo- 开头的图标为 logo
-		// - 表示隐藏图标
-		const icon = ThemeIcon(theme);
-		if (iconName) {
-			icon.icon = iconName;
-			icon.logo = iconName && iconName.startsWith('logo-');
-		}
-		icon.icon = icon.logo ? getLogo(icon.icon) : getIcon(icon.icon);
+	// 创建主体内容
+	const bodyEL = document.createElement('div');
+	bodyEL.className = 'modal-body text-center py-6';
+	contentEL.appendChild(bodyEL);
 
-		this._events.onCancel = (e) => showClose && (!isFn(onCancel) || onCancel(e) !== false);
-		this._events.onOk = (e) => !isFn(onOk) || onOk(e) !== false;
-		this._events.onClose = (e) => !isFn(onClose) || onClose(e) !== false;
-		this._events.onOpen = (e) => !isFn(onOpen) || onOpen(e) !== false;
+	// 创建图标
+	if (icon.icon && icon.icon !== '-') {
+		const iconEL = document.createElement('i');
+		iconEL.className = `${icon.icon} user-select-none text-${icon.theme} text-14`;
+		bodyEL.appendChild(iconEL);
+	}
 
-		//////////////////////////////////////////////////////////
+	// 创建标题
+	if (title) {
+		const titleEL = document.createElement('h2');
+		titleEL.className = 'mt-2 mb-4';
+		titleEL.innerHTML = updateHTML(title);
+		bodyEL.appendChild(titleEL);
+	}
 
-		if (showClose) {
-			btnClose.style.display = 'block';
-			btnCancel.parentElement!.style.display = 'block';
-		} else {
-			btnClose.style.display = 'none';
-			btnCancel.parentElement!.style.display = 'none';
-		}
+	// 创建消息内容
+	if (message) {
+		const messageEL = document.createElement('div');
+		messageEL.className = 'text-secondary';
+		messageEL.innerHTML = updateHTML(message);
+		bodyEL.appendChild(messageEL);
+	}
 
-		elStatus.className = `modal-status bg-${icon.theme}`;
+	// 创建输入区域
+	if (options.prompt) {
+		const inputArea = document.createElement('div');
+		inputArea.className = 'd-flex justify-content-center mt-6';
+		bodyEL.appendChild(inputArea);
 
-		elIcon.className =
-			icon.icon && icon.icon !== '-'
-				? `${icon.icon} user-select-none text-${icon.theme} text-14`
-				: 'd-none';
+		// 创建输入框容器
+		const inputContainer = document.createElement('div');
+		inputContainer.className = 'form-floating w-400';
+		inputArea.appendChild(inputContainer);
 
-		if (title) {
-			elTitle.innerHTML = updateHTML(title);
-			elTitle.style.display = 'block';
-		} else {
-			elTitle.style.display = 'none';
-		}
+		// 创建输入框
+		input = document.createElement('input');
+		input.className = `form-control border-${icon.theme} border-2`;
+		input.setAttribute('type', 'text');
+		input.setAttribute('autocomplete', 'off');
+		input.value = `${options.value || ''}`;
+		inputContainer.appendChild(input);
 
-		if (message) {
-			elMessage.innerHTML = updateHTML(message);
-			elMessage.style.display = 'block';
-		} else {
-			elMessage.style.display = 'none';
-		}
+		// 创建标签
+		const label = document.createElement('label');
+		label.textContent = options.prompt === true ? '请输入' : options.prompt;
+		inputContainer.appendChild(label);
 
+		mask = createMask(input, options.mask || '');
+	}
+
+	// 创建底部区域
+	const footerEL = document.createElement('div');
+	footerEL.className = 'modal-footer';
+	contentEL.appendChild(footerEL);
+
+	// 创建底部内容容器
+	const footerContent = document.createElement('div');
+	footerContent.className = 'w-100 text-center';
+	footerEL.appendChild(footerContent);
+
+	// 创建按钮行
+	const buttonRow = document.createElement('div');
+	buttonRow.className = 'row';
+	footerContent.appendChild(buttonRow);
+
+	if (showClose) {
+		// 创建取消按钮列
+		const cancelCol = document.createElement('div');
+		cancelCol.className = 'col';
+		buttonRow.appendChild(cancelCol);
+
+		// 创建取消按钮
+		const btnCancel = document.createElement('button');
+		btnCancel.className = 'btn btn-default w-100';
+		btnCancel.setAttribute('type', 'button');
+		btnCancel.setAttribute('aria-label', 'Close');
 		btnCancel.textContent = textCancel;
-		btnOk.textContent = textOk;
-		btnOk.className = `btn btn-${icon.theme} w-${showClose ? 100 : 50}`;
-
-		//////////////////////////////////////////////////////////
-
-		if (!this._modal) {
-			this._modal = new Modal(this._element, {
-				backdrop: 'static',
-				keyboard: false,
-				focus: true
-			});
-		}
-
-		return this._modal;
+		btnCancel.addEventListener('click', cancelEvent);
+		cancelCol.appendChild(btnCancel);
 	}
 
-	open(options?: ModalOptions) {
-		!hasObject(options) && (options = {});
+	// 创建确认按钮列
+	const confirmCol = document.createElement('div');
+	confirmCol.className = 'col';
+	buttonRow.appendChild(confirmCol);
 
-		const model = this.createModal(options);
-		model.show();
-	}
+	// 创建确认按钮
+	const btnConfirm = document.createElement('button');
+	btnConfirm.setAttribute('type', 'button');
+	btnConfirm.className = `btn btn-${icon.theme} w-${showClose ? 100 : 50}`;
+	btnConfirm.textContent = textConfirm;
+	btnConfirm.addEventListener('click', confirmEvent);
+	confirmCol.appendChild(btnConfirm);
 
-	close() {
-		this._modal?.hide();
-	}
+	modal = new Modal(element, {
+		backdrop: 'static',
+		keyboard: false, // false 才会触发 hidePrevented.bs.modal
+		focus: true
+	});
 
-	dispose() {
-		this._modal?.hide();
-		this._modal?.dispose();
-		this._element?.remove();
-		this._element = undefined;
-	}
-
-	// 公共 API
-	alert(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'danger', message, title, showClose: false, ...options });
-	}
-
-	// 公共 API
-	success(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'success', message, title, ...options });
-	}
-
-	warning(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'warning', message, title, ...options });
-	}
-
-	danger(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'danger', message, title, ...options });
-	}
-
-	info(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'info', message, title, ...options });
-	}
-
-	primary(message: string, title?: string, options: Partial<ModalOptions> = {}) {
-		this.open({ theme: 'primary', message, title, ...options });
-	}
+	modals.set(element, modal);
+	return modal;
 }
-
-export default ModalService;

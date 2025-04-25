@@ -17,6 +17,7 @@ import { registerAction } from './_directive';
 import { copy } from '../libs/_message';
 import { Tooltip } from 'bootstrap';
 import './_prism';
+import { createMask } from '../libs/_mask';
 
 /** 复制指令 */
 registerAction('copy', (el, value) => {
@@ -73,6 +74,18 @@ registerAction('tooltip', (el, value) => {
 			placement: (el.dataset.placement || 'top') as any
 		});
 	}
+});
+
+/**
+ * 字符掩码指令，注意使用掩码后的实际有效值请从 data-value 属性中获取
+ * @param el 元素
+ * @param value 掩码格式，如：99/99/9999
+ */
+registerAction('mask', (el, value) => {
+	if (!value || el.tagName !== 'INPUT') return;
+
+	const element = el as HTMLInputElement;
+	createMask(element, value);
 });
 
 /** 日期指令 */

@@ -110,9 +110,11 @@ const baseLibs = [
 	'hideLoading',
 	'showToast',
 	'hideToast',
-	'showAlert',
+	'showNotice',
 	'openModal',
 	'closeModal',
+	'showAlert',
+	'showConfirm',
 	'IsDarkTheme',
 	'copy',
 	'openUrl',
@@ -153,6 +155,9 @@ const components = [
 	'DlTooltip',
 	'DlTracking'
 ];
+
+/** 表单组建 */
+const forms = ['DlInput'];
 
 /** 布局组件 */
 const layouts = [
@@ -223,6 +228,10 @@ export const Imports: AutoImportOptions['imports'] = [
 	{
 		/** 布局组件 */
 		'@da.li/core-astro/dist/layouts': layouts
+	},
+	{
+		/** 表单组件 */
+		'@da.li/core-astro/dist/forms': forms
 	},
 	{
 		/** 消息组件 */

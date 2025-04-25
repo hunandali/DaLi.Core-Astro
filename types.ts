@@ -66,6 +66,15 @@ export interface IMessage {
 	icon?: string;
 }
 
+/** 按钮事件 */
+export type MessageButtonEvent<Options extends IMessage> = (
+	options: Options,
+	event: Event
+) => boolean | void;
+
+/** 消息事件 */
+export type MessageEvent<Options extends IMessage> = (options: Options) => boolean | void;
+
 /** 警告消息类型 */
 export interface AlertOptions extends IMessage {
 	/** 是否重要 */
@@ -104,6 +113,16 @@ export interface LoadingOptions {
 
 /** 弹窗消息类型 */
 export interface ModalOptions extends IMessage {
+	/** 是否启用提示或者输入提示 */
+	prompt?: boolean | string;
+
+	/** 提示输入值 */
+	value?: string | number;
+
+	/** 输入框掩码 */
+	mask?: string;
+
+	/** 输入框类型 */
 	/** 允许关闭 */
 	showClose?: boolean;
 
@@ -114,19 +133,19 @@ export interface ModalOptions extends IMessage {
 	textCancel?: string;
 
 	/** 确认按钮文字 */
-	textOk?: string;
+	textConfirm?: string;
 
 	/** 确认事件，返回 true 关闭窗口 */
-	onOk?: (e: Event) => boolean | void;
+	onConfirm?: MessageButtonEvent<ModalOptions>;
 
 	/** 取消事件，返回 false 取消关闭 */
-	onCancel?: (e: Event) => boolean | void;
+	onCancel?: MessageButtonEvent<ModalOptions>;
 
 	/** 打开事件，返回 false 取消打开 */
-	onOpen?: (e: Event) => boolean | void;
+	onOpen?: MessageEvent<ModalOptions>;
 
 	/** 关闭事件，返回 false 取消关闭 */
-	onClose?: (e: Event) => boolean | void;
+	onClose?: MessageEvent<ModalOptions>;
 }
 
 /** 侧边栏类型 */
@@ -144,19 +163,19 @@ export interface SidebarOptions extends IMessage {
 	textCancel?: string;
 
 	/** 确认按钮文字 */
-	textOk?: string;
+	textConfirm?: string;
 
 	/** 确认事件，返回 true 关闭窗口 */
-	onOk?: (e: Event) => boolean | void;
+	onConfirm?: MessageButtonEvent<SidebarOptions>;
 
 	/** 取消事件，返回 false 取消关闭 */
-	onCancel?: (e: Event) => boolean | void;
+	onCancel?: MessageButtonEvent<SidebarOptions>;
 
 	/** 打开事件，返回 false 取消打开 */
-	onOpen?: (e: Event) => boolean | void;
+	onOpen?: MessageButtonEvent<SidebarOptions>;
 
 	/** 关闭事件，返回 false 取消关闭 */
-	onClose?: (e: Event) => boolean | void;
+	onClose?: MessageButtonEvent<SidebarOptions>;
 }
 
 /** 提示消息类型 */
@@ -279,4 +298,42 @@ export interface ConfigOptions {
 	 * 3. string: 启用并自定义指令前缀，例如 '@' 或 'v-'，空值则禁用
 	 */
 	directives?: IDirective;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/** 表单元素 */
+export interface IFormElement<T = any> {
+	/** 名称 */
+	name?: string;
+
+	/** 值 */
+	value?: T;
+
+	/** 禁用 */
+	disabled?: boolean;
+
+	/** 只读 */
+	readonly?: boolean;
+
+	/** 必填 */
+	required?: boolean;
+
+	/** 占位符 */
+	placeholder?: string;
+}
+
+/** 表单元素 */
+export interface IFormItem<T = any> extends IFormElement<T> {
+	/** 标题，名称 */
+	title?: string;
+
+	/** 字段描述说明 */
+	tip?: string;
+
+	/** 信息提示方式 */
+	tipPosition: 'prefix' | 'suffix' | 'none';
+
+	/** 信息提示图标 */
+	tipIcon?: string;
 }

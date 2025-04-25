@@ -1,0 +1,211 @@
+---
+/**
+ * 	Input 输入框组件
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import Icon from '../components/Icon.astro';
+import { ClassClear } from '../libs';
+import type { IFormElement, ISize } from '../types';
+
+export interface Props extends IFormElement<string | number | null> {
+	/** 输入框ID */
+	id?: string;
+
+	/** 输入框类型 */
+	type?:
+		| 'text'
+		| 'password'
+		| 'email'
+		| 'number'
+		| 'tel'
+		| 'url'
+		| 'search'
+		| 'date'
+		| 'time'
+		| 'datetime-local'
+		| 'month'
+		| 'week'
+		| 'color';
+
+	/** 输入框大小 */
+	size?: Exclude<ISize, 'xl'>;
+
+	/** 自定义类名 */
+	class?: string;
+
+	/** 前置图标 */
+	prefixIcon?: string;
+
+	/** 后置图标 */
+	suffixIcon?: string;
+
+	/** 前置文本 */
+	prefixText?: string;
+
+	/** 后置文本 */
+	suffixText?: string;
+
+	/** 是否无边框 */
+	borderless?: boolean;
+
+	/** 是否圆角 */
+	round?: boolean;
+
+	/** 是否有效 */
+	valid?: boolean;
+
+	/** 是否无效 */
+	invalid?: boolean;
+
+	/** 输入掩码 */
+	mask?: string;
+
+	/** 最小值 */
+	min?: number | string;
+
+	/** 最大值 */
+	max?: number | string;
+
+	/** 步长 */
+	step?: number | string;
+
+	/** 最小长度 */
+	minlength?: number;
+
+	/** 最大长度 */
+	maxlength?: number;
+
+	/** 正则表达式模式 */
+	pattern?: string;
+}
+
+const {
+	id,
+	name,
+	type = 'text',
+	placeholder,
+	value,
+	disabled = false,
+	readonly = false,
+	required = false,
+	size,
+	class: className,
+	prefixIcon,
+	suffixIcon,
+	prefixText,
+	suffixText,
+	borderless = false,
+	round = false,
+	valid = false,
+	invalid = false,
+	mask,
+	min,
+	max,
+	step,
+	minlength,
+	maxlength,
+	pattern,
+	...props
+} = Astro.props;
+
+const hasPrefix = prefixIcon || prefixText || Astro.slots.has('prefix');
+const hasSuffix = suffixIcon || suffixText || Astro.slots.has('suffix');
+const hasGroup = hasPrefix || hasSuffix;
+
+const inputClass = ClassClear([
+	'form-control',
+	size && `form-control-${size}`,
+	borderless && 'form-control-flush',
+	round && 'rounded-pill',
+	valid && 'is-valid',
+	invalid && 'is-invalid',
+	className
+]);
+---
+
+{
+	hasGroup ? (
+		<div class="input-group">
+			{hasPrefix && (
+				<span class="input-group-text">
+					<slot name="prefix">
+						{prefixIcon && <Icon icon={prefixIcon} />}
+						{prefixText && <span>{prefixText}</span>}
+					</slot>
+				</span>
+			)}
+
+			<input
+				id={id}
+				name={name}
+				type={type}
+				class={inputClass}
+				placeholder={placeholder}
+				value={value}
+				disabled={disabled}
+				readonly={readonly}
+				required={required}
+				min={min}
+				max={max}
+				step={step}
+				minlength={minlength}
+				maxlength={maxlength}
+				pattern={pattern}
+				data-mask={mask}
+				{...props}
+			/>
+
+			{hasSuffix && (
+				<span class="input-group-text">
+					<slot name="suffix">
+						{suffixIcon && <Icon icon={suffixIcon} />}
+						{suffixText && <span>{suffixText}</span>}
+					</slot>
+				</span>
+			)}
+		</div>
+	) : (
+		<input
+			id={id}
+			name={name}
+			type={type}
+			class={inputClass}
+			placeholder={placeholder}
+			value={value}
+			disabled={disabled}
+			readonly={readonly}
+			required={required}
+			min={min}
+			max={max}
+			step={step}
+			minlength={minlength}
+			maxlength={maxlength}
+			pattern={pattern}
+			data-mask={mask}
+			{...props}
+		/>
+	)
+}
+
+<script>
+	import { createMask } from '../libs/_mask';
+
+	// 如果存在带有data-mask属性的输入框，加载输入掩码库
+	const elements = document.querySelectorAll('input[data-mask]');
+	if (elements.length) {
+		elements.forEach((el) => {
+			const element = el as HTMLInputElement;
+			createMask(element, element.dataset.mask);
+		});
+	}
+</script>

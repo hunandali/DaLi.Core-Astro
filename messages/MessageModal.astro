@@ -14,11 +14,13 @@
  */
 
 import Icon from '../components/Icon.astro';
-import BUTTON from '../components/Button.astro';
+import Button from '../components/Button.astro';
+import Input from '../forms/Input.astro';
+
 import type { ModalOptions } from '../types';
 import { ThemeIcon } from '../libs';
 
-export interface Props extends Omit<ModalOptions, 'onOk' | 'onCancel' | 'onClose'> {
+export interface Props extends Omit<ModalOptions, 'onConfirm' | 'onCancel' | 'onClose'> {
 	/** 标识 */
 	id?: string;
 
@@ -28,13 +30,16 @@ export interface Props extends Omit<ModalOptions, 'onOk' | 'onCancel' | 'onClose
 
 const {
 	id,
+	prompt,
+	value,
+	mask,
 	icon: iconName,
 	title,
 	message,
 	theme,
 	showClose = true,
 	textCancel = '取消',
-	textOk = '确定',
+	textConfirm = '确定',
 	okClose = false
 } = Astro.props;
 
@@ -63,6 +68,21 @@ if (iconName) {
 				<Icon {...icon} size={14} />
 				<h2 class="mt-2 mb-4">{title}</h2>
 				<div class="text-secondary"><slot>{message}</slot></div>
+				{
+					prompt && (
+						<div class="d-flex justify-content-center mt-6">
+							<div class="form-floating w-400">
+								<Input
+									type="text"
+									class={`border-2 border-${icon.theme}`}
+									value={value}
+									mask={mask}
+								/>
+								<label class="fw-bold">{prompt === true ? '请输入' : prompt}</label>
+							</div>
+						</div>
+					)
+				}
 			</div>
 			<div class="modal-footer text-center">
 				<div class="w-100">
@@ -71,7 +91,7 @@ if (iconName) {
 							{
 								showClose && (
 									<div class="col">
-										<BUTTON
+										<Button
 											data-bs-dismiss="modal"
 											theme="default"
 											class="w-100"
@@ -83,17 +103,17 @@ if (iconName) {
 							<div class="col">
 								{
 									okClose ? (
-										<BUTTON
+										<Button
 											data-bs-dismiss="modal"
 											theme={icon.theme}
 											class={showClose ? 'w-100' : 'w-50'}
-											text={textOk}
+											text={textConfirm}
 										/>
 									) : (
-										<BUTTON
+										<Button
 											theme={icon.theme}
 											class={showClose ? 'w-100' : 'w-50'}
-											text={textOk}
+											text={textConfirm}
 										/>
 									)
 								}

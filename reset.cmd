@@ -17,6 +17,6 @@ RD /S /Q "dist"
 RD /S /Q "demo"
 DEL "yarn.lock"
 DEL "pnpm-lock.yaml"
-call pnpm install
+call yarn
 
 call npm run dev

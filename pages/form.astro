@@ -1,0 +1,32 @@
+---
+/**
+ * 	Empty 空状态组件示例
+ *
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ *
+ * 	  author:	木炭(WOODCOAL)
+ * 	   email:	i@woodcoal.cn
+ * 	homepage:	http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ */
+
+import LAYOUT from '../layouts/Demo.astro';
+import Card from '../components/Card.astro';
+import Input from '../forms/Input.astro';
+---
+
+<LAYOUT pretitle="大沥网络" title="表单组件" description="Form">
+	<div class="row">
+		<div class="col-md-6 my-1">
+			<Card title="默认效果">
+				<Input type="text" placeholder="测试" mask="00.00" />
+			</Card>
+		</div>
+		<div class="col-md-6 my-1">
+			<Card title="基础用法"> sss </Card>
+		</div>
+	</div>
+</LAYOUT>

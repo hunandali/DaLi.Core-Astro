@@ -38,10 +38,22 @@ import Button from '../components/Button.astro';
 		<p>真的确认这么操作吗？</p>
 	</MESSAGE>
 	<Button data-bs-toggle="modal" data-bs-target="#message-modal-2">确认弹窗</Button>
+	<MESSAGE
+		title="账号确认"
+		theme="success"
+		icon="mobilephone"
+		prompt="请输入有效的手机号码"
+		mask="000 0000 0000"
+		value=""
+		id="message-modal-3">
+		<p>账号为手机号码，请确保输入无误</p>
+	</MESSAGE>
+	<Button data-bs-toggle="modal" data-bs-target="#message-modal-3">输入弹窗</Button>
 
 	<h2 class="line-top">脚本操作</h2>
 	<Button class="btnA">确认弹窗</Button>
 	<Button class="btnB">消息弹窗</Button>
+	<Button class="btnC">输入弹窗</Button>
 </LAYOUT>
 
 <script>
@@ -49,6 +61,7 @@ import Button from '../components/Button.astro';
 
 	const btnA = document.querySelector('.btnA');
 	const btnB = document.querySelector('.btnB');
+	const btnC = document.querySelector('.btnC');
 	btnA?.addEventListener('click', () => {
 		openModal({
 			theme: 'primary',
@@ -57,9 +70,9 @@ import Button from '../components/Button.astro';
 			message: '“<b>东临碣石，以观沧海</b>”这是什么诗词？',
 			showClose: true,
 			textCancel: '不知道',
-			textOk: '当然知道',
+			textConfirm: '当然知道',
 			onCancel: () => alert('你应该多学习学习'),
-			onOk: () => alert('你真牛！')
+			onConfirm: () => alert('你真牛！')
 		});
 	});
 	btnB?.addEventListener('click', () => {
@@ -68,8 +81,32 @@ import Button from '../components/Button.astro';
 			title: '你答错了',
 			message: '看样子你还要多努力努力！',
 			showClose: false,
-			textOk: '好的',
-			onOk: () => alert('我会加油的')
+			textConfirm: '好的',
+			onConfirm: () => alert('我会加油的')
+		});
+	});
+	btnC?.addEventListener('click', () => {
+		openModal({
+			theme: 'success',
+			title: '账号确认',
+			message: '账号为手机号码，请确保输入无误！',
+			prompt: '请输入手机号',
+			mask: '000 0000 0000',
+			value: '',
+			onConfirm: ({ value }) => {
+				const num = Number(value);
+				if (isNaN(num)) {
+					alert('请输入有效的手机号码');
+					return false;
+				}
+
+				if (num < 13000000000 || num > 19999999999) {
+					alert('请输入有效的手机号码');
+					return false;
+				}
+
+				return true;
+			}
 		});
 	});
 </script>

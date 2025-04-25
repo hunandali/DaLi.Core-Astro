@@ -95,7 +95,8 @@ const Element = element || 'span';
 <Element class:list={classList} data-countup={attrs} {...props}>{data}</Element>
 
 <script>
-	import { CountUp, type CountUpOptions } from 'countup.js/src/countUp';
+	// @ts-ignore
+	import { CountUp, type CountUpOptions } from 'countup.js';
 	import type { Props } from './Countup.astro';
 	import { toJSON } from '@da.li/core-libs';
 	import { EVENTS } from '../config';

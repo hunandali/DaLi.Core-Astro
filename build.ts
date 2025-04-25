@@ -94,6 +94,7 @@ async function postBuild() {
 		// await cleanupDist();
 		await floderCopy('components');
 		await floderCopy('customs');
+		await floderCopy('forms');
 		await floderCopy('messages');
 		await floderCopy('layouts');
 		await floderCopy('integration');

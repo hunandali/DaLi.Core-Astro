@@ -53,9 +53,9 @@ import Button from '../components/Button.astro';
 			placement: 'end',
 			showClose: true,
 			textCancel: '不知道',
-			textOk: '当然知道',
+			textConfirm: '当然知道',
 			onCancel: () => alert('你应该多学习学习'),
-			onOk: () => alert('你真牛！')
+			onConfirm: () => alert('你真牛！')
 		});
 	});
 	btnB?.addEventListener('click', () => {
@@ -65,8 +65,8 @@ import Button from '../components/Button.astro';
 			placement: 'bottom',
 			size: 30,
 			showClose: false,
-			textOk: '好的',
-			onOk: () => alert('我会加油的')
+			textConfirm: '好的',
+			onConfirm: () => alert('我会加油的')
 		});
 	});
 </script>
