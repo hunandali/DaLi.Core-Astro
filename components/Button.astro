@@ -90,7 +90,7 @@ if (url.enabled) {
 	href && ((ElementProps.href = url.url), (Element = 'a'));
 	target && (ElementProps.target = target);
 } else {
-	ElementProps['data-alert-link'] = url.url;
+	url.url && (ElementProps['data-alert-link'] = url.url);
 }
 
 // 渲染插槽内容
@@ -101,3 +101,7 @@ const slotHtml = (await Astro.slots.render('default'))?.trim();
 	<Icon icon={icon} text={slotHtml ? '' : text} logo={logo} rotate={rotate} />
 	{slotHtml && <Fragment set:html={slotHtml} />}
 </Element>
+
+<script>
+	import './Link';
+</script>

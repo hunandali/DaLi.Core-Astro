@@ -150,7 +150,7 @@ export const updateLink = (
 	whiteList?: string[],
 	ignoreCase = true
 ) => {
-	// 是否外部链接
+	// 是否允许外部链接
 	if (action === true) return { enabled: true, url };
 	if (action === false) return { enabled: false, url: '' };
 
