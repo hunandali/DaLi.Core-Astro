@@ -151,7 +151,8 @@ export const updateLink = (
 	ignoreCase = true
 ) => {
 	// 是否外部链接
-	if (isBoolean(action) || !action) return { enabled: action, url: '' };
+	if (action === true) return { enabled: true, url };
+	if (action === false) return { enabled: false, url: '' };
 
 	// 检查是否为外部链接
 	const isExternal = isExternalDomain(url, whiteList, ignoreCase);
