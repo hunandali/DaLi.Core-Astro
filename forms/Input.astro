@@ -1,59 +1,36 @@
 ---
-/**
- * 	Input 输入框组件
+/*
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author: 木炭
+ * 	   email: woodcoal@qq.com
+ * 	homepage: http://www.hunandali.com/
  *
  * ------------------------------------------------------------
  *
- * 	Copyright © 2024 湖南大沥网络科技有限公司.
+ * 	输入框组件
  *
- * 	  author:	木炭(WOODCOAL)
- * 	   email:	i@woodcoal.cn
- * 	homepage:	http://www.hunandali.com/
+ * 	file: Input.astro
+ * 	time: 2025-04-26 04:56:05
  *
  * ------------------------------------------------------------
  */
 
-import Icon from '../components/Icon.astro';
 import { ClassClear } from '../libs';
 import type { IFormElement, ISize } from '../types';
 
-export interface Props extends IFormElement<string | number | null> {
-	/** 输入框ID */
-	id?: string;
-
-	/** 输入框类型 */
-	type?:
-		| 'text'
-		| 'password'
-		| 'email'
-		| 'number'
-		| 'tel'
-		| 'url'
-		| 'search'
-		| 'date'
-		| 'time'
-		| 'datetime-local'
-		| 'month'
-		| 'week'
-		| 'color';
+type HtmlProps = Omit<HTMLInputElement, 'size'>;
+export interface Props extends Partial<HtmlProps>, IFormElement<string> {
+	/** 输入掩码 */
+	mask?: string;
 
 	/** 输入框大小 */
 	size?: Exclude<ISize, 'xl'>;
 
 	/** 自定义类名 */
 	class?: string;
-
-	/** 前置图标 */
-	prefixIcon?: string;
-
-	/** 后置图标 */
-	suffixIcon?: string;
-
-	/** 前置文本 */
-	prefixText?: string;
-
-	/** 后置文本 */
-	suffixText?: string;
 
 	/** 是否无边框 */
 	borderless?: boolean;
@@ -66,61 +43,18 @@ export interface Props extends IFormElement<string | number | null> {
 
 	/** 是否无效 */
 	invalid?: boolean;
-
-	/** 输入掩码 */
-	mask?: string;
-
-	/** 最小值 */
-	min?: number | string;
-
-	/** 最大值 */
-	max?: number | string;
-
-	/** 步长 */
-	step?: number | string;
-
-	/** 最小长度 */
-	minlength?: number;
-
-	/** 最大长度 */
-	maxlength?: number;
-
-	/** 正则表达式模式 */
-	pattern?: string;
 }
 
 const {
-	id,
-	name,
-	type = 'text',
-	placeholder,
-	value,
-	disabled = false,
-	readonly = false,
-	required = false,
+	mask,
 	size,
-	class: className,
-	prefixIcon,
-	suffixIcon,
-	prefixText,
-	suffixText,
 	borderless = false,
 	round = false,
 	valid = false,
 	invalid = false,
-	mask,
-	min,
-	max,
-	step,
-	minlength,
-	maxlength,
-	pattern,
+	class: className,
 	...props
 } = Astro.props;
-
-const hasPrefix = prefixIcon || prefixText || Astro.slots.has('prefix');
-const hasSuffix = suffixIcon || suffixText || Astro.slots.has('suffix');
-const hasGroup = hasPrefix || hasSuffix;
 
 const inputClass = ClassClear([
 	'form-control',
@@ -133,69 +67,7 @@ const inputClass = ClassClear([
 ]);
 ---
 
-{
-	hasGroup ? (
-		<div class="input-group">
-			{hasPrefix && (
-				<span class="input-group-text">
-					<slot name="prefix">
-						{prefixIcon && <Icon icon={prefixIcon} />}
-						{prefixText && <span>{prefixText}</span>}
-					</slot>
-				</span>
-			)}
-
-			<input
-				id={id}
-				name={name}
-				type={type}
-				class={inputClass}
-				placeholder={placeholder}
-				value={value}
-				disabled={disabled}
-				readonly={readonly}
-				required={required}
-				min={min}
-				max={max}
-				step={step}
-				minlength={minlength}
-				maxlength={maxlength}
-				pattern={pattern}
-				data-mask={mask}
-				{...props}
-			/>
-
-			{hasSuffix && (
-				<span class="input-group-text">
-					<slot name="suffix">
-						{suffixIcon && <Icon icon={suffixIcon} />}
-						{suffixText && <span>{suffixText}</span>}
-					</slot>
-				</span>
-			)}
-		</div>
-	) : (
-		<input
-			id={id}
-			name={name}
-			type={type}
-			class={inputClass}
-			placeholder={placeholder}
-			value={value}
-			disabled={disabled}
-			readonly={readonly}
-			required={required}
-			min={min}
-			max={max}
-			step={step}
-			minlength={minlength}
-			maxlength={maxlength}
-			pattern={pattern}
-			data-mask={mask}
-			{...props}
-		/>
-	)
-}
+<input class={inputClass} data-mask={mask} {...props as any} />
 
 <script>
 	import { createMask } from '../libs/_mask';

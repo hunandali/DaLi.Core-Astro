@@ -1,0 +1,113 @@
+---
+/*
+ * ------------------------------------------------------------
+ *
+ * 	Copyright © 2025 湖南大沥网络科技有限公司.
+ *
+ * 	  author: 木炭
+ * 	   email: woodcoal@qq.com
+ * 	homepage: http://www.hunandali.com/
+ *
+ * ------------------------------------------------------------
+ *
+ * 	表单项目
+ *
+ * 	file: Item.astro
+ * 	time: 2025-04-30 09:02:04
+ *
+ * ------------------------------------------------------------
+ */
+
+import Icon from '../components/Icon.astro';
+import { ClassClear } from '../libs';
+
+export interface Props {
+	/** 字段标题 */
+	title?: string;
+
+	/** 字段描述(提示) */
+	description?: string;
+
+	/** 字段信息(右侧) */
+	info?: string;
+
+	/** 字段信息 */
+	message?: string;
+
+	/**
+	 * 信息类型
+	 * - valid: 有效(文字显示 绿色)
+	 * - invalid: 无效(文字显示 红色)
+	 * - valid-message: 有效信息(气泡显示 绿色)
+	 * - invalid-message: 无效信息(气泡显示 红色)
+	 * - default: 默认(文字显示)
+	 */
+	messageType?: 'valid' | 'invalid' | 'valid-message' | 'invalid-message' | 'default';
+
+	/** 信息主题 */
+
+	/** 是否必填 */
+	required?: boolean;
+
+	/** 是否浮动标签 */
+	floating?: boolean;
+}
+
+const {
+	title,
+	description,
+	info,
+	message,
+	messageType = 'default',
+	required,
+	floating,
+	...props
+} = Astro.props;
+
+const labelClass = ClassClear(['form-label', required && 'form-required']);
+const hitClass =
+	messageType === 'valid'
+		? 'valid-feedback'
+		: messageType === 'invalid'
+			? 'invalid-feedback'
+			: messageType === 'valid-message'
+				? 'valid-tooltip'
+				: messageType === 'invalid-message'
+					? 'invalid-tooltip'
+					: 'form-hit';
+
+const hasInfo = info || Astro.slots.has('info');
+---
+
+<div class:list={[floating && 'form-floating']} {...props}>
+	<label class={labelClass}>
+		<slot name="title">
+			{title}
+		</slot>
+
+		{
+			description && (
+				<span
+					class="form-help"
+					data-bs-toggle="popover"
+					data-bs-placement="top"
+					data-bs-html="true"
+					data-bs-content={description}>
+					?
+				</span>
+			)
+		}
+
+		{
+			hasInfo && (
+				<span class="form-label-description">
+					<slot name="info">{info}</slot>
+				</span>
+			)
+		}
+	</label>
+
+	<slot />
+
+	{message && <div class={hitClass}>{message}</div>}
+</div>

@@ -19,7 +19,6 @@ import {
 	hasObject,
 	htmlSafe,
 	isArray,
-	isBoolean,
 	stringIncludes,
 	type Dict
 } from '@da.li/core-libs';
