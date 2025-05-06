@@ -1,7 +1,7 @@
 {
 	"name": "@da.li/core-astro",
 	"title": "大沥网络 Astro 公共库",
-	"version": "1.25.430",
+	"version": "1.25.506",
 	"description": "大沥网络 Astro 公共库，包含基础 UI 组件、基础工具函数等",
 	"license": "GPL-3.0",
 	"company": "Hunan DaLi Network Technology Co., Ltd.",
@@ -9,7 +9,7 @@
 	"homepage": "http://www.hunandali.com/",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/woodcoal/DaLi.Core-Astro.git"
+		"url": "https://github.com/hunandali/DaLi.Core-Astro.git"
 	},
 	"type": "module",
 	"files": [
@@ -31,12 +31,12 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@da.li/core-libs": "^1.25.426",
+		"@da.li/core-libs": "^1.25.502",
 		"@tabler/core": "^1.2.0",
-		"astro": "5.7.5",
+		"astro": "5.7.10",
 		"astro-iconify": "^1.2.0",
-		"bootstrap": "^5.3.5",
-		"countup.js": "^2.8.1",
+		"bootstrap": "^5.3.6",
+		"countup.js": "^2.8.2",
 		"prismjs": "^1.30.0"
 	},
 	"devDependencies": {
@@ -44,14 +44,14 @@
 		"@types/alpinejs": "^3.13.11",
 		"@types/bootstrap": "^5.2.10",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "^22.14.1",
+		"@types/node": "^22.15.12",
 		"@types/prismjs": "^1.26.5",
 		"fs-extra": "^11.3.0",
 		"less": "^4.3.0",
-		"tsx": "^4.19.3",
+		"tsx": "^4.19.4",
 		"typescript": "^5.8.3",
 		"unplugin-auto-import": "^19.1.2",
-		"vite": "^6.3.3",
+		"vite": "^6.3.5",
 		"vite-plugin-dts": "^4.5.3"
 	}
 }
